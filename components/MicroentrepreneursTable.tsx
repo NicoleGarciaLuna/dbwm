@@ -1,4 +1,3 @@
-"use client";
 import { useMemo } from "react";
 import {
 	createColumnHelper,
@@ -7,6 +6,7 @@ import {
 } from "@tanstack/react-table";
 import { Microentrepreneur } from "../types";
 import Table from "./Table";
+import { columnConfig } from "../data/columnConfig";
 
 type MicroentrepreneursTableProps = {
 	data: Microentrepreneur[];
@@ -16,35 +16,19 @@ const MicroentrepreneursTable = ({ data }: MicroentrepreneursTableProps) => {
 	const columnHelper = createColumnHelper<Microentrepreneur>();
 
 	const columns = useMemo(
-		() => [
-			columnHelper.accessor("firstName", {
-				cell: (info) => info.getValue(),
-				header: "First Name",
-				footer: (info) => info.column.id,
-			}),
-			columnHelper.accessor("lastName", {
-				cell: (info) => <i>{info.getValue()}</i>,
-				header: "Last Name",
-				footer: (info) => info.column.id,
-			}),
-			columnHelper.accessor("age", {
-				header: "Age",
-				cell: (info) => info.renderValue(),
-				footer: (info) => info.column.id,
-			}),
-			columnHelper.accessor("visits", {
-				header: "Visits",
-				footer: (info) => info.column.id,
-			}),
-			columnHelper.accessor("status", {
-				header: "Status",
-				footer: (info) => info.column.id,
-			}),
-			columnHelper.accessor("progress", {
-				header: "Profile Progress",
-				footer: (info) => info.column.id,
-			}),
-		],
+		() =>
+			columnConfig.map((column) =>
+				column.isAction
+					? columnHelper.display({
+							id: column.key,
+							header: column.header,
+							cell: () => <button className="text-blue-500">Action</button>,
+					  })
+					: columnHelper.accessor(column.key as keyof Microentrepreneur, {
+							header: column.header,
+							cell: (info) => info.getValue(),
+					  })
+			),
 		[columnHelper]
 	);
 

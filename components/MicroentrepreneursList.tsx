@@ -16,13 +16,16 @@ const MicroentrepreneursList = ({ data }: MicroentrepreneursListProps) => {
 	const filteredData = useMemo(() => {
 		return data.filter(
 			(microentrepreneur) =>
-				microentrepreneur.firstName
+				microentrepreneur.fullName
 					.toLowerCase()
 					.includes(searchQuery.toLowerCase()) ||
-				microentrepreneur.lastName
+				microentrepreneur.company
 					.toLowerCase()
 					.includes(searchQuery.toLowerCase()) ||
-				microentrepreneur.status
+				microentrepreneur.sector
+					.toLowerCase()
+					.includes(searchQuery.toLowerCase()) ||
+				microentrepreneur.mainActivity
 					.toLowerCase()
 					.includes(searchQuery.toLowerCase())
 		);

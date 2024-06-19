@@ -1,10 +1,8 @@
 export type Microentrepreneur = {
-	firstName: string;
-	lastName: string;
-	age: number;
-	visits: number;
-	status: string;
-	progress: number;
+	fullName: string;
+	company: string;
+	sector: string;
+	mainActivity: string;
 };
 
 export type PaginationProps = {
