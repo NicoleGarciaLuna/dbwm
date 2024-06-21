@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { menuItems } from "../data/menuItems";
@@ -7,7 +7,7 @@ type LayoutProps = {
 	children: ReactNode;
 };
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout: React.FC<LayoutProps> = ({ children }) => {
 	return (
 		<div className="flex">
 			<Sidebar items={menuItems} />
