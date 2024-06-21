@@ -9,11 +9,13 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <Sidebar items={menuItems} />
-      <div className="flex-1">
+      <div className="flex flex-col flex-1 overflow-hidden">
         <Header />
-        <main className="p-4">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4">
+          {children}
+        </main>
       </div>
     </div>
   );
