@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import "../app/globals.css";
 import { DashboardIcon, KanbanIcon, InboxIcon, UsersIcon, ProductsIcon, SignInIcon, SignUpIcon } from "./icons/DashboardIcons";
 
 type LayoutProps = {
