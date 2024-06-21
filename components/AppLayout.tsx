@@ -10,10 +10,12 @@ interface AppLayoutProps {
 const AppLayout = ({ children }: AppLayoutProps) => {
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar items={menuItems} />
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="w-64 flex-shrink-0">
+        <Sidebar items={menuItems} />
+      </div>
+      <div className="flex flex-col flex-grow overflow-hidden">
         <Header />
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-grow overflow-y-auto p-6">
           <div className="container mx-auto">
             {children}
           </div>
