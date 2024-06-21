@@ -6,20 +6,20 @@ import Layout from "@/components/Layout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "DBWM",
-	description: "Base de datos web microempresarias",
+  title: "DBWM",
+  description: "Base de datos web microempresarias",
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en">
-			<body className={inter.className}>
-				<Layout>{children}</Layout>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <Layout>{children}</Layout>
+      </body>
+    </html>
+  );
 }
