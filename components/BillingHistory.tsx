@@ -1,10 +1,11 @@
+import Card from './Card';
+
 type BillingHistoryProps = {
   billingHistory: Array<{ date: string; amount: string; status: string }>;
 };
 
 const BillingHistory = ({ billingHistory }: BillingHistoryProps) => (
-  <div className="bg-white shadow-md rounded-lg p-6">
-    <h2 className="text-xl font-semibold mb-4">Billing History</h2>
+  <Card title="Billing History">
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
@@ -45,7 +46,7 @@ const BillingHistory = ({ billingHistory }: BillingHistoryProps) => (
         </tbody>
       </table>
     </div>
-  </div>
+  </Card>
 );
 
 export default BillingHistory;

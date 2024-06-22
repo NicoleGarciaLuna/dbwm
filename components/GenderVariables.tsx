@@ -1,11 +1,12 @@
+import Card from './Card';
+
 const GenderVariables = () => (
-  <div className="bg-white shadow-md rounded-lg p-6">
-    <h2 className="text-xl font-semibold mb-4">Variables de Género</h2>
+  <Card title="Variables de Género">
     <p>
       Aquí puedes agregar el contenido relacionado con las variables de
       género.
     </p>
-  </div>
+  </Card>
 );
 
 export default GenderVariables;
