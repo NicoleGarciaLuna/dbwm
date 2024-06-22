@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -26,7 +27,7 @@ const UserProfile = ({
   cvv,
   billingHistory,
 }: UserProfileProps) => {
-  const [activeTab, setActiveTab] = useState<'personal' | 'gender'>('personal');
+  const [activeTab, setActiveTab] = useState<"personal" | "gender">("personal");
 
   return (
     <main className="flex flex-col items-center p-4">
@@ -52,28 +53,28 @@ const UserProfile = ({
       </div>
       <div className="w-full max-w-2xl">
         <div className="flex justify-center gap-4 mb-6">
-          <button 
+          <button
             className={`px-4 py-2 font-medium rounded-md ${
-              activeTab === 'personal' 
-                ? 'text-white bg-blue-500' 
-                : 'text-blue-500 bg-gray-200'
+              activeTab === "personal"
+                ? "text-white bg-blue-500"
+                : "text-blue-500 bg-gray-200"
             }`}
-            onClick={() => setActiveTab('personal')}
+            onClick={() => setActiveTab("personal")}
           >
             Información personal
           </button>
-          <button 
+          <button
             className={`px-4 py-2 font-medium rounded-md ${
-              activeTab === 'gender' 
-                ? 'text-white bg-blue-500' 
-                : 'text-blue-500 bg-gray-200'
+              activeTab === "gender"
+                ? "text-white bg-blue-500"
+                : "text-blue-500 bg-gray-200"
             }`}
-            onClick={() => setActiveTab('gender')}
+            onClick={() => setActiveTab("gender")}
           >
             Variables genero
           </button>
         </div>
-        {activeTab === 'personal' && (
+        {activeTab === "personal" && (
           <div className="space-y-6">
             <div className="bg-white shadow-md rounded-lg p-6">
               <h2 className="text-xl font-semibold mb-4">Profile Details</h2>
@@ -127,7 +128,9 @@ const UserProfile = ({
               </div>
             </div>
             <div className="bg-white shadow-md rounded-lg p-6">
-              <h2 className="text-xl font-semibold mb-4">Billing Information</h2>
+              <h2 className="text-xl font-semibold mb-4">
+                Billing Information
+              </h2>
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label
@@ -223,10 +226,13 @@ const UserProfile = ({
             </div>
           </div>
         )}
-        {activeTab === 'gender' && (
+        {activeTab === "gender" && (
           <div className="bg-white shadow-md rounded-lg p-6">
             <h2 className="text-xl font-semibold mb-4">Variables de Género</h2>
-            <p>Aquí puedes agregar el contenido relacionado con las variables de género.</p>
+            <p>
+              Aquí puedes agregar el contenido relacionado con las variables de
+              género.
+            </p>
           </div>
         )}
       </div>
