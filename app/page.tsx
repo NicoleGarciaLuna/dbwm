@@ -1,10 +1,11 @@
-import MicroentrepreneursList from "@/components/MicroentrepreneursList";
-import { defaultData } from "@/data/defaultData";
+import AppLayout from "@/components/AppLayout";
+import UserProfile from "@/components/UserProfile/UserProfile";
+import { userProfileData } from "@/data/userProfileData";
 
 export default function Home() {
-	return (
-		<div>
-			<MicroentrepreneursList data={defaultData} />
-		</div>
-	);
+  return (
+    <AppLayout>
+      <UserProfile {...userProfileData} />
+    </AppLayout>
+  );
 }
