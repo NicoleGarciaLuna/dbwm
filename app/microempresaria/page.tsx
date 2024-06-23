@@ -4,6 +4,7 @@ import {
   fetchMultipleRelatedData,
   getRelatedData,
   fetchNamesForTables,
+  buildNestedDataDescriptions,
 } from "@/utils/fetchUtils";
 import { personaConfig } from "@/data/personaConfig";
 import { cache } from "react";
@@ -74,51 +75,43 @@ const getPersonaCompleta = cache(async (): Promise<any> => {
     {} as Record<string, Record<string, Record<number, string>>>
   );
 
-  const mapNestedData = (
+  const nestedDataDescriptions = buildNestedDataDescriptions(
+    nestedRelatedDataMap,
+    nestedNamesDataMap
+  );
+
+  const buildPersonaCompleta = (
+    persona: any[],
+    variableGenero: any[],
+    capacitaciones: any[],
+    emprendimientos: any[],
     relatedData: Record<string, any[]>,
-    namesData: Record<string, Record<number, string>>,
-    key: string
+    nestedDataDescriptions: Record<string, any[]>
   ) => {
-    return relatedData[key].flat().map((item: any) => ({
-      ...item,
-      descripcion:
-        namesData[key][
-          item[
-            personaConfig.idColumnsMap[
-              key as keyof typeof personaConfig.idColumnsMap
-            ]
-          ]
-        ],
-    }));
+    return {
+      persona: persona[0],
+      emprendimientos,
+      innovaciones: relatedData["innovacion"].flat(),
+      mercados: relatedData["mercado"].flat(),
+      contabilidadFinanzas: relatedData["contabilidad_finanzas"].flat(),
+      financiamientos: relatedData["financiamiento"].flat(),
+      formalizaciones: relatedData["formalizacion"].flat(),
+      ideaNegocios: relatedData["idea_negocio"].flat(),
+      productos: relatedData["producto"].flat(),
+      variableGenero: variableGenero[0],
+      capacitaciones: capacitaciones[0],
+      ...nestedDataDescriptions,
+    };
   };
 
-  const nestedDataDescriptions = Object.entries(
-    personaConfig.nestedRelatedDataMap
-  ).reduce((acc, [mainKey, subKeys]) => {
-    subKeys.forEach((subKey) => {
-      acc[subKey] = mapNestedData(
-        nestedRelatedDataMap[mainKey],
-        nestedNamesDataMap[mainKey],
-        subKey
-      );
-    });
-    return acc;
-  }, {} as Record<string, any[]>);
-
-  const personaCompleta = {
-    persona: persona[0],
+  const personaCompleta = buildPersonaCompleta(
+    persona,
+    variableGenero,
+    capacitaciones,
     emprendimientos,
-    innovaciones: relatedData["innovacion"].flat(),
-    mercados: relatedData["mercado"].flat(),
-    contabilidadFinanzas: relatedData["contabilidad_finanzas"].flat(),
-    financiamientos: relatedData["financiamiento"].flat(),
-    formalizaciones: relatedData["formalizacion"].flat(),
-    ideaNegocios: relatedData["idea_negocio"].flat(),
-    productos: relatedData["producto"].flat(),
-    variableGenero: variableGenero[0],
-    capacitaciones: capacitaciones[0],
-    ...nestedDataDescriptions,
-  };
+    relatedData,
+    nestedDataDescriptions
+  );
 
   return personaCompleta;
 });

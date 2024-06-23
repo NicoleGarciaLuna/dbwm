@@ -91,3 +91,40 @@ export const fetchNamesForTables = async (
     return acc;
   }, {} as Record<string, Record<number, string>>);
 };
+
+export const mapNestedData = (
+  relatedData: Record<string, any[]>,
+  namesData: Record<string, Record<number, string>>,
+  key: string
+) => {
+  return relatedData[key].flat().map((item: any) => ({
+    ...item,
+    descripcion:
+      namesData[key][
+        item[
+          personaConfig.idColumnsMap[
+            key as keyof typeof personaConfig.idColumnsMap
+          ]
+        ]
+      ],
+  }));
+};
+
+export const buildNestedDataDescriptions = (
+  nestedRelatedDataMap: Record<string, Record<string, any[]>>,
+  nestedNamesDataMap: Record<string, Record<string, Record<number, string>>>
+) => {
+  return Object.entries(personaConfig.nestedRelatedDataMap).reduce(
+    (acc, [mainKey, subKeys]) => {
+      subKeys.forEach((subKey) => {
+        acc[subKey] = mapNestedData(
+          nestedRelatedDataMap[mainKey],
+          nestedNamesDataMap[mainKey],
+          subKey
+        );
+      });
+      return acc;
+    },
+    {} as Record<string, any[]>
+  );
+};
