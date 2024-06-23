@@ -1,5 +1,4 @@
 import { cache } from "react";
-import { personaConfig } from "@/data/personaConfig";
 
 export const fetchData = cache(
   async (
@@ -18,7 +17,7 @@ export const fetchData = cache(
   }
 );
 
-export const fetchMultipleRelatedData = cache(
+export const fetchRelatedData = cache(
   async (
     supabase: any,
     tables: string[],
@@ -61,19 +60,11 @@ export const fetchNames = cache(
   }
 );
 
-export const getRelatedData = async (
-  supabase: any,
-  ids: number[],
-  tables: string[],
-  column: string
-) => {
-  return fetchMultipleRelatedData(supabase, tables, column, ids);
-};
-
 export const fetchNamesForTables = async (
   supabase: any,
   relatedData: Record<string, any[]>,
-  idColumnsMap: Record<string, string>
+  idColumnsMap: Record<string, string>,
+  descriptionColumn: string
 ) => {
   const promises = Object.entries(relatedData).map(([table, data]) => {
     const ids = data.flat().map((item: any) => item[idColumnsMap[table]]);
@@ -82,7 +73,7 @@ export const fetchNamesForTables = async (
       table.split("_").slice(1).join("_"),
       ids,
       idColumnsMap[table],
-      personaConfig.descriptionColumn
+      descriptionColumn
     );
   });
   const namesData = await Promise.all(promises);
@@ -95,36 +86,13 @@ export const fetchNamesForTables = async (
 export const mapNestedData = (
   relatedData: Record<string, any[]>,
   namesData: Record<string, Record<number, string>>,
-  key: string
+  idColumnsMap: Record<string, string>
 ) => {
-  return relatedData[key].flat().map((item: any) => ({
-    ...item,
-    descripcion:
-      namesData[key][
-        item[
-          personaConfig.idColumnsMap[
-            key as keyof typeof personaConfig.idColumnsMap
-          ]
-        ]
-      ],
-  }));
-};
-
-export const buildNestedDataDescriptions = (
-  nestedRelatedDataMap: Record<string, Record<string, any[]>>,
-  nestedNamesDataMap: Record<string, Record<string, Record<number, string>>>
-) => {
-  return Object.entries(personaConfig.nestedRelatedDataMap).reduce(
-    (acc, [mainKey, subKeys]) => {
-      subKeys.forEach((subKey) => {
-        acc[subKey] = mapNestedData(
-          nestedRelatedDataMap[mainKey],
-          nestedNamesDataMap[mainKey],
-          subKey
-        );
-      });
-      return acc;
-    },
-    {} as Record<string, any[]>
-  );
+  return Object.entries(relatedData).reduce((acc, [key, data]) => {
+    acc[key] = data.flat().map((item: any) => ({
+      ...item,
+      descripcion: namesData[key][item[idColumnsMap[key]]],
+    }));
+    return acc;
+  }, {} as Record<string, any[]>);
 };

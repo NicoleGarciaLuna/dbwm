@@ -1,10 +1,9 @@
 import { createClient } from "@/utils/supabase/server";
 import {
   fetchData,
-  fetchMultipleRelatedData,
-  getRelatedData,
+  fetchRelatedData,
   fetchNamesForTables,
-  buildNestedDataDescriptions,
+  mapNestedData,
 } from "@/utils/fetchUtils";
 import { personaConfig } from "@/data/personaConfig";
 import { cache } from "react";
@@ -24,60 +23,123 @@ const getPersonaCompleta = cache(async (): Promise<any> => {
 
   const [persona, variableGenero, capacitaciones] = singleData;
 
-  type Emprendimiento = {
-    id_emprendimiento: number;
-  };
-
-  const emprendimientos = (await fetchData(
+  const emprendimientos = await fetchData(
     supabase,
     personaConfig.emprendimientoTable,
     personaConfig.emprendimientoColumn,
     personaConfig.personaId
-  )) as Emprendimiento[];
+  );
 
-  const relatedData = await fetchMultipleRelatedData(
+  const innovaciones = await fetchRelatedData(
     supabase,
-    personaConfig.multiTables,
+    ["innovacion"],
     personaConfig.relatedDataColumn,
-    emprendimientos.map((emp: Emprendimiento) => emp.id_emprendimiento)
+    emprendimientos.map((emp: any) => emp.id_emprendimiento)
   );
 
-  const relatedIds = personaConfig.nestedRelatedDataKeys.reduce((acc, key) => {
-    acc[key] = relatedData[key]?.flat().map((item: any) => item[`id_${key}`]);
-    return acc;
-  }, {} as Record<string, number[]>);
-
-  const nestedRelatedData = await Promise.all(
-    Object.entries(personaConfig.nestedTables).map(([key, tables]) =>
-      getRelatedData(supabase, relatedIds[key], tables, `id_${key}`)
-    )
+  const mercados = await fetchRelatedData(
+    supabase,
+    ["mercado"],
+    personaConfig.relatedDataColumn,
+    emprendimientos.map((emp: any) => emp.id_emprendimiento)
   );
 
-  const nestedRelatedDataMap = personaConfig.nestedRelatedDataKeys.reduce(
-    (acc, key, index) => {
-      acc[key] = nestedRelatedData[index];
-      return acc;
-    },
-    {} as Record<string, Record<string, any[]>>
+  const mercadoRelatedIds = mercados["mercado"]
+    ?.flat()
+    .map((item: any) => item[`id_mercado`]);
+  const mercadoNestedRelatedData = await fetchRelatedData(
+    supabase,
+    personaConfig.nestedTables.mercado,
+    `id_mercado`,
+    mercadoRelatedIds
+  );
+  const mercadoNestedNamesData = await fetchNamesForTables(
+    supabase,
+    mercadoNestedRelatedData,
+    personaConfig.idColumnsMap,
+    personaConfig.descriptionColumn
+  );
+  const mercadoNestedDataDescriptions = mapNestedData(
+    mercadoNestedRelatedData,
+    mercadoNestedNamesData,
+    personaConfig.idColumnsMap
   );
 
-  const nestedNamesData = await Promise.all(
-    Object.entries(nestedRelatedDataMap).map(([key, data]) =>
-      fetchNamesForTables(supabase, data, personaConfig.idColumnsMap)
-    )
+  const contabilidadFinanzas = await fetchRelatedData(
+    supabase,
+    ["contabilidad_finanzas"],
+    personaConfig.relatedDataColumn,
+    emprendimientos.map((emp: any) => emp.id_emprendimiento)
   );
 
-  const nestedNamesDataMap = personaConfig.nestedRelatedDataKeys.reduce(
-    (acc, key, index) => {
-      acc[key] = nestedNamesData[index];
-      return acc;
-    },
-    {} as Record<string, Record<string, Record<number, string>>>
+  const financiamientos = await fetchRelatedData(
+    supabase,
+    ["financiamiento"],
+    personaConfig.relatedDataColumn,
+    emprendimientos.map((emp: any) => emp.id_emprendimiento)
   );
 
-  const nestedDataDescriptions = buildNestedDataDescriptions(
-    nestedRelatedDataMap,
-    nestedNamesDataMap
+  const financiamientoRelatedIds = financiamientos["financiamiento"]
+    ?.flat()
+    .map((item: any) => item[`id_financiamiento`]);
+  const financiamientoNestedRelatedData = await fetchRelatedData(
+    supabase,
+    personaConfig.nestedTables.financiamiento,
+    `id_financiamiento`,
+    financiamientoRelatedIds
+  );
+  const financiamientoNestedNamesData = await fetchNamesForTables(
+    supabase,
+    financiamientoNestedRelatedData,
+    personaConfig.idColumnsMap,
+    personaConfig.descriptionColumn
+  );
+  const financiamientoNestedDataDescriptions = mapNestedData(
+    financiamientoNestedRelatedData,
+    financiamientoNestedNamesData,
+    personaConfig.idColumnsMap
+  );
+
+  const formalizaciones = await fetchRelatedData(
+    supabase,
+    ["formalizacion"],
+    personaConfig.relatedDataColumn,
+    emprendimientos.map((emp: any) => emp.id_emprendimiento)
+  );
+
+  const formalizacionRelatedIds = formalizaciones["formalizacion"]
+    ?.flat()
+    .map((item: any) => item[`id_formalizacion`]);
+  const formalizacionNestedRelatedData = await fetchRelatedData(
+    supabase,
+    personaConfig.nestedTables.formalizacion,
+    `id_formalizacion`,
+    formalizacionRelatedIds
+  );
+  const formalizacionNestedNamesData = await fetchNamesForTables(
+    supabase,
+    formalizacionNestedRelatedData,
+    personaConfig.idColumnsMap,
+    personaConfig.descriptionColumn
+  );
+  const formalizacionNestedDataDescriptions = mapNestedData(
+    formalizacionNestedRelatedData,
+    formalizacionNestedNamesData,
+    personaConfig.idColumnsMap
+  );
+
+  const ideasNegocio = await fetchRelatedData(
+    supabase,
+    ["idea_negocio"],
+    personaConfig.relatedDataColumn,
+    emprendimientos.map((emp: any) => emp.id_emprendimiento)
+  );
+
+  const productos = await fetchRelatedData(
+    supabase,
+    ["producto"],
+    personaConfig.relatedDataColumn,
+    emprendimientos.map((emp: any) => emp.id_emprendimiento)
   );
 
   const buildPersonaCompleta = (
@@ -85,22 +147,33 @@ const getPersonaCompleta = cache(async (): Promise<any> => {
     variableGenero: any[],
     capacitaciones: any[],
     emprendimientos: any[],
-    relatedData: Record<string, any[]>,
-    nestedDataDescriptions: Record<string, any[]>
+    innovaciones: any,
+    mercados: any,
+    contabilidadFinanzas: any,
+    financiamientos: any,
+    formalizaciones: any,
+    ideasNegocio: any,
+    productos: any,
+    mercadoNestedDataDescriptions: any,
+    financiamientoNestedDataDescriptions: any,
+    formalizacionNestedDataDescriptions: any
   ) => {
     return {
       persona: persona[0],
       emprendimientos,
-      innovaciones: relatedData["innovacion"].flat(),
-      mercados: relatedData["mercado"].flat(),
-      contabilidadFinanzas: relatedData["contabilidad_finanzas"].flat(),
-      financiamientos: relatedData["financiamiento"].flat(),
-      formalizaciones: relatedData["formalizacion"].flat(),
-      ideaNegocios: relatedData["idea_negocio"].flat(),
-      productos: relatedData["producto"].flat(),
+      innovaciones: innovaciones["innovacion"].flat(),
+      mercados: mercados["mercado"].flat(),
+      ...mercadoNestedDataDescriptions,
+      contabilidadFinanzas:
+        contabilidadFinanzas["contabilidad_finanzas"].flat(),
+      financiamientos: financiamientos["financiamiento"].flat(),
+      ...financiamientoNestedDataDescriptions,
+      formalizaciones: formalizaciones["formalizacion"].flat(),
+      ...formalizacionNestedDataDescriptions,
+      ideaNegocios: ideasNegocio["idea_negocio"].flat(),
+      productos: productos["producto"].flat(),
       variableGenero: variableGenero[0],
       capacitaciones: capacitaciones[0],
-      ...nestedDataDescriptions,
     };
   };
 
@@ -109,8 +182,16 @@ const getPersonaCompleta = cache(async (): Promise<any> => {
     variableGenero,
     capacitaciones,
     emprendimientos,
-    relatedData,
-    nestedDataDescriptions
+    innovaciones,
+    mercados,
+    contabilidadFinanzas,
+    financiamientos,
+    formalizaciones,
+    ideasNegocio,
+    productos,
+    mercadoNestedDataDescriptions,
+    financiamientoNestedDataDescriptions,
+    formalizacionNestedDataDescriptions
   );
 
   return personaCompleta;
