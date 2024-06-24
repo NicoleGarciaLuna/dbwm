@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Microentrepreneur",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the microentrepreneur"
+    },
+    "name": {
+      "type": "string",
+      "description": "Full name of the microentrepreneur"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address of the microentrepreneur"
+    },
+    "contact": {
+      "type": "string",
+      "description": "Contact number of the microentrepreneur"
+    },
+    "joinedDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when the microentrepreneur joined the platform"
+    },
+    "avatarSrc": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the avatar image of the microentrepreneur"
+    },
+    "cardNumber": {
+      "type": "string",
+      "description": "Card number associated with the microentrepreneur"
+    },
+    "expiryDate": {
+      "type": "string",
+      "description": "Expiry date of the associated card"
+    },
+    "cvv": {
+      "type": "string",
+      "description": "CVV of the associated card"
+    }
+  },
+  "required": ["id", "name", "email", "contact", "joinedDate"],
+  "additionalProperties": false
+}
