@@ -1,48 +1,4 @@
-import { fetchData, fetchRelatedData } from "@/utils/fetchUtils";
-
-const fetchAndAddRelatedNames = async (
-  data: any[],
-  relatedTable: string,
-  foreignKey: string,
-  targetColumn: string,
-  relatedKey: string
-) => {
-  const ids = data.map((item) => item[foreignKey]);
-  const relatedData = await fetchData(relatedTable, relatedKey, ids);
-  const relatedMap = relatedData.reduce((acc, item) => {
-    acc[item[relatedKey]] = item[targetColumn];
-    return acc;
-  }, {});
-
-  return data.map((item) => ({
-    ...item,
-    [`${foreignKey}_name`]: relatedMap[item[foreignKey]] || item[foreignKey],
-  }));
-};
-
-const fetchNestedDataWithNames = async (
-  parentIds: number[],
-  tables: { name: string; foreignKey: string; relatedTable?: string; relatedKey?: string; targetColumn?: string }[]
-) => {
-  const nestedData: Record<string, any> = {};
-
-  for (const { name, foreignKey, relatedTable, relatedKey, targetColumn } of tables) {
-    let data = await fetchRelatedData([{ name, foreignKey }], parentIds, [foreignKey]);
-    nestedData[name] = data[name];
-
-    if (relatedTable && relatedKey && targetColumn) {
-      nestedData[name] = await fetchAndAddRelatedNames(
-        nestedData[name],
-        relatedTable,
-        foreignKey,
-        targetColumn,
-        relatedKey
-      );
-    }
-  }
-
-  return nestedData;
-};
+import { fetchData, fetchNestedDataWithNames, fetchAndAddRelatedNames } from "@/utils/fetchUtils";
 
 export const fetchPersonalInfo = async (personaId: number) => {
   const persona = await fetchData("persona", "id_persona", personaId);
@@ -75,12 +31,36 @@ export const fetchInnovationData = async (emprendimientoIds: number[]) => {
 };
 
 export const fetchMarketData = async (emprendimientoIds: number[]) => {
-  return await fetchNestedDataWithNames(emprendimientoIds, [
+  const nestedData = await fetchNestedDataWithNames(emprendimientoIds, [
     { name: "mercado", foreignKey: "id_emprendimiento" },
-    { name: "mercado_red_social", foreignKey: "id_mercado", relatedTable: "red_social", relatedKey: "id_red_social", targetColumn: "descripcion" },
-    { name: "mercado_medio_venta", foreignKey: "id_mercado", relatedTable: "medio_venta", relatedKey: "id_medio_venta", targetColumn: "descripcion" },
-    { name: "mercado_cliente_actual", foreignKey: "id_mercado", relatedTable: "cliente_actual", relatedKey: "id_cliente_actual", targetColumn: "descripcion" }
+    { name: "mercado_red_social", foreignKey: "id_mercado" },
+    { name: "mercado_medio_venta", foreignKey: "id_mercado" },
+    { name: "mercado_cliente_actual", foreignKey: "id_mercado" }
   ]);
+
+  nestedData["mercado_red_social"] = await fetchAndAddRelatedNames(
+    nestedData["mercado_red_social"],
+    "red_social",
+    "id_red_social",
+    "descripcion",
+    "id_red_social"
+  );
+  nestedData["mercado_medio_venta"] = await fetchAndAddRelatedNames(
+    nestedData["mercado_medio_venta"],
+    "medio_venta",
+    "id_medio_venta",
+    "descripcion",
+    "id_medio_venta"
+  );
+  nestedData["mercado_cliente_actual"] = await fetchAndAddRelatedNames(
+    nestedData["mercado_cliente_actual"],
+    "cliente_actual",
+    "id_cliente_actual",
+    "descripcion",
+    "id_cliente_actual"
+  );
+
+  return nestedData;
 };
 
 export const fetchAccountingFinanceData = async (emprendimientoIds: number[]) => {
@@ -90,21 +70,69 @@ export const fetchAccountingFinanceData = async (emprendimientoIds: number[]) =>
 };
 
 export const fetchFormalizationData = async (emprendimientoIds: number[]) => {
-  return await fetchNestedDataWithNames(emprendimientoIds, [
+  const nestedData = await fetchNestedDataWithNames(emprendimientoIds, [
     { name: "formalizacion", foreignKey: "id_emprendimiento" },
-    { name: "formalizacion_aspecto_formalizacion", foreignKey: "id_formalizacion", relatedTable: "aspecto_formalizacion", relatedKey: "id_aspecto_formalizacion", targetColumn: "descripcion" }
+    { name: "formalizacion_aspecto_formalizacion", foreignKey: "id_formalizacion" }
   ]);
+
+  nestedData["formalizacion_aspecto_formalizacion"] = await fetchAndAddRelatedNames(
+    nestedData["formalizacion_aspecto_formalizacion"],
+    "aspecto_formalizacion",
+    "id_aspecto_formalizacion",
+    "descripcion",
+    "id_aspecto_formalizacion"
+  );
+
+  return nestedData;
 };
 
 export const fetchFinancingData = async (emprendimientoIds: number[]) => {
-  return await fetchNestedDataWithNames(emprendimientoIds, [
+  const nestedData = await fetchNestedDataWithNames(emprendimientoIds, [
     { name: "financiamiento", foreignKey: "id_emprendimiento" },
-    { name: "financiamiento_fondo_programa_estado", foreignKey: "id_financiamiento", relatedTable: "fondo_programa_estado", relatedKey: "id_fondo_programa_estado", targetColumn: "descripcion" },
-    { name: "financiamiento_necesidad_financiamiento", foreignKey: "id_financiamiento", relatedTable: "necesidad_financiamiento", relatedKey: "id_necesidad_financiamiento", targetColumn: "descripcion" },
-    { name: "financiamiento_razon_no_credito", foreignKey: "id_financiamiento", relatedTable: "razon_no_credito", relatedKey: "id_razon_no_credito", targetColumn: "descripcion" },
-    { name: "financiamiento_recurso_disponible", foreignKey: "id_financiamiento", relatedTable: "recurso_disponible", relatedKey: "id_recurso_disponible", targetColumn: "descripcion" },
-    { name: "financiamiento_origen_inversion_inicial", foreignKey: "id_financiamiento", relatedTable: "origen_inversion_inicial", relatedKey: "id_origen_inversion_inicial", targetColumn: "descripcion" }
+    { name: "financiamiento_fondo_programa_estado", foreignKey: "id_financiamiento" },
+    { name: "financiamiento_necesidad_financiamiento", foreignKey: "id_financiamiento" },
+    { name: "financiamiento_razon_no_credito", foreignKey: "id_financiamiento" },
+    { name: "financiamiento_recurso_disponible", foreignKey: "id_financiamiento" },
+    { name: "financiamiento_origen_inversion_inicial", foreignKey: "id_financiamiento" }
   ]);
+
+  nestedData["financiamiento_fondo_programa_estado"] = await fetchAndAddRelatedNames(
+    nestedData["financiamiento_fondo_programa_estado"],
+    "fondo_programa_estado",
+    "id_fondo_programa_estado",
+    "descripcion",
+    "id_fondo_programa_estado"
+  );
+  nestedData["financiamiento_necesidad_financiamiento"] = await fetchAndAddRelatedNames(
+    nestedData["financiamiento_necesidad_financiamiento"],
+    "necesidad_financiamiento",
+    "id_necesidad_financiamiento",
+    "descripcion",
+    "id_necesidad_financiamiento"
+  );
+  nestedData["financiamiento_razon_no_credito"] = await fetchAndAddRelatedNames(
+    nestedData["financiamiento_razon_no_credito"],
+    "razon_no_credito",
+    "id_razon_no_credito",
+    "descripcion",
+    "id_razon_no_credito"
+  );
+  nestedData["financiamiento_recurso_disponible"] = await fetchAndAddRelatedNames(
+    nestedData["financiamiento_recurso_disponible"],
+    "recurso_disponible",
+    "id_recurso_disponible",
+    "descripcion",
+    "id_recurso_disponible"
+  );
+  nestedData["financiamiento_origen_inversion_inicial"] = await fetchAndAddRelatedNames(
+    nestedData["financiamiento_origen_inversion_inicial"],
+    "origen_inversion_inicial",
+    "id_origen_inversion_inicial",
+    "descripcion",
+    "id_origen_inversion_inicial"
+  );
+
+  return nestedData;
 };
 
 export const fetchTrainingData = async (personaId: number) => {

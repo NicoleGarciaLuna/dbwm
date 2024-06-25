@@ -23,8 +23,10 @@ export const fetchData = cache(
 
 type TableSchema = {
   name: string;
-  primaryKey: string;
-  foreignKeys?: Array<{ key: string; references: string }>;
+  foreignKey: string;
+  relatedTable?: string;
+  relatedKey?: string;
+  targetColumn?: string;
 };
 
 export const fetchRelatedData = cache(
@@ -51,3 +53,47 @@ export const fetchRelatedData = cache(
     return relatedData;
   }
 );
+
+export const fetchAndAddRelatedNames = async (
+  data: any[],
+  relatedTable: string,
+  foreignKey: string,
+  targetColumn: string,
+  relatedKey: string
+) => {
+  const ids = data.map((item) => item[foreignKey]);
+  const relatedData = await fetchData(relatedTable, relatedKey, ids);
+  const relatedMap = relatedData.reduce((acc, item) => {
+    acc[item[relatedKey]] = item[targetColumn];
+    return acc;
+  }, {});
+
+  return data.map((item) => ({
+    ...item,
+    [`${foreignKey}_name`]: relatedMap[item[foreignKey]] || item[foreignKey],
+  }));
+};
+
+export const fetchNestedDataWithNames = async (
+  parentIds: number[],
+  tables: TableSchema[]
+) => {
+  const nestedData: Record<string, any> = {};
+
+  for (const { name, foreignKey, relatedTable, relatedKey, targetColumn } of tables) {
+    let data = await fetchRelatedData([{ name, foreignKey }], parentIds, [foreignKey]);
+    nestedData[name] = data[name];
+
+    if (relatedTable && relatedKey && targetColumn) {
+      nestedData[name] = await fetchAndAddRelatedNames(
+        nestedData[name],
+        relatedTable,
+        foreignKey,
+        targetColumn,
+        relatedKey
+      );
+    }
+  }
+
+  return nestedData;
+};
