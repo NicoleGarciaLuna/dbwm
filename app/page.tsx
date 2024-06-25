@@ -1,11 +1,10 @@
 import AppLayout from "@/components/AppLayout";
 import UserProfile from "@/components/UserProfile/UserProfile";
-import { userProfileData } from "@/data/userProfileData";
 
 export default function Home() {
   return (
     <AppLayout>
-      <UserProfile {...userProfileData} />
+      <UserProfile personaId={1} />
     </AppLayout>
   );
 }

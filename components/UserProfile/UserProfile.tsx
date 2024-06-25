@@ -1,23 +1,22 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProfileHeader from "./ProfileHeader";
 import TabButton from "./TabButton";
 import ProfileDetails from "./ProfileDetails";
 import GenderVariables from "./GenderVariablesTab";
 import Card from "../Card";
-
-type UserProfileProps = {
-  avatarSrc: string;
-  username: string;
-  joinedDate: string;
-  name: string;
-  email: string;
-  contact: string;
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
-  billingHistory: Array<{ date: string; amount: string; status: string }>;
-};
+import {
+  fetchPersonalInfo,
+  fetchGenderVariables,
+  fetchEntrepreneurshipData,
+  fetchBusinessIdeas,
+  fetchInnovationData,
+  fetchMarketData,
+  fetchAccountingFinanceData,
+  fetchFormalizationData,
+  fetchFinancingData,
+  fetchTrainingData,
+} from "@/utils/fetchPersonData";
 
 type TabType =
   | "personal"
@@ -31,19 +30,46 @@ type TabType =
   | "financiamiento"
   | "capacitacion";
 
-const UserProfile = ({
-  avatarSrc,
-  username,
-  joinedDate,
-  name,
-  email,
-  contact,
-  cardNumber,
-  expiryDate,
-  cvv,
-  billingHistory,
-}: UserProfileProps) => {
+const UserProfile = ({ personaId }: { personaId: number }) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
+  const [personaCompleta, setPersonaCompleta] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const personalInfo = await fetchPersonalInfo(personaId);
+      const genderVariables = await fetchGenderVariables(personaId);
+      const entrepreneurshipData = await fetchEntrepreneurshipData(personaId);
+
+      const emprendimientoIds = entrepreneurshipData.map(
+        (e: any) => e.id_emprendimiento
+      );
+
+      const businessIdeas = await fetchBusinessIdeas(emprendimientoIds);
+      const innovationData = await fetchInnovationData(emprendimientoIds);
+      const marketData = await fetchMarketData(emprendimientoIds);
+      const accountingFinanceData = await fetchAccountingFinanceData(
+        emprendimientoIds
+      );
+      const formalizationData = await fetchFormalizationData(emprendimientoIds);
+      const financingData = await fetchFinancingData(emprendimientoIds);
+      const trainingData = await fetchTrainingData(personaId);
+
+      setPersonaCompleta({
+        personal_info: personalInfo,
+        gender_variables: genderVariables,
+        entrepreneurship: entrepreneurshipData,
+        business_idea: businessIdeas,
+        innovation: innovationData,
+        market: marketData,
+        accounting_finance: accountingFinanceData,
+        formalization: formalizationData,
+        financing: financingData,
+        training: trainingData,
+      });
+    };
+
+    fetchData();
+  }, [personaId]);
 
   const tabs: Array<{ label: string; value: TabType }> = [
     { label: "Información personal", value: "personal" },
@@ -58,12 +84,18 @@ const UserProfile = ({
     { label: "Capacitación", value: "capacitacion" },
   ];
 
+  if (!personaCompleta) {
+    return <div>Cargando...</div>;
+  }
+
+  const { personal_info } = personaCompleta;
+
   return (
     <main className="flex flex-col items-center p-4">
       <ProfileHeader
-        avatarSrc={avatarSrc}
-        username={username}
-        joinedDate={joinedDate}
+        avatarSrc="/path/to/avatar.jpg"
+        username={personal_info.nombre}
+        joinedDate={personal_info.fecha_ingreso}
       />
       <div className="w-full max-w-6xl">
         <nav className="mb-6 overflow-x-auto">
@@ -82,30 +114,54 @@ const UserProfile = ({
         <div className="mt-6">
           {activeTab === "personal" && (
             <div className="space-y-6">
-              <ProfileDetails name={name} email={email} contact={contact} />
+              <ProfileDetails
+                name={personal_info.nombre}
+                email={personal_info.correo}
+                contact={personal_info.telefono}
+              />
             </div>
           )}
-          {activeTab === "gender" && <GenderVariables />}
+          {activeTab === "gender" && <GenderVariables data={personaCompleta.gender_variables} />}
           {activeTab === "emprendimiento" && (
-            <div>Contenido de Emprendimiento</div>
+            <Card title="Emprendimiento">
+              <pre>{JSON.stringify(personaCompleta.entrepreneurship, null, 2)}</pre>
+            </Card>
           )}
           {activeTab === "ideaNegocio" && (
-            <div>Contenido de Idea de Negocio</div>
+            <Card title="Idea de Negocio">
+              <pre>{JSON.stringify(personaCompleta.business_idea, null, 2)}</pre>
+            </Card>
           )}
           {activeTab === "innovacion" && (
-            <Card title="Innovacion">Contenido de Innovación</Card>
+            <Card title="Innovación">
+              <pre>{JSON.stringify(personaCompleta.innovation, null, 2)}</pre>
+            </Card>
           )}
-          {activeTab === "mercado" && <div>Contenido de Mercado</div>}
+          {activeTab === "mercado" && (
+            <Card title="Mercado">
+              <pre>{JSON.stringify(personaCompleta.market, null, 2)}</pre>
+            </Card>
+          )}
           {activeTab === "contabilidadFinanzas" && (
-            <div>Contenido de Contabilidad y Finanzas</div>
+            <Card title="Contabilidad y Finanzas">
+              <pre>{JSON.stringify(personaCompleta.accounting_finance, null, 2)}</pre>
+            </Card>
           )}
           {activeTab === "formalizacion" && (
-            <div>Contenido de Formalización</div>
+            <Card title="Formalización">
+              <pre>{JSON.stringify(personaCompleta.formalization, null, 2)}</pre>
+            </Card>
           )}
           {activeTab === "financiamiento" && (
-            <div>Contenido de Financiamiento</div>
+            <Card title="Financiamiento">
+              <pre>{JSON.stringify(personaCompleta.financing, null, 2)}</pre>
+            </Card>
           )}
-          {activeTab === "capacitacion" && <div>Contenido de Capacitación</div>}
+          {activeTab === "capacitacion" && (
+            <Card title="Capacitación">
+              <pre>{JSON.stringify(personaCompleta.training, null, 2)}</pre>
+            </Card>
+          )}
         </div>
       </div>
     </main>
