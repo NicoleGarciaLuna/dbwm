@@ -30,44 +30,74 @@ type TabType =
 
 const UserProfile = ({ personaId }: { personaId: number }) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
-  const [personaCompleta, setPersonaCompleta] = useState<any>(null);
+  const [tabData, setTabData] = useState<any>(null);
+  const [personalInfo, setPersonalInfo] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const personalInfo = await fetchPersonalInfo(personaId);
-      const genderVariables = await fetchGenderVariables(personaId);
-      const entrepreneurshipData = await fetchEntrepreneurshipData(personaId);
-
-      const emprendimientoIds = entrepreneurshipData.map(
-        (e: any) => e.id_emprendimiento
-      );
-
-      const businessIdeas = await fetchBusinessIdeas(emprendimientoIds);
-      const innovationData = await fetchInnovationData(emprendimientoIds);
-      const marketData = await fetchMarketData(emprendimientoIds);
-      const accountingFinanceData = await fetchAccountingFinanceData(
-        emprendimientoIds
-      );
-      const formalizationData = await fetchFormalizationData(emprendimientoIds);
-      const financingData = await fetchFinancingData(emprendimientoIds);
-      const trainingData = await fetchTrainingData(personaId);
-
-      setPersonaCompleta({
-        personal_info: personalInfo,
-        gender_variables: genderVariables,
-        entrepreneurship: entrepreneurshipData,
-        business_idea: businessIdeas,
-        innovation: innovationData,
-        market: marketData,
-        accounting_finance: accountingFinanceData,
-        formalization: formalizationData,
-        financing: financingData,
-        training: trainingData,
-      });
+    const fetchPersonalInfoData = async () => {
+      const info = await fetchPersonalInfo(personaId);
+      setPersonalInfo(info);
+      setLoading(false);
     };
 
-    fetchData();
+    fetchPersonalInfoData();
   }, [personaId]);
+
+  useEffect(() => {
+    const fetchTabData = async () => {
+      setLoading(true);
+      let data;
+      switch (activeTab) {
+        case "personal":
+          data = await fetchPersonalInfo(personaId);
+          break;
+        case "gender":
+          data = await fetchGenderVariables(personaId);
+          break;
+        case "emprendimiento":
+          data = await fetchEntrepreneurshipData(personaId);
+          break;
+        case "ideaNegocio":
+          const entrepreneurshipData = await fetchEntrepreneurshipData(personaId);
+          const emprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchBusinessIdeas(emprendimientoIds);
+          break;
+        case "innovacion":
+          const innovationEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
+          const innovationEmprendimientoIds = innovationEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchInnovationData(innovationEmprendimientoIds);
+          break;
+        case "mercado":
+          const marketEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
+          const marketEmprendimientoIds = marketEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchMarketData(marketEmprendimientoIds);
+          break;
+        case "contabilidadFinanzas":
+          const accountingEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
+          const accountingEmprendimientoIds = accountingEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchAccountingFinanceData(accountingEmprendimientoIds);
+          break;
+        case "formalizacion":
+          const formalizationEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
+          const formalizationEmprendimientoIds = formalizationEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchFormalizationData(formalizationEmprendimientoIds);
+          break;
+        case "financiamiento":
+          const financingEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
+          const financingEmprendimientoIds = financingEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchFinancingData(financingEmprendimientoIds);
+          break;
+        case "capacitacion":
+          data = await fetchTrainingData(personaId);
+          break;
+      }
+      setTabData(data);
+      setLoading(false);
+    };
+
+    fetchTabData();
+  }, [activeTab, personaId]);
 
   const tabs: Array<{ label: string; value: TabType }> = [
     { label: "Información personal", value: "personal" },
@@ -82,18 +112,16 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
     { label: "Capacitación", value: "capacitacion" },
   ];
 
-  if (!personaCompleta) {
+  if (loading && !personalInfo) {
     return <div>Cargando...</div>;
   }
-
-  const { personal_info } = personaCompleta;
 
   return (
     <main className="flex flex-col items-center p-4">
       <ProfileHeader
         avatarSrc="/path/to/avatar.jpg"
-        username={personal_info.nombre}
-        joinedDate={personal_info.fecha_ingreso}
+        username={personalInfo?.nombre}
+        joinedDate={personalInfo?.fecha_ingreso}
       />
       <div className="w-full max-w-6xl">
         <nav className="mb-6 overflow-x-auto">
@@ -110,54 +138,11 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
           </ul>
         </nav>
         <div className="mt-6">
-          {activeTab === "personal" && (
-            <Card title="Información Personal">
-              <pre>{JSON.stringify(personaCompleta.personal_info, null, 2)}</pre>
-            </Card>
-          )}
-          {activeTab === "gender" && (
-            <Card title="Variables de Género">
-              <pre>{JSON.stringify(personaCompleta.gender_variables, null, 2)}</pre>
-            </Card>
-          )}
-          {activeTab === "emprendimiento" && (
-            <Card title="Emprendimiento">
-              <pre>{JSON.stringify(personaCompleta.entrepreneurship, null, 2)}</pre>
-            </Card>
-          )}
-          {activeTab === "ideaNegocio" && (
-            <Card title="Idea de Negocio">
-              <pre>{JSON.stringify(personaCompleta.business_idea, null, 2)}</pre>
-            </Card>
-          )}
-          {activeTab === "innovacion" && (
-            <Card title="Innovación">
-              <pre>{JSON.stringify(personaCompleta.innovation, null, 2)}</pre>
-            </Card>
-          )}
-          {activeTab === "mercado" && (
-            <Card title="Mercado">
-              <pre>{JSON.stringify(personaCompleta.market, null, 2)}</pre>
-            </Card>
-          )}
-          {activeTab === "contabilidadFinanzas" && (
-            <Card title="Contabilidad y Finanzas">
-              <pre>{JSON.stringify(personaCompleta.accounting_finance, null, 2)}</pre>
-            </Card>
-          )}
-          {activeTab === "formalizacion" && (
-            <Card title="Formalización">
-              <pre>{JSON.stringify(personaCompleta.formalization, null, 2)}</pre>
-            </Card>
-          )}
-          {activeTab === "financiamiento" && (
-            <Card title="Financiamiento">
-              <pre>{JSON.stringify(personaCompleta.financing, null, 2)}</pre>
-            </Card>
-          )}
-          {activeTab === "capacitacion" && (
-            <Card title="Capacitación">
-              <pre>{JSON.stringify(personaCompleta.training, null, 2)}</pre>
+          {loading ? (
+            <div>Cargando datos...</div>
+          ) : (
+            <Card title={tabs.find(tab => tab.value === activeTab)?.label || ""}>
+              <pre>{JSON.stringify(tabData, null, 2)}</pre>
             </Card>
           )}
         </div>
