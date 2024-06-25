@@ -30,7 +30,18 @@ type TabType =
 
 const UserProfile = ({ personaId }: { personaId: number }) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
-  const [tabData, setTabData] = useState<any>(null);
+  const [tabsData, setTabsData] = useState<Record<TabType, any>>({
+    personal: null,
+    gender: null,
+    emprendimiento: null,
+    ideaNegocio: null,
+    innovacion: null,
+    mercado: null,
+    contabilidadFinanzas: null,
+    formalizacion: null,
+    financiamiento: null,
+    capacitacion: null,
+  });
   const [personalInfo, setPersonalInfo] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -38,6 +49,7 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
     const fetchPersonalInfoData = async () => {
       const info = await fetchPersonalInfo(personaId);
       setPersonalInfo(info);
+      setTabsData(prev => ({ ...prev, personal: info }));
       setLoading(false);
     };
 
@@ -46,11 +58,16 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
 
   useEffect(() => {
     const fetchTabData = async () => {
+      if (tabsData[activeTab] !== null) {
+        // Si ya tenemos los datos, no hacemos una nueva solicitud
+        return;
+      }
+
       setLoading(true);
       let data;
       switch (activeTab) {
         case "personal":
-          data = await fetchPersonalInfo(personaId);
+          // Los datos personales ya se cargaron en el primer useEffect
           break;
         case "gender":
           data = await fetchGenderVariables(personaId);
@@ -92,12 +109,12 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
           data = await fetchTrainingData(personaId);
           break;
       }
-      setTabData(data);
+      setTabsData(prev => ({ ...prev, [activeTab]: data }));
       setLoading(false);
     };
 
     fetchTabData();
-  }, [activeTab, personaId]);
+  }, [activeTab, personaId, tabsData]);
 
   const tabs: Array<{ label: string; value: TabType }> = [
     { label: "Información personal", value: "personal" },
@@ -142,7 +159,7 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
             <div>Cargando datos...</div>
           ) : (
             <Card title={tabs.find(tab => tab.value === activeTab)?.label || ""}>
-              <pre>{JSON.stringify(tabData, null, 2)}</pre>
+              <pre>{JSON.stringify(tabsData[activeTab], null, 2)}</pre>
             </Card>
           )}
         </div>
