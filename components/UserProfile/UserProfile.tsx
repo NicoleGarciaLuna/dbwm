@@ -2,8 +2,6 @@
 import { useState, useEffect } from "react";
 import ProfileHeader from "./ProfileHeader";
 import TabButton from "./TabButton";
-import ProfileDetails from "./ProfileDetails";
-import GenderVariables from "./GenderVariablesTab";
 import Card from "../Card";
 import {
   fetchPersonalInfo,
@@ -113,15 +111,15 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
         </nav>
         <div className="mt-6">
           {activeTab === "personal" && (
-            <div className="space-y-6">
-              <ProfileDetails
-                name={personal_info.nombre}
-                email={personal_info.correo}
-                contact={personal_info.telefono}
-              />
-            </div>
+            <Card title="Información Personal">
+              <pre>{JSON.stringify(personaCompleta.personal_info, null, 2)}</pre>
+            </Card>
           )}
-          {activeTab === "gender" && <GenderVariables data={personaCompleta.gender_variables} />}
+          {activeTab === "gender" && (
+            <Card title="Variables de Género">
+              <pre>{JSON.stringify(personaCompleta.gender_variables, null, 2)}</pre>
+            </Card>
+          )}
           {activeTab === "emprendimiento" && (
             <Card title="Emprendimiento">
               <pre>{JSON.stringify(personaCompleta.entrepreneurship, null, 2)}</pre>
