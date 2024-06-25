@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ProfileHeader from "./ProfileHeader";
-import TabButton from "./TabButton";
-import Card from "../Card";
+import TabNavigation from "./TabNavigation";
+import TabContent from "./TabContent";
+import { TabType, TabData } from "./types";
 import {
   fetchPersonalInfo,
   fetchGenderVariables,
@@ -16,32 +17,7 @@ import {
   fetchTrainingData,
 } from "@/utils/fetchPersonData";
 
-type TabType =
-  | "personal"
-  | "gender"
-  | "emprendimiento"
-  | "ideaNegocio"
-  | "innovacion"
-  | "mercado"
-  | "contabilidadFinanzas"
-  | "formalizacion"
-  | "financiamiento"
-  | "capacitacion";
-
-type TabData = {
-  personal: any;
-  gender: any;
-  emprendimiento: any;
-  ideaNegocio: any;
-  innovacion: any;
-  mercado: any;
-  contabilidadFinanzas: any;
-  formalizacion: any;
-  financiamiento: any;
-  capacitacion: any;
-};
-
-const UserProfile = ({ personaId }: { personaId: number }) => {
+const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
   const [tabsData, setTabsData] = useState<TabData>({
     personal: null,
@@ -58,6 +34,19 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
   const [personalInfo, setPersonalInfo] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const tabs: Array<{ label: string; value: TabType }> = [
+    { label: "Información personal", value: "personal" },
+    { label: "Variables género", value: "gender" },
+    { label: "Emprendimiento", value: "emprendimiento" },
+    { label: "Idea negocio", value: "ideaNegocio" },
+    { label: "Innovación", value: "innovacion" },
+    { label: "Mercado", value: "mercado" },
+    { label: "Contabilidad y finanzas", value: "contabilidadFinanzas" },
+    { label: "Formalización", value: "formalizacion" },
+    { label: "Financiamiento", value: "financiamiento" },
+    { label: "Capacitación", value: "capacitacion" },
+  ];
+
   useEffect(() => {
     const fetchPersonalInfoData = async () => {
       const info = await fetchPersonalInfo(personaId);
@@ -72,7 +61,6 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
   useEffect(() => {
     const fetchTabData = async () => {
       if (tabsData[activeTab] !== null) {
-        // Si ya tenemos los datos, no hacemos una nueva solicitud
         return;
       }
 
@@ -80,7 +68,6 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
       let data: any;
       switch (activeTab) {
         case "personal":
-          // Los datos personales ya se cargaron en el primer useEffect
           break;
         case "gender":
           data = await fetchGenderVariables(personaId);
@@ -129,19 +116,6 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
     fetchTabData();
   }, [activeTab, personaId, tabsData]);
 
-  const tabs: Array<{ label: string; value: TabType }> = [
-    { label: "Información personal", value: "personal" },
-    { label: "Variables género", value: "gender" },
-    { label: "Emprendimiento", value: "emprendimiento" },
-    { label: "Idea negocio", value: "ideaNegocio" },
-    { label: "Innovación", value: "innovacion" },
-    { label: "Mercado", value: "mercado" },
-    { label: "Contabilidad y finanzas", value: "contabilidadFinanzas" },
-    { label: "Formalización", value: "formalizacion" },
-    { label: "Financiamiento", value: "financiamiento" },
-    { label: "Capacitación", value: "capacitacion" },
-  ];
-
   if (loading && !personalInfo) {
     return <div>Cargando...</div>;
   }
@@ -154,27 +128,9 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
         joinedDate={personalInfo?.fecha_ingreso}
       />
       <div className="w-full max-w-6xl">
-        <nav className="mb-6 overflow-x-auto">
-          <ul className="flex flex-nowrap md:flex-wrap justify-start md:justify-center gap-2 md:gap-4">
-            {tabs.map((tab) => (
-              <li key={tab.value}>
-                <TabButton
-                  label={tab.label}
-                  isActive={activeTab === tab.value}
-                  onClick={() => setActiveTab(tab.value)}
-                />
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
         <div className="mt-6">
-          {loading ? (
-            <div>Cargando datos...</div>
-          ) : (
-            <Card title={tabs.find(tab => tab.value === activeTab)?.label || ""}>
-              <pre>{JSON.stringify(tabsData[activeTab], null, 2)}</pre>
-            </Card>
-          )}
+          <TabContent activeTab={activeTab} tabsData={tabsData} loading={loading} tabs={tabs} />
         </div>
       </div>
     </main>
