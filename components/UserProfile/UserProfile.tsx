@@ -33,6 +33,7 @@ const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
   });
   const [personalInfo, setPersonalInfo] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [entrepreneurshipData, setEntrepreneurshipData] = useState<any>(null);
 
   const tabs: Array<{ label: string; value: TabType }> = [
     { label: "Información personal", value: "personal" },
@@ -55,7 +56,14 @@ const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
       setLoading(false);
     };
 
+    const fetchEntrepreneurshipInfo = async () => {
+      const data = await fetchEntrepreneurshipData(personaId);
+      setEntrepreneurshipData(data);
+      setTabsData(prev => ({ ...prev, emprendimiento: data }));
+    };
+
     fetchPersonalInfoData();
+    fetchEntrepreneurshipInfo();
   }, [personaId]);
 
   useEffect(() => {
@@ -68,41 +76,33 @@ const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
       let data: any;
       switch (activeTab) {
         case "personal":
+        case "emprendimiento":
           break;
         case "gender":
           data = await fetchGenderVariables(personaId);
           break;
-        case "emprendimiento":
-          data = await fetchEntrepreneurshipData(personaId);
-          break;
         case "ideaNegocio":
-          const entrepreneurshipData = await fetchEntrepreneurshipData(personaId);
           const emprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
           data = await fetchBusinessIdeas(emprendimientoIds);
           break;
         case "innovacion":
-          const innovationEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
-          const innovationEmprendimientoIds = innovationEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          const innovationEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
           data = await fetchInnovationData(innovationEmprendimientoIds);
           break;
         case "mercado":
-          const marketEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
-          const marketEmprendimientoIds = marketEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          const marketEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
           data = await fetchMarketData(marketEmprendimientoIds);
           break;
         case "contabilidadFinanzas":
-          const accountingEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
-          const accountingEmprendimientoIds = accountingEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          const accountingEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
           data = await fetchAccountingFinanceData(accountingEmprendimientoIds);
           break;
         case "formalizacion":
-          const formalizationEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
-          const formalizationEmprendimientoIds = formalizationEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          const formalizationEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
           data = await fetchFormalizationData(formalizationEmprendimientoIds);
           break;
         case "financiamiento":
-          const financingEntrepreneurshipData = await fetchEntrepreneurshipData(personaId);
-          const financingEmprendimientoIds = financingEntrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          const financingEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
           data = await fetchFinancingData(financingEmprendimientoIds);
           break;
         case "capacitacion":
@@ -113,8 +113,10 @@ const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
       setLoading(false);
     };
 
-    fetchTabData();
-  }, [activeTab, personaId, tabsData]);
+    if (entrepreneurshipData) {
+      fetchTabData();
+    }
+  }, [activeTab, personaId, tabsData, entrepreneurshipData]);
 
   if (loading && !personalInfo) {
     return <div>Cargando...</div>;
