@@ -28,9 +28,22 @@ type TabType =
   | "financiamiento"
   | "capacitacion";
 
+type TabData = {
+  personal: any;
+  gender: any;
+  emprendimiento: any;
+  ideaNegocio: any;
+  innovacion: any;
+  mercado: any;
+  contabilidadFinanzas: any;
+  formalizacion: any;
+  financiamiento: any;
+  capacitacion: any;
+};
+
 const UserProfile = ({ personaId }: { personaId: number }) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
-  const [tabsData, setTabsData] = useState<Record<TabType, any>>({
+  const [tabsData, setTabsData] = useState<TabData>({
     personal: null,
     gender: null,
     emprendimiento: null,
@@ -64,7 +77,7 @@ const UserProfile = ({ personaId }: { personaId: number }) => {
       }
 
       setLoading(true);
-      let data;
+      let data: any;
       switch (activeTab) {
         case "personal":
           // Los datos personales ya se cargaron en el primer useEffect
