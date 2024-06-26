@@ -17,7 +17,12 @@ import {
   fetchTrainingData,
 } from "@/utils/fetchPersonData";
 
-const UserProfile: React.FC<{ personaId: number; avatarSrc: string }> = ({ personaId, avatarSrc }) => {
+type UserProfileProps = {
+  personaId: number;
+  avatarSrc: string;
+};
+
+const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
   const [tabsData, setTabsData] = useState<TabData>({
     personal: null,
@@ -32,7 +37,7 @@ const UserProfile: React.FC<{ personaId: number; avatarSrc: string }> = ({ perso
     capacitacion: null,
   });
   const [personalInfo, setPersonalInfo] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [entrepreneurshipData, setEntrepreneurshipData] = useState<any>(null);
 
   const tabs: Array<{ label: string; value: TabType }> = [
@@ -48,32 +53,30 @@ const UserProfile: React.FC<{ personaId: number; avatarSrc: string }> = ({ perso
     { label: "Capacitación", value: "capacitacion" },
   ];
 
-  useEffect(() => {
-    const fetchPersonalInfoData = async () => {
-      const info = await fetchPersonalInfo(personaId);
+  const fetchInitialData = async () => {
+    try {
+      const [info, data] = await Promise.all([
+        fetchPersonalInfo(personaId),
+        fetchEntrepreneurshipData(personaId),
+      ]);
       setPersonalInfo(info);
-      setTabsData(prev => ({ ...prev, personal: info }));
-      setLoading(false);
-    };
-
-    const fetchEntrepreneurshipInfo = async () => {
-      const data = await fetchEntrepreneurshipData(personaId);
       setEntrepreneurshipData(data);
-      setTabsData(prev => ({ ...prev, emprendimiento: data }));
-    };
+      setTabsData(prev => ({ ...prev, personal: info, emprendimiento: data }));
+    } catch (error) {
+      console.error("Error fetching initial data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchPersonalInfoData();
-    fetchEntrepreneurshipInfo();
-  }, [personaId]);
+  const fetchTabData = async () => {
+    if (tabsData[activeTab] !== null) {
+      setLoading(false);
+      return;
+    }
 
-  useEffect(() => {
-    const fetchTabData = async () => {
-      if (tabsData[activeTab] !== null) {
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
+    setLoading(true);
+    try {
       let data: any;
       switch (activeTab) {
         case "personal":
@@ -83,28 +86,13 @@ const UserProfile: React.FC<{ personaId: number; avatarSrc: string }> = ({ perso
           data = await fetchGenderVariables(personaId);
           break;
         case "ideaNegocio":
-          const emprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
-          data = await fetchBusinessIdeas(emprendimientoIds);
-          break;
         case "innovacion":
-          const innovationEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
-          data = await fetchInnovationData(innovationEmprendimientoIds);
-          break;
         case "mercado":
-          const marketEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
-          data = await fetchMarketData(marketEmprendimientoIds);
-          break;
         case "contabilidadFinanzas":
-          const accountingEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
-          data = await fetchAccountingFinanceData(accountingEmprendimientoIds);
-          break;
         case "formalizacion":
-          const formalizationEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
-          data = await fetchFormalizationData(formalizationEmprendimientoIds);
-          break;
         case "financiamiento":
-          const financingEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
-          data = await fetchFinancingData(financingEmprendimientoIds);
+          const emprendimientoIds = entrepreneurshipData?.map((e: any) => e.id_emprendimiento) ?? [];
+          data = await fetchDataForTab(activeTab, emprendimientoIds);
           break;
         case "capacitacion":
           data = await fetchTrainingData(personaId);
@@ -114,13 +102,41 @@ const UserProfile: React.FC<{ personaId: number; avatarSrc: string }> = ({ perso
           break;
       }
       setTabsData(prev => ({ ...prev, [activeTab]: data }));
+    } catch (error) {
+      console.error(`Error fetching data for ${activeTab} tab:`, error);
+    } finally {
       setLoading(false);
-    };
+    }
+  };
 
+  const fetchDataForTab = async (tab: TabType, emprendimientoIds: number[]) => {
+    switch (tab) {
+      case "ideaNegocio":
+        return await fetchBusinessIdeas(emprendimientoIds);
+      case "innovacion":
+        return await fetchInnovationData(emprendimientoIds);
+      case "mercado":
+        return await fetchMarketData(emprendimientoIds);
+      case "contabilidadFinanzas":
+        return await fetchAccountingFinanceData(emprendimientoIds);
+      case "formalizacion":
+        return await fetchFormalizationData(emprendimientoIds);
+      case "financiamiento":
+        return await fetchFinancingData(emprendimientoIds);
+      default:
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    fetchInitialData();
+  }, [personaId]);
+
+  useEffect(() => {
     if (entrepreneurshipData || activeTab === "personal" || activeTab === "gender") {
       fetchTabData();
     }
-  }, [activeTab, personaId, tabsData, entrepreneurshipData]);
+  }, [activeTab, personaId, entrepreneurshipData]);
 
   if (loading && !personalInfo) {
     return <div>Cargando...</div>;
