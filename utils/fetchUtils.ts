@@ -84,7 +84,10 @@ export const fetchStandardizedData = async <T extends Record<string, any>>(
         .in(relatedTable.relatedKey, relatedIds);
 
       if (relatedError) {
-        throw new FetchError(`Error fetching related data from ${relatedTable.table}`, relatedError);
+        throw new FetchError(
+          `Error fetching related data from ${relatedTable.table}`,
+          relatedError
+        );
       }
 
       const relatedMap = new Map(
@@ -164,7 +167,10 @@ export const fetchAndAddRelatedNames = async <T extends Record<string, any>>(
       .in(relatedKey, relatedIds);
 
     if (error) {
-      throw new FetchError(`Error fetching related data from ${relatedTable}`, error);
+      throw new FetchError(
+        `Error fetching related data from ${relatedTable}`,
+        error
+      );
     }
 
     const relatedMap = new Map(
@@ -179,7 +185,9 @@ export const fetchAndAddRelatedNames = async <T extends Record<string, any>>(
       [targetColumn]: relatedMap.get(item[sourceColumn]) ?? null,
     }));
 
-    logger.info(`Successfully fetched and added related names for ${relatedTable}`);
+    logger.info(
+      `Successfully fetched and added related names for ${relatedTable}`
+    );
     return result;
   } catch (error) {
     if (error instanceof FetchError) {

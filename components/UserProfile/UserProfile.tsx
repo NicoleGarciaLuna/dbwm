@@ -26,14 +26,8 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
     { label: "Capacitación", value: "capacitacion" },
   ];
 
-  const {
-    activeTab,
-    setActiveTab,
-    tabsData,
-    loading,
-    username,
-    joinedDate,
-  } = useUserProfileData(personaId, fetchFunctions);
+  const { activeTab, setActiveTab, tabsData, loading, username, joinedDate } =
+    useUserProfileData(personaId, fetchFunctions);
 
   if (loading && !username) {
     return <div>Cargando...</div>;

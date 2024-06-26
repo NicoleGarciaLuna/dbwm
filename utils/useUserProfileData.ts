@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { TabType, TabData } from '@/components/UserProfile/types';
+import { useState, useEffect, useCallback } from "react";
+import { TabType, TabData } from "@/components/UserProfile/types";
 
-// Define the shape of the data fetching functions
 type FetchFunction = (id: number) => Promise<any>;
 type FetchFunctionWithIds = (ids: number[]) => Promise<any>;
 
@@ -18,7 +17,10 @@ interface DataFetchingFunctions {
   fetchTrainingData: FetchFunction;
 }
 
-export const useUserProfileData = (personaId: number, dataFetchingFunctions: DataFetchingFunctions) => {
+export const useUserProfileData = (
+  personaId: number,
+  dataFetchingFunctions: DataFetchingFunctions
+) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
   const [tabsData, setTabsData] = useState<TabData>({
     personal: null,
@@ -44,45 +46,68 @@ export const useUserProfileData = (personaId: number, dataFetchingFunctions: Dat
         dataFetchingFunctions.fetchPersonalInfo(personaId),
         dataFetchingFunctions.fetchEntrepreneurshipData(personaId),
       ]);
-      setTabsData(prev => ({ ...prev, personal: personalInfo, emprendimiento: data }));
+      setTabsData((prev) => ({
+        ...prev,
+        personal: personalInfo,
+        emprendimiento: data,
+      }));
       setEntrepreneurshipData(data);
-      
+
       if (personalInfo && personalInfo.length > 0) {
         const userInfo = personalInfo[0];
-        const fullName = `${userInfo.nombre || ''} ${userInfo.primer_apellido || ''} ${userInfo.segundo_apellido || ''}`.trim();
-        setUsername(fullName || 'Microempresaria');
-        setJoinedDate(userInfo.fecha_diagnostico ? new Date(userInfo.fecha_diagnostico).toLocaleDateString() : 'Fecha de ingreso desconocida');
+        const fullName = `${userInfo.nombre || ""} ${
+          userInfo.primer_apellido || ""
+        } ${userInfo.segundo_apellido || ""}`.trim();
+        setUsername(fullName || "Microempresaria");
+        setJoinedDate(
+          userInfo.fecha_diagnostico
+            ? new Date(userInfo.fecha_diagnostico).toLocaleDateString()
+            : "Fecha de ingreso desconocida"
+        );
       } else {
-        setUsername('Microempresaria');
-        setJoinedDate('Fecha de ingreso desconocida');
+        setUsername("Microempresaria");
+        setJoinedDate("Fecha de ingreso desconocida");
       }
     } catch (error) {
       console.error("Error fetching initial data:", error);
-      setUsername('Microempresaria');
-      setJoinedDate('Fecha de ingreso desconocida');
+      setUsername("Microempresaria");
+      setJoinedDate("Fecha de ingreso desconocida");
     } finally {
       setLoading(false);
     }
   }, [personaId, dataFetchingFunctions]);
 
-  const fetchDataForTab = useCallback(async (tab: TabType, emprendimientoIds: number[]) => {
-    switch (tab) {
-      case "ideaNegocio":
-        return await dataFetchingFunctions.fetchBusinessIdeas(emprendimientoIds);
-      case "innovacion":
-        return await dataFetchingFunctions.fetchInnovationData(emprendimientoIds);
-      case "mercado":
-        return await dataFetchingFunctions.fetchMarketData(emprendimientoIds);
-      case "contabilidadFinanzas":
-        return await dataFetchingFunctions.fetchAccountingFinanceData(emprendimientoIds);
-      case "formalizacion":
-        return await dataFetchingFunctions.fetchFormalizationData(emprendimientoIds);
-      case "financiamiento":
-        return await dataFetchingFunctions.fetchFinancingData(emprendimientoIds);
-      default:
-        return null;
-    }
-  }, [dataFetchingFunctions]);
+  const fetchDataForTab = useCallback(
+    async (tab: TabType, emprendimientoIds: number[]) => {
+      switch (tab) {
+        case "ideaNegocio":
+          return await dataFetchingFunctions.fetchBusinessIdeas(
+            emprendimientoIds
+          );
+        case "innovacion":
+          return await dataFetchingFunctions.fetchInnovationData(
+            emprendimientoIds
+          );
+        case "mercado":
+          return await dataFetchingFunctions.fetchMarketData(emprendimientoIds);
+        case "contabilidadFinanzas":
+          return await dataFetchingFunctions.fetchAccountingFinanceData(
+            emprendimientoIds
+          );
+        case "formalizacion":
+          return await dataFetchingFunctions.fetchFormalizationData(
+            emprendimientoIds
+          );
+        case "financiamiento":
+          return await dataFetchingFunctions.fetchFinancingData(
+            emprendimientoIds
+          );
+        default:
+          return null;
+      }
+    },
+    [dataFetchingFunctions]
+  );
 
   const fetchTabData = useCallback(async () => {
     if (tabsData[activeTab] !== null) {
@@ -105,7 +130,8 @@ export const useUserProfileData = (personaId: number, dataFetchingFunctions: Dat
         case "contabilidadFinanzas":
         case "formalizacion":
         case "financiamiento":
-          const emprendimientoIds = entrepreneurshipData?.map((e: any) => e.id_emprendimiento) ?? [];
+          const emprendimientoIds =
+            entrepreneurshipData?.map((e: any) => e.id_emprendimiento) ?? [];
           data = await fetchDataForTab(activeTab, emprendimientoIds);
           break;
         case "capacitacion":
@@ -115,20 +141,31 @@ export const useUserProfileData = (personaId: number, dataFetchingFunctions: Dat
           data = null;
           break;
       }
-      setTabsData(prev => ({ ...prev, [activeTab]: data }));
+      setTabsData((prev) => ({ ...prev, [activeTab]: data }));
     } catch (error) {
       console.error(`Error fetching data for ${activeTab} tab:`, error);
     } finally {
       setLoading(false);
     }
-  }, [activeTab, entrepreneurshipData, fetchDataForTab, personaId, tabsData, dataFetchingFunctions]);
+  }, [
+    activeTab,
+    entrepreneurshipData,
+    fetchDataForTab,
+    personaId,
+    tabsData,
+    dataFetchingFunctions,
+  ]);
 
   useEffect(() => {
     fetchInitialData();
   }, [fetchInitialData]);
 
   useEffect(() => {
-    if (entrepreneurshipData || activeTab === "personal" || activeTab === "gender") {
+    if (
+      entrepreneurshipData ||
+      activeTab === "personal" ||
+      activeTab === "gender"
+    ) {
       fetchTabData();
     }
   }, [activeTab, entrepreneurshipData, fetchTabData]);

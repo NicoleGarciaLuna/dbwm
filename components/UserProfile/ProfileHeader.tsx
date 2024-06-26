@@ -6,7 +6,11 @@ type ProfileHeaderProps = {
   avatarSrc: string;
 };
 
-const ProfileHeader = ({ username, joinedDate, avatarSrc }: ProfileHeaderProps) => (
+const ProfileHeader = ({
+  username,
+  joinedDate,
+  avatarSrc,
+}: ProfileHeaderProps) => (
   <div className="flex flex-col sm:flex-row items-center gap-4 mb-6 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
     <div className="relative h-24 w-24 sm:h-28 sm:w-28">
       <Image
@@ -18,9 +22,13 @@ const ProfileHeader = ({ username, joinedDate, avatarSrc }: ProfileHeaderProps) 
       />
     </div>
     <div className="text-center sm:text-left">
-      <h2 className="font-bold text-2xl mb-1 text-gray-800 dark:text-white">{username || 'Microempresaria'}</h2>
+      <h2 className="font-bold text-2xl mb-1 text-gray-800 dark:text-white">
+        {username || "Microempresaria"}
+      </h2>
       <p className="text-sm text-gray-600 dark:text-gray-400">
-        {joinedDate ? `Miembro desde ${joinedDate}` : 'Fecha de ingreso desconocida'}
+        {joinedDate
+          ? `Miembro desde ${joinedDate}`
+          : "Fecha de ingreso desconocida"}
       </p>
     </div>
   </div>
