@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ProfileHeader from "./ProfileHeader";
 import TabNavigation from "./TabNavigation";
 import TabContent from "./TabContent";
@@ -53,7 +53,7 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
     { label: "Capacitación", value: "capacitacion" },
   ];
 
-  const fetchInitialData = async () => {
+  const fetchInitialData = useCallback(async () => {
     try {
       const [info, data] = await Promise.all([
         fetchPersonalInfo(personaId),
@@ -67,9 +67,28 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [personaId]);
 
-  const fetchTabData = async () => {
+  const fetchDataForTab = useCallback(async (tab: TabType, emprendimientoIds: number[]) => {
+    switch (tab) {
+      case "ideaNegocio":
+        return await fetchBusinessIdeas(emprendimientoIds);
+      case "innovacion":
+        return await fetchInnovationData(emprendimientoIds);
+      case "mercado":
+        return await fetchMarketData(emprendimientoIds);
+      case "contabilidadFinanzas":
+        return await fetchAccountingFinanceData(emprendimientoIds);
+      case "formalizacion":
+        return await fetchFormalizationData(emprendimientoIds);
+      case "financiamiento":
+        return await fetchFinancingData(emprendimientoIds);
+      default:
+        return null;
+    }
+  }, []);
+
+  const fetchTabData = useCallback(async () => {
     if (tabsData[activeTab] !== null) {
       setLoading(false);
       return;
@@ -107,36 +126,17 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchDataForTab = async (tab: TabType, emprendimientoIds: number[]) => {
-    switch (tab) {
-      case "ideaNegocio":
-        return await fetchBusinessIdeas(emprendimientoIds);
-      case "innovacion":
-        return await fetchInnovationData(emprendimientoIds);
-      case "mercado":
-        return await fetchMarketData(emprendimientoIds);
-      case "contabilidadFinanzas":
-        return await fetchAccountingFinanceData(emprendimientoIds);
-      case "formalizacion":
-        return await fetchFormalizationData(emprendimientoIds);
-      case "financiamiento":
-        return await fetchFinancingData(emprendimientoIds);
-      default:
-        return null;
-    }
-  };
+  }, [activeTab, entrepreneurshipData, fetchDataForTab, personaId, tabsData]);
 
   useEffect(() => {
     fetchInitialData();
-  }, [personaId]);
+  }, [fetchInitialData]);
 
   useEffect(() => {
     if (entrepreneurshipData || activeTab === "personal" || activeTab === "gender") {
       fetchTabData();
     }
-  }, [activeTab, personaId, entrepreneurshipData]);
+  }, [activeTab, entrepreneurshipData, fetchTabData]);
 
   if (loading && !personalInfo) {
     return <div>Cargando...</div>;
