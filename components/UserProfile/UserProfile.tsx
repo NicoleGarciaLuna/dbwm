@@ -1,49 +1,39 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProfileHeader from "./ProfileHeader";
-import TabButton from "./TabButton";
-import ProfileDetails from "./ProfileDetails";
-import GenderVariables from "./GenderVariablesTab";
-import Card from "../Card";
+import TabNavigation from "./TabNavigation";
+import TabContent from "./TabContent";
+import { TabType, TabData } from "./types";
+import {
+  fetchPersonalInfo,
+  fetchGenderVariables,
+  fetchEntrepreneurshipData,
+  fetchBusinessIdeas,
+  fetchInnovationData,
+  fetchMarketData,
+  fetchAccountingFinanceData,
+  fetchFormalizationData,
+  fetchFinancingData,
+  fetchTrainingData,
+} from "@/utils/fetchPersonData";
 
-type UserProfileProps = {
-  avatarSrc: string;
-  username: string;
-  joinedDate: string;
-  name: string;
-  email: string;
-  contact: string;
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
-  billingHistory: Array<{ date: string; amount: string; status: string }>;
-};
-
-type TabType =
-  | "personal"
-  | "gender"
-  | "emprendimiento"
-  | "ideaNegocio"
-  | "innovacion"
-  | "mercado"
-  | "contabilidadFinanzas"
-  | "formalizacion"
-  | "financiamiento"
-  | "capacitacion";
-
-const UserProfile = ({
-  avatarSrc,
-  username,
-  joinedDate,
-  name,
-  email,
-  contact,
-  cardNumber,
-  expiryDate,
-  cvv,
-  billingHistory,
-}: UserProfileProps) => {
+const UserProfile: React.FC<{ personaId: number; avatarSrc: string }> = ({ personaId, avatarSrc }) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
+  const [tabsData, setTabsData] = useState<TabData>({
+    personal: null,
+    gender: null,
+    emprendimiento: null,
+    ideaNegocio: null,
+    innovacion: null,
+    mercado: null,
+    contabilidadFinanzas: null,
+    formalizacion: null,
+    financiamiento: null,
+    capacitacion: null,
+  });
+  const [personalInfo, setPersonalInfo] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [entrepreneurshipData, setEntrepreneurshipData] = useState<any>(null);
 
   const tabs: Array<{ label: string; value: TabType }> = [
     { label: "Información personal", value: "personal" },
@@ -58,54 +48,104 @@ const UserProfile = ({
     { label: "Capacitación", value: "capacitacion" },
   ];
 
+  useEffect(() => {
+    const fetchPersonalInfoData = async () => {
+      const info = await fetchPersonalInfo(personaId);
+      setPersonalInfo(info);
+      setTabsData(prev => ({ ...prev, personal: info }));
+      setLoading(false);
+    };
+
+    const fetchEntrepreneurshipInfo = async () => {
+      const data = await fetchEntrepreneurshipData(personaId);
+      setEntrepreneurshipData(data);
+      setTabsData(prev => ({ ...prev, emprendimiento: data }));
+    };
+
+    fetchPersonalInfoData();
+    fetchEntrepreneurshipInfo();
+  }, [personaId]);
+
+  useEffect(() => {
+    const fetchTabData = async () => {
+      if (tabsData[activeTab] !== null) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      let data: any;
+      switch (activeTab) {
+        case "personal":
+        case "emprendimiento":
+          break;
+        case "gender":
+          data = await fetchGenderVariables(personaId);
+          break;
+        case "ideaNegocio":
+          const emprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchBusinessIdeas(emprendimientoIds);
+          break;
+        case "innovacion":
+          const innovationEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchInnovationData(innovationEmprendimientoIds);
+          break;
+        case "mercado":
+          const marketEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchMarketData(marketEmprendimientoIds);
+          break;
+        case "contabilidadFinanzas":
+          const accountingEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchAccountingFinanceData(accountingEmprendimientoIds);
+          break;
+        case "formalizacion":
+          const formalizationEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchFormalizationData(formalizationEmprendimientoIds);
+          break;
+        case "financiamiento":
+          const financingEmprendimientoIds = entrepreneurshipData.map((e: any) => e.id_emprendimiento);
+          data = await fetchFinancingData(financingEmprendimientoIds);
+          break;
+        case "capacitacion":
+          data = await fetchTrainingData(personaId);
+          break;
+        default:
+          data = null;
+          break;
+      }
+      setTabsData(prev => ({ ...prev, [activeTab]: data }));
+      setLoading(false);
+    };
+
+    if (entrepreneurshipData || activeTab === "personal" || activeTab === "gender") {
+      fetchTabData();
+    }
+  }, [activeTab, personaId, tabsData, entrepreneurshipData]);
+
+  if (loading && !personalInfo) {
+    return <div>Cargando...</div>;
+  }
+
   return (
     <main className="flex flex-col items-center p-4">
       <ProfileHeader
+        username={`${personalInfo?.nombre} ${personalInfo?.primer_apellido} ${personalInfo?.segundo_apellido}`}
+        joinedDate={personalInfo?.fecha_ingreso}
         avatarSrc={avatarSrc}
-        username={username}
-        joinedDate={joinedDate}
       />
       <div className="w-full max-w-6xl">
-        <nav className="mb-6 overflow-x-auto">
-          <ul className="flex flex-nowrap md:flex-wrap justify-start md:justify-center gap-2 md:gap-4">
-            {tabs.map((tab) => (
-              <li key={tab.value}>
-                <TabButton
-                  label={tab.label}
-                  isActive={activeTab === tab.value}
-                  onClick={() => setActiveTab(tab.value)}
-                />
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <TabNavigation
+          tabs={tabs}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
         <div className="mt-6">
-          {activeTab === "personal" && (
-            <div className="space-y-6">
-              <ProfileDetails name={name} email={email} contact={contact} />
-            </div>
-          )}
-          {activeTab === "gender" && <GenderVariables />}
-          {activeTab === "emprendimiento" && (
-            <div>Contenido de Emprendimiento</div>
-          )}
-          {activeTab === "ideaNegocio" && (
-            <div>Contenido de Idea de Negocio</div>
-          )}
-          {activeTab === "innovacion" && (
-            <Card title="Innovacion">Contenido de Innovación</Card>
-          )}
-          {activeTab === "mercado" && <div>Contenido de Mercado</div>}
-          {activeTab === "contabilidadFinanzas" && (
-            <div>Contenido de Contabilidad y Finanzas</div>
-          )}
-          {activeTab === "formalizacion" && (
-            <div>Contenido de Formalización</div>
-          )}
-          {activeTab === "financiamiento" && (
-            <div>Contenido de Financiamiento</div>
-          )}
-          {activeTab === "capacitacion" && <div>Contenido de Capacitación</div>}
+          <TabContent
+            activeTab={activeTab}
+            tabsData={tabsData}
+            loading={loading}
+            tabs={tabs}
+          />
         </div>
       </div>
     </main>

@@ -17,34 +17,34 @@ export const menuItems: MenuItem[] = [
 	},
 	{
 		href: "#",
-		label: "Kanban",
+		label: "Microempresarias",
 		icon: <KanbanIcon />,
 	},
 	{
 		href: "#",
-		label: "Inbox",
+		label: "Gráficos",
 		icon: <InboxIcon />,
 		badge: "3",
 		badgeColor: "text-blue-800 bg-blue-100 dark:bg-blue-900 dark:text-blue-300",
 	},
 	{
 		href: "#",
-		label: "Users",
+		label: "Reportes",
 		icon: <UsersIcon />,
 	},
 	{
 		href: "#",
-		label: "Products",
+		label: "Productos",
 		icon: <ProductsIcon />,
 	},
 	{
 		href: "#",
-		label: "Sign In",
+		label: "Iniciar Sesión",
 		icon: <SignInIcon />,
 	},
 	{
 		href: "#",
-		label: "Sign Up",
+		label: "Cerrar Sesión",
 		icon: <SignUpIcon />,
 	},
 ];
