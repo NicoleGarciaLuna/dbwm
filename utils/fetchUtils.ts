@@ -89,7 +89,9 @@ export const fetchAndAddRelatedNames = async <T extends Record<string, any>>(
     return data;
   }
 
-  const relatedMap = new Map(relatedData?.map((item) => [item[relatedKey], item[targetColumn]]) ?? []);
+  const relatedMap = new Map(
+    relatedData?.map((item: Record<string, any>) => [item[relatedKey], item[targetColumn]]) ?? []
+  );
 
   return data.map((item) => ({
     ...item,
