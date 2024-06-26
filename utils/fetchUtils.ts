@@ -1,4 +1,8 @@
-import { createClient, SupabaseClient, PostgrestError } from '@supabase/supabase-js';
+import {
+  createClient,
+  SupabaseClient,
+  PostgrestError,
+} from "@supabase/supabase-js";
 
 // Define types for better type safety
 type Table = {
@@ -20,7 +24,7 @@ const createSupabaseClient = (): SupabaseClient => {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase environment variables');
+    throw new Error("Missing Supabase environment variables");
   }
 
   return createClient(supabaseUrl, supabaseAnonKey);
@@ -28,19 +32,59 @@ const createSupabaseClient = (): SupabaseClient => {
 
 const supabase = createSupabaseClient();
 
-// Fetch data from a single table
-export const fetchData = async <T>(table: string, column: string, value: any): Promise<T[]> => {
+// Fetch data from a single table with related data included
+export const fetchStandardizedData = async <T>(
+  table: string,
+  column: string,
+  value: any,
+  relatedTables: {
+    table: string;
+    foreignKey: string;
+    relatedKey: string;
+    targetColumn: string;
+  }[] = []
+): Promise<T[]> => {
   const { data, error }: FetchDataResult<T> = await supabase
     .from(table)
-    .select('*')
+    .select("*")
     .eq(column, value);
 
   if (error) {
-    console.error('Error fetching data:', error);
+    console.error(`Error fetching data from ${table}:`, error);
     return [];
   }
 
-  return data ?? [];
+  if (!data) return [];
+
+  for (const relatedTable of relatedTables) {
+    const relatedIds = data.map((item) => item[relatedTable.foreignKey]);
+    const { data: relatedData, error: relatedError } = await supabase
+      .from(relatedTable.table)
+      .select(`${relatedTable.relatedKey}, ${relatedTable.targetColumn}`)
+      .in(relatedTable.relatedKey, relatedIds);
+
+    if (relatedError) {
+      console.error(
+        `Error fetching related data from ${relatedTable.table}:`,
+        relatedError
+      );
+      continue;
+    }
+
+    const relatedMap = new Map(
+      relatedData?.map((item: Record<string, any>) => [
+        item[relatedTable.relatedKey],
+        item[relatedTable.targetColumn],
+      ]) ?? []
+    );
+
+    data.forEach((item) => {
+      item[relatedTable.targetColumn] =
+        relatedMap.get(item[relatedTable.foreignKey]) ?? null;
+    });
+  }
+
+  return data;
 };
 
 // Fetch nested data with names
@@ -54,7 +98,7 @@ export const fetchNestedDataWithNames = async (
     tables.map(async (table) => {
       const { data, error } = await supabase
         .from(table.name)
-        .select('*')
+        .select("*")
         .in(table.foreignKey, ids);
 
       if (error) {
@@ -90,7 +134,10 @@ export const fetchAndAddRelatedNames = async <T extends Record<string, any>>(
   }
 
   const relatedMap = new Map(
-    relatedData?.map((item: Record<string, any>) => [item[relatedKey], item[targetColumn]]) ?? []
+    relatedData?.map((item: Record<string, any>) => [
+      item[relatedKey],
+      item[targetColumn],
+    ]) ?? []
   );
 
   return data.map((item) => ({
