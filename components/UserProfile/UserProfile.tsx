@@ -17,7 +17,7 @@ import {
   fetchTrainingData,
 } from "@/utils/fetchPersonData";
 
-const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
+const UserProfile: React.FC<{ personaId: number; avatarSrc: string }> = ({ personaId, avatarSrc }) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
   const [tabsData, setTabsData] = useState<TabData>({
     personal: null,
@@ -131,6 +131,7 @@ const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
       <ProfileHeader
         username={personalInfo?.nombre}
         joinedDate={personalInfo?.fecha_ingreso}
+        avatarSrc={avatarSrc}
       />
       <div className="w-full max-w-6xl">
         <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
