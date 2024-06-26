@@ -1,9 +1,9 @@
-import AppLayout from "@/components/AppLayout";
+import Layout from "@/components/Layout/Layout";
 
 export default function Home() {
   return (
-    <AppLayout>
+    <Layout>
       <div></div>
-    </AppLayout>
+    </Layout>
   );
 }

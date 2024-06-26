@@ -1,4 +1,4 @@
-import AppLayout from "@/components/AppLayout";
+import Layout from "@/components/Layout/Layout";
 import UserProfile from "@/components/UserProfile/UserProfile";
 
 export default function PersonaPage({
@@ -9,11 +9,11 @@ export default function PersonaPage({
   const personaId = parseInt(params.id[0], 10);
 
   return (
-    <AppLayout>
+    <Layout>
       <UserProfile
         personaId={personaId}
         avatarSrc="/logo TCU mujer pnjs-10.png"
       />
-    </AppLayout>
+    </Layout>
   );
 }
