@@ -53,7 +53,7 @@ const logger = {
 };
 
 // Fetch data from a single table with related data included
-export const fetchStandardizedData = async <T>(
+export const fetchStandardizedData = async <T extends Record<string, any>>(
   table: string,
   column: string,
   value: any,
@@ -94,7 +94,7 @@ export const fetchStandardizedData = async <T>(
         ]) ?? []
       );
 
-      data.forEach((item) => {
+      data.forEach((item: T) => {
         item[relatedTable.targetColumn] =
           relatedMap.get(item[relatedTable.foreignKey]) ?? null;
       });
