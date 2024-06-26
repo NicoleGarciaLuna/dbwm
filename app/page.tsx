@@ -4,7 +4,7 @@ import UserProfile from "@/components/UserProfile/UserProfile";
 export default function Home() {
   return (
     <AppLayout>
-      <UserProfile personaId={1} />
+      <UserProfile personaId={1} avatarSrc="/logo TCU mujer pnjs-10.png" />
     </AppLayout>
   );
 }

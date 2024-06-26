@@ -129,14 +129,23 @@ const UserProfile: React.FC<{ personaId: number; avatarSrc: string }> = ({ perso
   return (
     <main className="flex flex-col items-center p-4">
       <ProfileHeader
-        username={personalInfo?.nombre}
+        username={`${personalInfo?.nombre} ${personalInfo?.primer_apellido} ${personalInfo?.segundo_apellido}`}
         joinedDate={personalInfo?.fecha_ingreso}
         avatarSrc={avatarSrc}
       />
       <div className="w-full max-w-6xl">
-        <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <TabNavigation
+          tabs={tabs}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
         <div className="mt-6">
-          <TabContent activeTab={activeTab} tabsData={tabsData} loading={loading} tabs={tabs} />
+          <TabContent
+            activeTab={activeTab}
+            tabsData={tabsData}
+            loading={loading}
+            tabs={tabs}
+          />
         </div>
       </div>
     </main>
