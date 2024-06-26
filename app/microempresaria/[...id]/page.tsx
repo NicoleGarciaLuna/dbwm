@@ -10,7 +10,10 @@ export default function PersonaPage({
 
   return (
     <AppLayout>
-      <UserProfile personaId={personaId} />
+      <UserProfile
+        personaId={personaId}
+        avatarSrc="/logo TCU mujer pnjs-10.png"
+      />
     </AppLayout>
   );
 }
