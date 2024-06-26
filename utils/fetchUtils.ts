@@ -94,8 +94,8 @@ export const fetchStandardizedData = async <T extends Record<string, any>>(
         ]) ?? []
       );
 
-      data.forEach((item: T) => {
-        item[relatedTable.targetColumn] =
+      data.forEach((item) => {
+        (item as Record<string, any>)[relatedTable.targetColumn] =
           relatedMap.get(item[relatedTable.foreignKey]) ?? null;
       });
     }
