@@ -67,10 +67,12 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
       if (personalInfo) {
         const fullName = `${personalInfo.nombre || ''} ${personalInfo.primer_apellido || ''} ${personalInfo.segundo_apellido || ''}`.trim();
         setUsername(fullName || 'Microempresaria');
-        setJoinedDate(personalInfo.fecha_ingreso || 'Fecha de ingreso desconocida');
+        setJoinedDate(personalInfo.fecha_ingreso ? new Date(personalInfo.fecha_ingreso).toLocaleDateString() : 'Fecha de ingreso desconocida');
       }
     } catch (error) {
       console.error("Error fetching initial data:", error);
+      setUsername('Microempresaria');
+      setJoinedDate('Fecha de ingreso desconocida');
     } finally {
       setLoading(false);
     }
