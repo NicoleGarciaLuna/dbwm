@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, PostgrestError } from '@supabase/supabase-js';
 
 // Define types for better type safety
 type Table = {
@@ -11,7 +11,7 @@ type Table = {
 
 type FetchDataResult<T> = {
   data: T[] | null;
-  error: Error | null;
+  error: PostgrestError | null;
 };
 
 // Create a singleton Supabase client
@@ -70,7 +70,7 @@ export const fetchNestedDataWithNames = async (
 };
 
 // Fetch and add related names
-export const fetchAndAddRelatedNames = async <T>(
+export const fetchAndAddRelatedNames = async <T extends Record<string, any>>(
   data: T[],
   relatedTable: string,
   relatedKey: string,
