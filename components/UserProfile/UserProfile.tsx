@@ -129,7 +129,6 @@ const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
   return (
     <main className="flex flex-col items-center p-4">
       <ProfileHeader
-        avatarSrc="/path/to/avatar.jpg"
         username={personalInfo?.nombre}
         joinedDate={personalInfo?.fecha_ingreso}
       />

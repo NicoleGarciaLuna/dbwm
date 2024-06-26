@@ -1,30 +1,26 @@
 import Image from "next/image";
 
 type ProfileHeaderProps = {
-  avatarSrc: string;
   username: string;
   joinedDate: string;
 };
 
-const ProfileHeader = ({ avatarSrc, username, joinedDate }: ProfileHeaderProps) => (
-  <div className="flex items-center gap-3 mb-6">
-    <div className="relative h-24 w-24">
+const ProfileHeader = ({ username, joinedDate }: ProfileHeaderProps) => (
+  <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <div className="relative h-32 w-32 sm:h-40 sm:w-40">
       <Image
-        src={avatarSrc}
-        alt={`${username || 'User'} avatar`}
-        className="h-full w-full rounded-full object-cover"
-        width={50}
-        height={50}
+        src="/logo TCU mujer pnjs-10.png"
+        alt="TCU Mujer Logo"
+        className="h-full w-full object-contain"
+        width={160}
+        height={160}
       />
-      <div className="absolute inset-0 flex items-center justify-center bg-gray-200 rounded-full">
-        {username ? username.charAt(0) : '?'}
-      </div>
     </div>
-    <div className="grid gap-0.5 text-xs">
-      <div className="font-medium text-2xl">{username || 'Unknown User'}</div>
-      <div className="text-gray-500 dark:text-gray-400">
-        {joinedDate ? `Joined in ${joinedDate}` : 'Join date unknown'}
-      </div>
+    <div className="text-center sm:text-left">
+      <h2 className="font-bold text-3xl mb-2">{username || 'Microempresaria'}</h2>
+      <p className="text-gray-600 dark:text-gray-400">
+        {joinedDate ? `Miembro desde ${joinedDate}` : 'Fecha de ingreso desconocida'}
+      </p>
     </div>
   </div>
 );
