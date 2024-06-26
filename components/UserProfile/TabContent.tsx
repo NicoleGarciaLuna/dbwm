@@ -16,7 +16,7 @@ const formatKey = (key: string): string => {
 };
 
 const shouldHideKey = (key: string): boolean => {
-  return key.toLowerCase().includes('id');
+  return /^id/i.test(key);
 };
 
 const renderValue = (value: any): ReactNode => {
