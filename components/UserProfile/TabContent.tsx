@@ -9,23 +9,14 @@ type TabContentProps = {
   tabs: Array<{ label: string; value: TabType }>;
 };
 
-const formatKey = (key: string): string => {
-  return key
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, char => char.toUpperCase());
-};
+const formatKey = (key: string): string =>
+  key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
 
-const shouldHideKey = (key: string): boolean => {
-  return /^id/i.test(key);
-};
+const shouldHideKey = (key: string): boolean => /^id/i.test(key);
 
 const renderValue = (value: any): ReactNode => {
-  if (typeof value === 'boolean') {
-    return value ? 'Sí' : 'No';
-  }
-  if (value === null || value === undefined) {
-    return 'Sin dato';
-  }
+  if (typeof value === 'boolean') return value ? 'Sí' : 'No';
+  if (value == null) return 'Sin dato';
   if (typeof value === 'object' && !Array.isArray(value)) {
     return (
       <div className="pl-4">
@@ -53,27 +44,9 @@ const renderValue = (value: any): ReactNode => {
 
 const createCardContent = (data: any): ReactNode => {
   if (Array.isArray(data)) {
-    return (
-      <div>
-        {data.map((item, index) => (
-          <div key={index} className="mb-2">
-            {Object.entries(item)
-              .filter(([key]) => !shouldHideKey(key))
-              .map(([key, value]) => (
-                <div key={key} className="mb-2">
-                  <span className="font-semibold">{formatKey(key)}:</span> {renderValue(value)}
-                </div>
-              ))}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  if (typeof data === 'object' && data !== null) {
-    return (
-      <div>
-        {Object.entries(data)
+    return data.map((item, index) => (
+      <div key={index} className="mb-2">
+        {Object.entries(item)
           .filter(([key]) => !shouldHideKey(key))
           .map(([key, value]) => (
             <div key={key} className="mb-2">
@@ -81,31 +54,34 @@ const createCardContent = (data: any): ReactNode => {
             </div>
           ))}
       </div>
-    );
+    ));
   }
 
-  return <div>{renderValue(data)}</div>;
+  if (typeof data === 'object' && data !== null) {
+    return Object.entries(data)
+      .filter(([key]) => !shouldHideKey(key))
+      .map(([key, value]) => (
+        <div key={key} className="mb-2">
+          <span className="font-semibold">{formatKey(key)}:</span> {renderValue(value)}
+        </div>
+      ));
+  }
+
+  return renderValue(data);
 };
 
 const TabContent = ({ activeTab, tabsData, loading, tabs }: TabContentProps): ReactNode => {
-  if (loading) {
-    return <div>Cargando datos...</div>;
-  }
+  if (loading) return <div>Cargando datos...</div>;
 
   const data = tabsData[activeTab];
-  if (!data) {
-    return <div>No hay datos disponibles.</div>;
-  }
+  if (!data) return <div>No hay datos disponibles.</div>;
 
-  const cardContent = createCardContent(data);
-
-  // Obtener el nombre de la tab actual
   const activeTabLabel = tabs.find(tab => tab.value === activeTab)?.label || `Datos del Tab ${activeTab}`;
 
   return (
     <div className="space-y-4">
       <Card title={activeTabLabel}>
-        {cardContent}
+        {createCardContent(data)}
       </Card>
     </div>
   );

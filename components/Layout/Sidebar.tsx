@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import NavItem from "./NavItem";
+import NavItem from "../MicroentrepreneursList/NavItem";
 
 type SidebarItem = {
   href: string;

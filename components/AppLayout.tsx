@@ -1,11 +1,10 @@
-import React from 'react';
-import Layout from './Layout';
+import Layout from "./Layout/Layout";
 
 interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+const AppLayout = ({ children }: AppLayoutProps) => {
   return <Layout>{children}</Layout>;
 };
 

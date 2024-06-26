@@ -1,7 +1,7 @@
-import React from 'react';
-import Header from './Header';
-import Sidebar from './Sidebar';
-import { menuItems } from '../data/menuItems';
+import React from "react";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
+import { menuItems } from "../../data/menuItems";
 
 interface LayoutProps {
   children: React.ReactNode;
