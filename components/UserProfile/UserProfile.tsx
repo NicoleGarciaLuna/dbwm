@@ -64,10 +64,14 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
       setTabsData(prev => ({ ...prev, personal: personalInfo, emprendimiento: data }));
       setEntrepreneurshipData(data);
       
-      if (personalInfo) {
-        const fullName = `${personalInfo.nombre || ''} ${personalInfo.primer_apellido || ''} ${personalInfo.segundo_apellido || ''}`.trim();
+      if (personalInfo && personalInfo.length > 0) {
+        const userInfo = personalInfo[0];
+        const fullName = `${userInfo.nombre || ''} ${userInfo.primer_apellido || ''} ${userInfo.segundo_apellido || ''}`.trim();
         setUsername(fullName || 'Microempresaria');
-        setJoinedDate(personalInfo.fecha_ingreso ? new Date(personalInfo.fecha_ingreso).toLocaleDateString() : 'Fecha de ingreso desconocida');
+        setJoinedDate(userInfo.fecha_diagnostico ? new Date(userInfo.fecha_diagnostico).toLocaleDateString() : 'Fecha de ingreso desconocida');
+      } else {
+        setUsername('Microempresaria');
+        setJoinedDate('Fecha de ingreso desconocida');
       }
     } catch (error) {
       console.error("Error fetching initial data:", error);
