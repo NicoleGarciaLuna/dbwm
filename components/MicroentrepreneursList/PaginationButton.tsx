@@ -16,11 +16,11 @@ const PaginationButton = ({
   const baseClasses =
     "flex items-center justify-center text-sm py-2 px-3 leading-tight";
   const activeClasses = isActive
-    ? "text-primary-600 bg-primary-50 border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+    ? "text-primary-800 bg-primary-50 border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-primary-700 dark:bg-primary-700 dark:text-white"
     : "";
   const disabledClasses = isDisabled
-    ? "cursor-not-allowed text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400"
-    : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white";
+    ? "cursor-not-allowed text-primary-500 bg-primary-100 dark:bg-primary-700 dark:text-primary-400"
+    : "text-primary-500 bg-white border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:bg-primary-800 dark:border-primary-700 dark:hover:bg-primary-700 dark:hover:text-white";
 
   return (
     <button

@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
 export const DashboardIcon: React.FC = () => (
   <svg
-    className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+    className="w-5 h-5 text-primary-500 transition duration-75 dark:text-primary-400 group-hover:text-primary-900 dark:group-hover:text-white"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"
@@ -15,7 +15,7 @@ export const DashboardIcon: React.FC = () => (
 
 export const KanbanIcon: React.FC = () => (
   <svg
-    className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+    className="w-5 h-5 text-primary-500 transition duration-75 dark:text-primary-400 group-hover:text-primary-900 dark:group-hover:text-white"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"
@@ -27,7 +27,7 @@ export const KanbanIcon: React.FC = () => (
 
 export const InboxIcon: React.FC = () => (
   <svg
-    className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+    className="flex-shrink-0 w-5 h-5 text-primary-500 transition duration-75 dark:text-primary-400 group-hover:text-primary-900 dark:group-hover:text-white"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"
@@ -39,7 +39,7 @@ export const InboxIcon: React.FC = () => (
 
 export const UsersIcon: React.FC = () => (
   <svg
-    className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+    className="flex-shrink-0 w-5 h-5 text-primary-500 transition duration-75 dark:text-primary-400 group-hover:text-primary-900 dark:group-hover:text-white"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"
@@ -51,7 +51,7 @@ export const UsersIcon: React.FC = () => (
 
 export const ProductsIcon: React.FC = () => (
   <svg
-    className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+    className="flex-shrink-0 w-5 h-5 text-primary-500 transition duration-75 dark:text-primary-400 group-hover:text-primary-900 dark:group-hover:text-white"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"
@@ -63,7 +63,7 @@ export const ProductsIcon: React.FC = () => (
 
 export const SignInIcon: React.FC = () => (
   <svg
-    className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+    className="flex-shrink-0 w-5 h-5 text-primary-500 transition duration-75 dark:text-primary-400 group-hover:text-primary-900 dark:group-hover:text-white"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -81,7 +81,7 @@ export const SignInIcon: React.FC = () => (
 
 export const SignUpIcon: React.FC = () => (
   <svg
-    className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+    className="flex-shrink-0 w-5 h-5 text-primary-500 transition duration-75 dark:text-primary-400 group-hover:text-primary-900 dark:group-hover:text-white"
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"

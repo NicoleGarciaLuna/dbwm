@@ -1,5 +1,4 @@
 "use client";
-import { useCallback } from "react";
 import ProfileHeader from "./ProfileHeader";
 import TabNavigation from "./TabNavigation";
 import TabContent from "./TabContent";

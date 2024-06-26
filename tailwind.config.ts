@@ -40,7 +40,7 @@ const config: Config = {
 					"900": "#8d4012",
 					"950": "#6b300e",
 				},
-				tertiary: {
+				terciary: {
 					"50": "#cdecfc",
 					"100": "#b8e4fa",
 					"200": "#a4dcf8",

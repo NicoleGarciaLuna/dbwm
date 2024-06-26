@@ -3,11 +3,11 @@ import Image from "next/image";
 const Header = () => {
   return (
     <header>
-      <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+      <nav className="bg-white border-primary-200 px-4 lg:px-6 py-2.5 dark:bg-primary-800">
         <div className="flex items-center w-full">
           <a href="#" className="flex items-center">
             <Image
-              src="/logo TCU mujer pnjs-13.png"
+              src="/logo TCU mujer pnjs-10.png"
               className="mr-3 h-6 sm:h-9"
               alt="TCU Logo"
               width={50}

@@ -8,7 +8,7 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
     <Layout>
       <UserProfile
         personaId={personaId}
-        avatarSrc="/logo TCU mujer pnjs-10.png"
+        avatarSrc="/logo TCU mujer pnjs-13.png"
       />
     </Layout>
   );

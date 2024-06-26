@@ -28,7 +28,7 @@ const MobileSidebarToggle = () => (
     data-drawer-toggle="default-sidebar"
     aria-controls="default-sidebar"
     type="button"
-    className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+    className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-primary-500 rounded-lg sm:hidden hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:text-primary-400 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
   >
     <span className="sr-only">Open sidebar</span>
     <svg
@@ -53,7 +53,7 @@ const DesktopSidebar = ({ items }: SidebarProps) => (
     className="w-64 h-full transition-transform sm:translate-x-0 flex-shrink-0"
     aria-label="Sidebar"
   >
-    <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+    <div className="h-full px-3 py-4 overflow-y-auto bg-primary-50 dark:bg-primary-800">
       <ul className="space-y-2 font-medium">
         {items.map((item, index) => (
           <NavItem
