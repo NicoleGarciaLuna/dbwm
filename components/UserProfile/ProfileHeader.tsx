@@ -17,7 +17,7 @@ const ProfileHeader = ({ username, joinedDate }: ProfileHeaderProps) => (
       />
     </div>
     <div className="text-center sm:text-left">
-      <h2 className="font-bold text-3xl mb-2">{username || 'Microempresaria'}</h2>
+      <h2 className="font-bold text-3xl mb-2 text-white">{username || 'Microempresaria'}</h2>
       <p className="text-gray-600 dark:text-gray-400">
         {joinedDate ? `Miembro desde ${joinedDate}` : 'Fecha de ingreso desconocida'}
       </p>
