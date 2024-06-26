@@ -15,50 +15,58 @@ const formatKey = (key: string): string => {
     .replace(/\b\w/g, char => char.toUpperCase());
 };
 
-const filterAndFormatData = (data: any): Record<string, any> => {
-  if (!data) {
-    return {};
+const renderValue = (value: any): React.ReactNode => {
+  if (typeof value === 'boolean') {
+    return value ? 'Sí' : 'No';
   }
-
-  return Object.entries(data)
-    .filter(([key]) => !key.startsWith('id_'))
-    .reduce((acc, [key, value]) => {
-      acc[formatKey(key)] = value ?? 'Sin dato';
-      return acc;
-    }, {} as Record<string, any>);
-};
-
-const flattenData = (data: any): any[] => {
-  const result = [];
-
-  const processObject = (obj: any, prefix: string = '') => {
-    Object.entries(obj).forEach(([key, value]) => {
-      const formattedKey = prefix ? `${prefix} ${formatKey(key)}` : formatKey(key);
-      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-        processObject(value, formattedKey);
-      } else {
-        result.push({ key: formattedKey, value });
-      }
-    });
-  };
-
-  if (Array.isArray(data)) {
-    data.forEach((item, index) => processObject(item, `Item ${index + 1}`));
-  } else if (typeof data === 'object') {
-    processObject(data);
+  if (value === null || value === undefined) {
+    return 'Sin dato';
   }
-
-  return result;
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    return (
+      <div className="pl-4">
+        {Object.entries(value).map(([subKey, subValue]) => (
+          <div key={subKey} className="mb-2">
+            <span className="font-semibold">{formatKey(subKey)}:</span> {renderValue(subValue)}
+          </div>
+        ))}
+      </div>
+    );
+  }
+  if (Array.isArray(value)) {
+    return (
+      <ul className="list-disc pl-6">
+        {value.map((item, index) => (
+          <li key={index}>{renderValue(item)}</li>
+        ))}
+      </ul>
+    );
+  }
+  return String(value);
 };
 
 const createCards = (data: any) => {
-  const flatData = flattenData(data);
+  if (Array.isArray(data)) {
+    return data.map((item, index) => (
+      <Card key={index} title={`Item ${index + 1}`}>
+        {Object.entries(item).map(([key, value]) => (
+          <div key={key} className="mb-2">
+            <span className="font-semibold">{formatKey(key)}:</span> {renderValue(value)}
+          </div>
+        ))}
+      </Card>
+    ));
+  }
 
-  return flatData.map(({ key, value }) => (
-    <Card key={key} title={key}>
-      <pre>{JSON.stringify(value, null, 2)}</pre>
-    </Card>
-  ));
+  if (typeof data === 'object' && data !== null) {
+    return Object.entries(data).map(([key, value]) => (
+      <Card key={key} title={formatKey(key)}>
+        {renderValue(value)}
+      </Card>
+    ));
+  }
+
+  return <Card title="Datos">{renderValue(data)}</Card>;
 };
 
 const TabContent = ({ activeTab, tabsData, loading, tabs }: TabContentProps) => {
@@ -73,7 +81,7 @@ const TabContent = ({ activeTab, tabsData, loading, tabs }: TabContentProps) => 
 
   const cards = createCards(data);
 
-  return <div>{cards}</div>;
+  return <div className="space-y-4">{cards}</div>;
 };
 
 export default TabContent;
