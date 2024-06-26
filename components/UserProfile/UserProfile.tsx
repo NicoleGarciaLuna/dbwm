@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ProfileHeader from "./ProfileHeader";
 import TabNavigation from "./TabNavigation";
 import TabContent from "./TabContent";
@@ -69,6 +69,7 @@ const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
   useEffect(() => {
     const fetchTabData = async () => {
       if (tabsData[activeTab] !== null) {
+        setLoading(false);
         return;
       }
 
@@ -108,12 +109,15 @@ const UserProfile: React.FC<{ personaId: number }> = ({ personaId }) => {
         case "capacitacion":
           data = await fetchTrainingData(personaId);
           break;
+        default:
+          data = null;
+          break;
       }
       setTabsData(prev => ({ ...prev, [activeTab]: data }));
       setLoading(false);
     };
 
-    if (entrepreneurshipData) {
+    if (entrepreneurshipData || activeTab === "personal" || activeTab === "gender") {
       fetchTabData();
     }
   }, [activeTab, personaId, tabsData, entrepreneurshipData]);
