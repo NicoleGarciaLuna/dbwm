@@ -36,9 +36,10 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
     financiamiento: null,
     capacitacion: null,
   });
-  const [personalInfo, setPersonalInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [entrepreneurshipData, setEntrepreneurshipData] = useState<any>(null);
+  const [username, setUsername] = useState<string>("");
+  const [joinedDate, setJoinedDate] = useState<string>("");
 
   const tabs: Array<{ label: string; value: TabType }> = [
     { label: "Información personal", value: "personal" },
@@ -55,13 +56,19 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
 
   const fetchInitialData = useCallback(async () => {
     try {
-      const [info, data] = await Promise.all([
+      setLoading(true);
+      const [personalInfo, data] = await Promise.all([
         fetchPersonalInfo(personaId),
         fetchEntrepreneurshipData(personaId),
       ]);
-      setPersonalInfo(info);
+      setTabsData(prev => ({ ...prev, personal: personalInfo, emprendimiento: data }));
       setEntrepreneurshipData(data);
-      setTabsData(prev => ({ ...prev, personal: info, emprendimiento: data }));
+      
+      if (personalInfo) {
+        const fullName = `${personalInfo.nombre || ''} ${personalInfo.primer_apellido || ''} ${personalInfo.segundo_apellido || ''}`.trim();
+        setUsername(fullName || 'Microempresaria');
+        setJoinedDate(personalInfo.fecha_ingreso || 'Fecha de ingreso desconocida');
+      }
     } catch (error) {
       console.error("Error fetching initial data:", error);
     } finally {
@@ -90,7 +97,6 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
 
   const fetchTabData = useCallback(async () => {
     if (tabsData[activeTab] !== null) {
-      setLoading(false);
       return;
     }
 
@@ -138,15 +144,15 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
     }
   }, [activeTab, entrepreneurshipData, fetchTabData]);
 
-  if (loading && !personalInfo) {
+  if (loading && !username) {
     return <div>Cargando...</div>;
   }
 
   return (
     <main className="flex flex-col items-center p-4">
       <ProfileHeader
-        username={`${personalInfo?.nombre} ${personalInfo?.primer_apellido} ${personalInfo?.segundo_apellido}`}
-        joinedDate={personalInfo?.fecha_ingreso}
+        username={username}
+        joinedDate={joinedDate}
         avatarSrc={avatarSrc}
       />
       <div className="w-full max-w-6xl">
