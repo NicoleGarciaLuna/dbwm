@@ -1,12 +1,36 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+// Define types for better type safety
+type Table = {
+  name: string;
+  foreignKey: string;
+  relatedTable?: string;
+  relatedKey?: string;
+  targetColumn?: string;
+};
 
-export const fetchData = async (table: string, column: string, value: any) => {
-  const { data, error } = await supabase
+type FetchDataResult<T> = {
+  data: T[] | null;
+  error: Error | null;
+};
+
+// Create a singleton Supabase client
+const createSupabaseClient = (): SupabaseClient => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment variables');
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey);
+};
+
+const supabase = createSupabaseClient();
+
+// Fetch data from a single table
+export const fetchData = async <T>(table: string, column: string, value: any): Promise<T[]> => {
+  const { data, error }: FetchDataResult<T> = await supabase
     .from(table)
     .select('*')
     .eq(column, value);
@@ -16,39 +40,43 @@ export const fetchData = async (table: string, column: string, value: any) => {
     return [];
   }
 
-  return data;
+  return data ?? [];
 };
 
+// Fetch nested data with names
 export const fetchNestedDataWithNames = async (
   ids: number[],
-  tables: { name: string; foreignKey: string; relatedTable?: string; relatedKey?: string; targetColumn?: string }[]
-) => {
-  const result: { [key: string]: any[] } = {};
+  tables: Table[]
+): Promise<Record<string, any[]>> => {
+  const result: Record<string, any[]> = {};
 
-  for (const table of tables) {
-    const { data, error } = await supabase
-      .from(table.name)
-      .select('*')
-      .in(table.foreignKey, ids);
+  await Promise.all(
+    tables.map(async (table) => {
+      const { data, error } = await supabase
+        .from(table.name)
+        .select('*')
+        .in(table.foreignKey, ids);
 
-    if (error) {
-      console.error(`Error fetching data from ${table.name}:`, error);
-      result[table.name] = [];
-    } else {
-      result[table.name] = data;
-    }
-  }
+      if (error) {
+        console.error(`Error fetching data from ${table.name}:`, error);
+        result[table.name] = [];
+      } else {
+        result[table.name] = data ?? [];
+      }
+    })
+  );
 
   return result;
 };
 
-export const fetchAndAddRelatedNames = async (
-  data: any[],
+// Fetch and add related names
+export const fetchAndAddRelatedNames = async <T>(
+  data: T[],
   relatedTable: string,
   relatedKey: string,
   targetColumn: string,
-  sourceColumn: string
-) => {
+  sourceColumn: keyof T
+): Promise<T[]> => {
   const relatedIds = data.map((item) => item[sourceColumn]);
 
   const { data: relatedData, error } = await supabase
@@ -61,10 +89,10 @@ export const fetchAndAddRelatedNames = async (
     return data;
   }
 
-  const relatedMap = new Map(relatedData.map((item) => [item[relatedKey], item[targetColumn]]));
+  const relatedMap = new Map(relatedData?.map((item) => [item[relatedKey], item[targetColumn]]) ?? []);
 
   return data.map((item) => ({
     ...item,
-    [targetColumn]: relatedMap.get(item[sourceColumn]) || null,
+    [targetColumn]: relatedMap.get(item[sourceColumn]) ?? null,
   }));
 };
