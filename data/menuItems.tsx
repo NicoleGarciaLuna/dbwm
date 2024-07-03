@@ -1,58 +1,41 @@
-import React, { ReactNode } from "react";
 import {
-  DashboardIcon,
-  KanbanIcon,
-  InboxIcon,
-  UsersIcon,
-  ProductsIcon,
-  SignInIcon,
-  SignUpIcon,
-} from "../components/icons/DashboardIcons";
+  DesktopOutlined,
+  FileOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import Link from "next/link";
 
-type MenuItem = {
-  href: string;
-  label: string;
-  icon: ReactNode;
-  badge?: string;
-  badgeColor?: string;
+type MenuItem = Required<MenuProps>["items"][number];
+
+const getItem = (
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode,
+  href?: string,
+  children?: MenuItem[]
+): MenuItem => {
+  return {
+    key,
+    icon,
+    children,
+    label: href ? <Link href={href}>{label}</Link> : label,
+  } as MenuItem;
 };
 
 export const menuItems: MenuItem[] = [
-  {
-    href: "#",
-    label: "Dashboard",
-    icon: <DashboardIcon />,
-  },
-  {
-    href: "#",
-    label: "Microempresarias",
-    icon: <KanbanIcon />,
-  },
-  {
-    href: "#",
-    label: "Gráficos",
-    icon: <InboxIcon />,
-    badge: "3",
-    badgeColor: "text-blue-800 bg-blue-100 dark:bg-blue-900 dark:text-blue-300",
-  },
-  {
-    href: "#",
-    label: "Reportes",
-    icon: <UsersIcon />,
-  },
-  {
-    href: "#",
-    label: "Productos",
-    icon: <ProductsIcon />,
-  },
-  {
-    href: "#",
-    label: "Iniciar Sesión",
-    icon: <SignInIcon />,
-  },
-  {
-    href: "#",
-    label: "Cerrar Sesión",
-    icon: <SignUpIcon />,
-  },
+  getItem("Option 1", "1", <PieChartOutlined />, "/"),
+  getItem("Option 2", "2", <DesktopOutlined />, "/"),
+  getItem("User", "sub1", <UserOutlined />, undefined, [
+    getItem("Tom", "3", undefined, "/"),
+    getItem("Bill", "4", undefined, "/"),
+    getItem("Alex", "5", undefined, "/user/alex"),
+  ]),
+  getItem("Team", "sub2", <TeamOutlined />, undefined, [
+    getItem("Team 1", "6", undefined, "/"),
+    getItem("Team 2", "8", undefined, "/team/team2"),
+  ]),
+  getItem("Files", "9", <FileOutlined />, "/"),
 ];
