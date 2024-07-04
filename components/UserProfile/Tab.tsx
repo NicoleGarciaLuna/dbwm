@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Card from "../Card";
+import { Card, Spin, Empty } from "antd";
 import { TabType, TabData } from "./types";
 
 type TabContentProps = {
@@ -79,10 +79,10 @@ const TabContent = ({
   loading,
   tabs,
 }: TabContentProps): ReactNode => {
-  if (loading) return <div>Cargando datos...</div>;
+  if (loading) return <Spin tip="Cargando datos..." />;
 
   const data = tabsData[activeTab];
-  if (!data) return <div>No hay datos disponibles.</div>;
+  if (!data) return <Empty description="No hay datos disponibles." />;
 
   const activeTabLabel =
     tabs.find((tab) => tab.value === activeTab)?.label ||
