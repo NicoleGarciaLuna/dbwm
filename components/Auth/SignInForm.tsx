@@ -1,7 +1,10 @@
 "use client";
 import { useState, ChangeEvent, FormEvent } from "react";
-import InputField from "./InputField";
+import { Input, Button, Form, Typography, Layout, Card } from "antd";
 import Image from "next/image";
+
+const { Title } = Typography;
+const { Content } = Layout;
 
 type SignInFormProps = {
   logoSrc: string;
@@ -23,54 +26,94 @@ const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
   };
 
   return (
-    <section className="bg-primary-50 dark:bg-primary-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a
-          href="#"
-          className="flex items-center mb-6 text-2xl font-semibold text-primary-900 dark:text-white"
+    <Layout style={{ minHeight: "100vh", backgroundColor: "#f0f2f5" }}>
+      <Content>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "100vh",
+          }}
         >
-          <Image
-            className="w-8 h-8 mr-2"
-            src={logoSrc}
-            alt="logo"
-            width={50}
-            height={50}
-          />
-          {brandName}
-        </a>
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-primary-800 dark:border-primary-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-primary-900 md:text-2xl dark:text-white">
-              Sign in to your account
-            </h1>
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-              <InputField
-                id="email"
-                type="email"
-                label="Your email"
-                placeholder="name@email.com"
-                value={email}
-                onChange={handleEmailChange}
-              />
-              <InputField
-                id="password"
-                type="password"
-                label="Password"
-                placeholder="••••••••"
-                value={password}
-                onChange={handlePasswordChange}
-              />
-              <button
-                type="submit"
-                className="w-full text-white bg-primary-800 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+          <Card
+            style={{
+              width: "100%",
+              maxWidth: "400px",
+              textAlign: "center",
+              padding: "24px",
+              backgroundColor: "#ffffff",
+              borderRadius: "8px",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "24px",
+              }}
+            >
+              <Image src={logoSrc} alt="logo" width={50} height={50} />
+              <Title
+                level={2}
+                style={{ marginLeft: "8px", marginBottom: 0, color: "#001529" }}
               >
-                Sign in
-              </button>
-            </form>
-          </div>
+                {brandName}
+              </Title>
+            </div>
+            <Title level={3} style={{ color: "#001529" }}>
+              Sign in to your account
+            </Title>
+            <Form layout="vertical" onSubmitCapture={handleSubmit}>
+              <Form.Item
+                label="Your email"
+                name="email"
+                rules={[
+                  { required: true, message: "Please enter your email!" },
+                ]}
+              >
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@email.com"
+                  value={email}
+                  onChange={handleEmailChange}
+                />
+              </Form.Item>
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[
+                  { required: true, message: "Please enter your password!" },
+                ]}
+              >
+                <Input.Password
+                  id="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={handlePasswordChange}
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#001529",
+                    borderColor: "#001529",
+                  }}
+                >
+                  Sign in
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
         </div>
-      </div>
-    </section>
+      </Content>
+    </Layout>
   );
 };
 
