@@ -3,8 +3,7 @@ import ProfileHeader from "./ProfileHeader";
 import TabNavigation from "./TabNavigation";
 import TabContent from "./TabContent";
 import { TabType } from "./types";
-import { useUserProfileData } from "@/utils/useUserProfileData";
-import * as fetchFunctions from "@/utils/fetchPersonData";
+import { useUserProfileData } from "@/hooks/useUserProfileData";
 
 type UserProfileProps = {
   personaId: number;
@@ -26,7 +25,7 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
   ];
 
   const { activeTab, setActiveTab, tabsData, loading, username, joinedDate } =
-    useUserProfileData(personaId, fetchFunctions);
+    useUserProfileData(personaId);
 
   if (loading && !username) {
     return <div>Cargando...</div>;

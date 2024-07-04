@@ -1,38 +1,7 @@
-import {
-  createClient,
-  SupabaseClient,
-  PostgrestError,
-} from "@supabase/supabase-js";
+import { supabase } from "./supabaseClient";
+import { PostgrestError } from "@supabase/supabase-js";
+import { logger } from "@/utils/logging/logger";
 
-// Define types for better type safety
-type Table = {
-  name: string;
-  foreignKey: string;
-  relatedTable?: string;
-  relatedKey?: string;
-  targetColumn?: string;
-};
-
-type FetchDataResult<T> = {
-  data: T[] | null;
-  error: PostgrestError | null;
-};
-
-// Create a singleton Supabase client
-const createSupabaseClient = (): SupabaseClient => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase environment variables");
-  }
-
-  return createClient(supabaseUrl, supabaseAnonKey);
-};
-
-const supabase = createSupabaseClient();
-
-// Custom error for fetch operations
 class FetchError extends Error {
   constructor(message: string, public details: any) {
     super(message);
@@ -40,20 +9,12 @@ class FetchError extends Error {
   }
 }
 
-// Logger function (replace with your preferred logging solution)
-const logger = {
-  error: (message: string, details?: any) => {
-    console.error(`[ERROR] ${message}`, details);
-    // Add your logging logic here (e.g., send to a logging service)
-  },
-  info: (message: string, details?: any) => {
-    console.info(`[INFO] ${message}`, details);
-    // Add your logging logic here
-  },
+type FetchDataResult<T> = {
+  data: T[] | null;
+  error: PostgrestError | null;
 };
 
-// Fetch data from a single table with related data included
-export const fetchStandardizedData = async <T extends Record<string, any>>(
+export const fetchDataWithRelatedTables = async <T extends Record<string, any>>(
   table: string,
   column: string,
   value: any,
@@ -109,16 +70,21 @@ export const fetchStandardizedData = async <T extends Record<string, any>>(
     if (error instanceof FetchError) {
       logger.error(error.message, error.details);
     } else {
-      logger.error(`Unexpected error in fetchStandardizedData`, error);
+      logger.error(`Unexpected error in fetchDataWithRelatedTables`, error);
     }
     throw error;
   }
 };
 
-// Fetch nested data with names
 export const fetchNestedDataWithNames = async (
   ids: number[],
-  tables: Table[]
+  tables: {
+    name: string;
+    foreignKey: string;
+    relatedTable?: string;
+    relatedKey?: string;
+    targetColumn?: string;
+  }[]
 ): Promise<Record<string, any[]>> => {
   const result: Record<string, any[]> = {};
 
@@ -150,7 +116,6 @@ export const fetchNestedDataWithNames = async (
   }
 };
 
-// Fetch and add related names
 export const fetchAndAddRelatedNames = async <T extends Record<string, any>>(
   data: T[],
   relatedTable: string,
