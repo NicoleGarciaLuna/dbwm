@@ -1,9 +1,8 @@
 "use client";
 import { useState, useMemo } from "react";
-import MicroentrepreneursTable from "./MicroentrepreneursTable";
-import Pagination from "./Pagination";
-import SearchBar from "./SearchBar";
+import { Table, Pagination, Input } from "antd";
 import { Microentrepreneur } from "../../types";
+import { columnConfig } from "../../data/columnConfig";
 
 type MicroentrepreneursListProps = {
   data: Microentrepreneur[];
@@ -47,19 +46,38 @@ const MicroentrepreneursList = ({ data }: MicroentrepreneursListProps) => {
     currentPage * 10
   );
 
+  const columns = columnConfig.map((column) => ({
+    title: column.header,
+    dataIndex: column.key,
+    key: column.key,
+    render: column.isAction
+      ? () => <button className="text-blue-500">Action</button>
+      : undefined,
+  }));
+
   return (
-    <section className="bg-primary-50 dark:bg-primary-900 p-3 sm:p-5">
+    <section className="p-3 sm:p-5">
       <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
-        <div className="bg-white dark:bg-primary-800 relative shadow-md sm:rounded-lg overflow-hidden">
+        <div className="bg-white relative shadow-md sm:rounded-lg overflow-hidden">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-            <SearchBar searchQuery={searchQuery} onSearch={handleSearch} />
+            <Input.Search
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Search"
+              enterButton
+            />
             {/* Add other controls like filters, actions, etc. here */}
           </div>
-          <MicroentrepreneursTable data={paginatedData} />
+          <Table
+            columns={columns}
+            dataSource={paginatedData}
+            pagination={false}
+          />
           <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
+            current={currentPage}
+            total={totalPages * 10}
+            pageSize={10}
+            onChange={handlePageChange}
           />
         </div>
       </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,14 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body className={inter.className}>
-        <div id="skip-link">
-          <a href="#main-content" className="sr-only focus:not-sr-only">
-            Skip to main content
-          </a>
-        </div>
-        <main id="main-content">{children}</main>
+    <html lang="en">
+      <body>
+        <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>
   );
