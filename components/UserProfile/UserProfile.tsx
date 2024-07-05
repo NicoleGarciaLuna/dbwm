@@ -1,10 +1,11 @@
 "use client";
+
 import { Tabs, Spin } from "antd";
-import { useUserProfileData } from "@/utils/useUserProfileData";
+import { TabType } from "./types";
+import { useUserProfileData } from "@/hooks/useUserProfileData";
 import * as fetchFunctions from "@/utils/fetchPersonData";
 import ProfileHeader from "./Header";
 import TabContent from "./Tab";
-import { TabType } from "./types";
 
 type UserProfileProps = {
   personaId: number;
@@ -26,7 +27,7 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
   ];
 
   const { activeTab, setActiveTab, tabsData, loading, username, joinedDate } =
-    useUserProfileData(personaId, fetchFunctions);
+    useUserProfileData(personaId);
 
   if (loading && !username) {
     return <Spin tip="Cargando..." />;

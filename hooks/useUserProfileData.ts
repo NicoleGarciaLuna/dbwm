@@ -1,5 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { TabType, TabData } from "@/components/UserProfile/types";
+import * as fetchPersonData from "@/utils/dataFetching/fetchPersonData";
+import * as fetchGenderData from "@/utils/dataFetching/fetchGenderData";
+import * as fetchEntrepreneurshipData from "@/utils/dataFetching/fetchEntrepreneurshipData";
+import * as fetchBusinessIdeasData from "@/utils/dataFetching/fetchBusinessIdeasData";
+import * as fetchInnovationData from "@/utils/dataFetching/fetchInnovationData";
+import * as fetchMarketData from "@/utils/dataFetching/fetchMarketData";
+import * as fetchAccountingFinanceData from "@/utils/dataFetching/fetchAccountingFinanceData";
+import * as fetchFormalizationData from "@/utils/dataFetching/fetchFormalizationData";
+import * as fetchFinancingData from "@/utils/dataFetching/fetchFinancingData";
+import * as fetchTrainingData from "@/utils/dataFetching/fetchTrainingData";
 
 type FetchFunction = (id: number) => Promise<any>;
 type FetchFunctionWithIds = (ids: number[]) => Promise<any>;
@@ -17,10 +27,7 @@ interface DataFetchingFunctions {
   fetchTrainingData: FetchFunction;
 }
 
-export const useUserProfileData = (
-  personaId: number,
-  dataFetchingFunctions: DataFetchingFunctions
-) => {
+export const useUserProfileData = (personaId: number) => {
   const [activeTab, setActiveTab] = useState<TabType>("personal");
   const [tabsData, setTabsData] = useState<TabData>({
     personal: null,
@@ -43,8 +50,8 @@ export const useUserProfileData = (
     try {
       setLoading(true);
       const [personalInfo, data] = await Promise.all([
-        dataFetchingFunctions.fetchPersonalInfo(personaId),
-        dataFetchingFunctions.fetchEntrepreneurshipData(personaId),
+        fetchPersonData.fetchPersonalInfo(personaId),
+        fetchEntrepreneurshipData.fetchEntrepreneurshipData(personaId),
       ]);
       setTabsData((prev) => ({
         ...prev,
@@ -75,38 +82,36 @@ export const useUserProfileData = (
     } finally {
       setLoading(false);
     }
-  }, [personaId, dataFetchingFunctions]);
+  }, [personaId]);
 
   const fetchDataForTab = useCallback(
     async (tab: TabType, emprendimientoIds: number[]) => {
       switch (tab) {
         case "ideaNegocio":
-          return await dataFetchingFunctions.fetchBusinessIdeas(
+          return await fetchBusinessIdeasData.fetchBusinessIdeas(
             emprendimientoIds
           );
         case "innovacion":
-          return await dataFetchingFunctions.fetchInnovationData(
+          return await fetchInnovationData.fetchInnovationData(
             emprendimientoIds
           );
         case "mercado":
-          return await dataFetchingFunctions.fetchMarketData(emprendimientoIds);
+          return await fetchMarketData.fetchMarketData(emprendimientoIds);
         case "contabilidadFinanzas":
-          return await dataFetchingFunctions.fetchAccountingFinanceData(
+          return await fetchAccountingFinanceData.fetchAccountingFinanceData(
             emprendimientoIds
           );
         case "formalizacion":
-          return await dataFetchingFunctions.fetchFormalizationData(
+          return await fetchFormalizationData.fetchFormalizationData(
             emprendimientoIds
           );
         case "financiamiento":
-          return await dataFetchingFunctions.fetchFinancingData(
-            emprendimientoIds
-          );
+          return await fetchFinancingData.fetchFinancingData(emprendimientoIds);
         default:
           return null;
       }
     },
-    [dataFetchingFunctions]
+    []
   );
 
   const fetchTabData = useCallback(async () => {
@@ -122,7 +127,7 @@ export const useUserProfileData = (
         case "emprendimiento":
           break;
         case "gender":
-          data = await dataFetchingFunctions.fetchGenderVariables(personaId);
+          data = await fetchGenderData.fetchGenderVariables(personaId);
           break;
         case "ideaNegocio":
         case "innovacion":
@@ -135,7 +140,7 @@ export const useUserProfileData = (
           data = await fetchDataForTab(activeTab, emprendimientoIds);
           break;
         case "capacitacion":
-          data = await dataFetchingFunctions.fetchTrainingData(personaId);
+          data = await fetchTrainingData.fetchTrainingData(personaId);
           break;
         default:
           data = null;
@@ -147,14 +152,7 @@ export const useUserProfileData = (
     } finally {
       setLoading(false);
     }
-  }, [
-    activeTab,
-    entrepreneurshipData,
-    fetchDataForTab,
-    personaId,
-    tabsData,
-    dataFetchingFunctions,
-  ]);
+  }, [activeTab, entrepreneurshipData, fetchDataForTab, personaId, tabsData]);
 
   useEffect(() => {
     fetchInitialData();
