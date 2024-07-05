@@ -1,9 +1,11 @@
 "use client";
-import ProfileHeader from "./ProfileHeader";
-import TabNavigation from "./TabNavigation";
-import TabContent from "./TabContent";
+
+import { Tabs, Spin } from "antd";
 import { TabType } from "./types";
 import { useUserProfileData } from "@/hooks/useUserProfileData";
+import * as fetchFunctions from "@/utils/fetchPersonData";
+import ProfileHeader from "./Header";
+import TabContent from "./Tab";
 
 type UserProfileProps = {
   personaId: number;
@@ -28,8 +30,12 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
     useUserProfileData(personaId);
 
   if (loading && !username) {
-    return <div>Cargando...</div>;
+    return <Spin tip="Cargando..." />;
   }
+
+  const handleTabChange = (activeKey: string) => {
+    setActiveTab(activeKey as TabType);
+  };
 
   return (
     <main className="flex flex-col items-center p-4">
@@ -39,10 +45,11 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
         avatarSrc={avatarSrc}
       />
       <div className="w-full max-w-6xl">
-        <TabNavigation
-          tabs={tabs}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
+        <Tabs
+          activeKey={activeTab}
+          onChange={handleTabChange}
+          tabBarGutter={16}
+          items={tabs.map((tab) => ({ key: tab.value, label: tab.label }))}
         />
         <div className="mt-6">
           <TabContent
