@@ -2,7 +2,9 @@ export type Microentrepreneur = {
 	fullName: string;
 	company: string;
 	sector: string;
-	mainActivity: string;
+	businessIdea: string;
+	experienceYears: string;
+	id: number;
 };
 
 export type PaginationProps = {
