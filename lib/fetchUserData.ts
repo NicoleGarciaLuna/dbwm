@@ -1,4 +1,3 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/utils/api/supabaseClient";
 
 export type TabType =
@@ -15,7 +14,7 @@ export type TabType =
 
 export type TabData = Record<TabType, any>;
 
-const tabsConfig: Array<{ label: string; value: TabType }> = [
+export const tabsConfig: Array<{ label: string; value: TabType }> = [
   { label: "Información personal", value: "personal" },
   { label: "Variables género", value: "gender" },
   { label: "Emprendimiento", value: "emprendimiento" },
@@ -179,9 +178,9 @@ const fetchDataByTab = async (tab: TabType, personaId: number) => {
             )
           ),
           financiamiento_recurso_disponible (
-            recurso_disponible (
-              descripcion
-            )
+              recurso_disponible (
+                  descripcion
+              )
           )
         `
         )
@@ -196,59 +195,55 @@ const fetchDataByTab = async (tab: TabType, personaId: number) => {
   }
 };
 
-export const useUserProfileData = (personaId: number) => {
-  const [activeTab, setActiveTab] = useState<TabType>("personal");
-  const [tabsData, setTabsData] = useState<TabData>({} as TabData);
-  const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState("");
-  const [joinedDate, setJoinedDate] = useState("");
-
-  const fetchTabData = useCallback(
-    async (tab: TabType) => {
-      setLoading(true);
-      try {
-        const { data, error } = await fetchDataByTab(tab, personaId);
-        if (error) {
-          console.error(error);
-          return;
-        }
-
-        if (tab === "personal" && data) {
-          setUsername(`${data.nombre} ${data.primer_apellido}`);
-          setJoinedDate(data.diagnostico?.[0]?.fecha_diagnostico || "");
-        }
-
-        setTabsData((prevData) => ({
-          ...prevData,
-          [tab]: data,
-        }));
-      } finally {
-        setLoading(false);
-      }
-    },
-    [personaId]
+export const fetchUserProfileData = async (personaId: number) => {
+  const personalData = fetchDataByTab("personal", personaId);
+  const genderData = fetchDataByTab("gender", personaId);
+  const emprendimientoData = fetchDataByTab("emprendimiento", personaId);
+  const ideaNegocioData = fetchDataByTab("ideaNegocio", personaId);
+  const innovacionData = fetchDataByTab("innovacion", personaId);
+  const mercadoData = fetchDataByTab("mercado", personaId);
+  const contabilidadFinanzasData = fetchDataByTab(
+    "contabilidadFinanzas",
+    personaId
   );
+  const formalizacionData = fetchDataByTab("formalizacion", personaId);
+  const financiamientoData = fetchDataByTab("financiamiento", personaId);
+  const capacitacionData = fetchDataByTab("capacitacion", personaId);
 
-  useEffect(() => {
-    fetchTabData("personal");
-  }, [personaId, fetchTabData]);
-
-  const handleSetActiveTab = (tab: TabType) => {
-    setActiveTab(tab);
-    if (!tabsData[tab]) {
-      fetchTabData(tab);
-    }
-  };
-
-  const memoizedTabsConfig = useMemo(() => tabsConfig, []);
+  const [
+    personal,
+    gender,
+    emprendimiento,
+    ideaNegocio,
+    innovacion,
+    mercado,
+    contabilidadFinanzas,
+    formalizacion,
+    financiamiento,
+    capacitacion,
+  ] = await Promise.all([
+    personalData,
+    genderData,
+    emprendimientoData,
+    ideaNegocioData,
+    innovacionData,
+    mercadoData,
+    contabilidadFinanzasData,
+    formalizacionData,
+    financiamientoData,
+    capacitacionData,
+  ]);
 
   return {
-    activeTab,
-    setActiveTab: handleSetActiveTab,
-    tabsData,
-    loading,
-    username,
-    joinedDate,
-    tabs: memoizedTabsConfig,
+    personal: personal.data,
+    gender: gender.data,
+    emprendimiento: emprendimiento.data,
+    ideaNegocio: ideaNegocio.data,
+    innovacion: innovacion.data,
+    mercado: mercado.data,
+    contabilidadFinanzas: contabilidadFinanzas.data,
+    formalizacion: formalizacion.data,
+    financiamiento: financiamiento.data,
+    capacitacion: capacitacion.data,
   };
 };

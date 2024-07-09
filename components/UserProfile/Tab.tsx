@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Card, Spin, Empty } from "antd";
-import { TabType, TabData } from "./types";
+import { TabType, TabData } from "@/lib/fetchUserData";
 
 type TabContentProps = {
   activeTab: TabType;
