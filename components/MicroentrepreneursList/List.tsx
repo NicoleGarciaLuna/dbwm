@@ -1,22 +1,67 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Table, Pagination, Input, Modal, Button } from "antd";
-import { Microentrepreneur } from "@/types";
-import { columnConfig } from "@/data/columnConfig";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import {
+	fetchPersonasConDatos,
+	PersonasConDatos,
+} from "@/utils/api/fetchTable";
 
-type MicroentrepreneursListProps = {
-	data: Microentrepreneur[];
+type Microentrepreneur = {
+	id: number;
+	fullName: string;
+	company: string;
+	sector: string;
+	businessIdea: string;
+	experienceYears: string;
 };
 
-const MicroentrepreneursList = ({ data }: MicroentrepreneursListProps) => {
+const columnConfig = [
+	{ key: "fullName", header: "Nombre Completo" },
+	{ key: "company", header: "Empresa" },
+	{ key: "sector", header: "Sector" },
+	{ key: "businessIdea", header: "Idea de Negocio" },
+	{ key: "experienceYears", header: "Años de Experiencia" },
+	{ key: "actions", header: "Acciones", isAction: true },
+];
+
+const MicroentrepreneursList = () => {
+	const [data, setData] = useState<Microentrepreneur[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [selectedMicroentrepreneur, setSelectedMicroentrepreneur] =
 		useState<Microentrepreneur | null>(null);
 	const router = useRouter();
+
+	useEffect(() => {
+		const getData = async () => {
+			const personas: PersonasConDatos | null = await fetchPersonasConDatos();
+			console.log("Datos recibidos de Supabase:", personas);
+
+			if (personas) {
+				const formattedData = personas.map((persona) => {
+					const diagnostico = persona.diagnostico?.[0];
+					const emprendimiento = diagnostico?.emprendimiento;
+					const ideaNegocio = diagnostico?.idea_negocio;
+
+					return {
+						id: persona.id_persona,
+						fullName: `${persona.nombre} ${persona.primer_apellido} ${persona.segundo_apellido}`,
+						company: emprendimiento?.nombre_emprendimiento ?? "",
+						sector: emprendimiento?.sector_economico ?? "",
+						businessIdea: ideaNegocio?.descripcion_breve ?? "",
+						experienceYears: emprendimiento?.tiempo_operacion ?? "",
+					};
+				});
+				setData(formattedData);
+				console.log("Datos formateados:", formattedData);
+			}
+		};
+
+		getData();
+	}, []);
 
 	const filteredData = useMemo(() => {
 		return data.filter(
