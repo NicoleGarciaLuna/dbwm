@@ -1,4 +1,4 @@
-import { supabase } from "@/utils/api/supabaseClient";
+import { supabase } from "@/utils/supabase/supabaseClient";
 
 export const fetchStatisticsData = async (): Promise<any[] | null> => {
   try {

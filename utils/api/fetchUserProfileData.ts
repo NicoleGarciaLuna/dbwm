@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { supabase } from "@/utils/api/supabaseClient";
+import { supabase } from "@/utils/supabase/supabaseClient";
 import { categoryTabs } from "@/data/tabsConfig";
 
 export type TabData = Record<string, any>;

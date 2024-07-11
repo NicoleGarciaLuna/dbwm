@@ -1,4 +1,4 @@
-import { supabase } from "./supabaseClient";
+import { supabase } from "../supabase/supabaseClient";
 import { QueryData } from "@supabase/supabase-js";
 
 const personasConDatosQuery = supabase.from("persona").select(`
@@ -21,15 +21,15 @@ const personasConDatosQuery = supabase.from("persona").select(`
 export type PersonasConDatos = QueryData<typeof personasConDatosQuery>;
 
 export const fetchPersonasConDatos =
-	async (): Promise<PersonasConDatos | null> => {
-		try {
-			const { data, error } = await personasConDatosQuery;
-			if (error) {
-				throw error;
-			}
-			return data;
-		} catch (error) {
-			console.error("Error fetching data:", error);
-			return null;
-		}
-	};
+  async (): Promise<PersonasConDatos | null> => {
+    try {
+      const { data, error } = await personasConDatosQuery;
+      if (error) {
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return null;
+    }
+  };

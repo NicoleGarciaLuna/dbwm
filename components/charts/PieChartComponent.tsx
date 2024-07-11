@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
 
 type PieChartData = {
@@ -94,31 +95,33 @@ const renderActiveShape = (props: RenderActiveShapeProps) => {
 
 type CustomPieChartProps = {
   data: PieChartData[];
-  activeIndex: number;
-  onPieEnter: (data: any, index: number) => void;
 };
 
-const CustomPieChart = ({
-  data,
-  activeIndex,
-  onPieEnter,
-}: CustomPieChartProps) => (
-  <ResponsiveContainer width="100%" height={400}>
-    <PieChart width={400} height={400}>
-      <Pie
-        activeIndex={activeIndex}
-        activeShape={renderActiveShape}
-        data={data}
-        cx="50%"
-        cy="50%"
-        innerRadius={60}
-        outerRadius={80}
-        fill="#8884d8"
-        dataKey="value"
-        onMouseEnter={onPieEnter}
-      />
-    </PieChart>
-  </ResponsiveContainer>
-);
+const CustomPieChart = ({ data }: CustomPieChartProps) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const onPieEnter = (_: any, index: number) => {
+    setActiveIndex(index);
+  };
+
+  return (
+    <ResponsiveContainer width="100%" height={400}>
+      <PieChart width={400} height={400}>
+        <Pie
+          activeIndex={activeIndex}
+          activeShape={renderActiveShape}
+          data={data}
+          cx="50%"
+          cy="50%"
+          innerRadius={60}
+          outerRadius={80}
+          fill="#8884d8"
+          dataKey="value"
+          onMouseEnter={onPieEnter}
+        />
+      </PieChart>
+    </ResponsiveContainer>
+  );
+};
 
 export default CustomPieChart;
