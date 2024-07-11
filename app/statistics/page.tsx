@@ -1,15 +1,40 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, Spin } from "antd";
-import LayoutComponent from "@/components/LayoutComponent";
-import PieChartComponent from "@/components/charts/PieChartComponent";
-import useFetchData from "@/hooks/useFetchData";
-import { fetchStatisticsData } from "@/services/fetchMaritalData";
+import CustomPieChart from "@/components/charts/PieChartComponent";
+import { fetchData } from "@/utils/api/fetchStatistics";
 import { categoryTabs } from "@/data/tabsConfig";
+import Layout from "@/components/LayoutComponent";
 
-const StatisticsPage = () => {
+type DataItem = {
+  name: string;
+  value: number;
+};
+
+const Statistics = () => {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<DataItem[] | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const { loading, data } = useFetchData(fetchStatisticsData);
+
+  useEffect(() => {
+    const fetchDataAsync = async () => {
+      const result = await fetchData(
+        "info_personal",
+        "estado_civil, estado_civil.count()"
+      );
+      if (result) {
+        setData(
+          result.map((item: any) => ({
+            name: item.estado_civil,
+            value: item.count,
+          }))
+        );
+      }
+      setLoading(false);
+    };
+
+    fetchDataAsync();
+  }, []);
 
   const onPieEnter = (_: any, index: number) => {
     setActiveIndex(index);
@@ -18,7 +43,7 @@ const StatisticsPage = () => {
   const filteredTabs = categoryTabs.slice(0, -1);
 
   return (
-    <LayoutComponent>
+    <Layout>
       <div>
         {loading ? (
           <Spin tip="Cargando...">
@@ -29,11 +54,8 @@ const StatisticsPage = () => {
             {filteredTabs.map((tab) => (
               <Tabs.TabPane tab={tab.label} key={tab.value}>
                 {tab.value === "personal" && data ? (
-                  <PieChartComponent
-                    data={data.map((item) => ({
-                      name: item.name,
-                      value: item.value,
-                    }))}
+                  <CustomPieChart
+                    data={data}
                     activeIndex={activeIndex}
                     onPieEnter={onPieEnter}
                   />
@@ -45,8 +67,8 @@ const StatisticsPage = () => {
           </Tabs>
         )}
       </div>
-    </LayoutComponent>
+    </Layout>
   );
 };
 
-export default StatisticsPage;
+export default Statistics;

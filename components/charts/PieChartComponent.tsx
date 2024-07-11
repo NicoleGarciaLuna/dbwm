@@ -1,5 +1,9 @@
-"use client";
 import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
+
+type PieChartData = {
+  name: string;
+  value: number;
+};
 
 type RenderActiveShapeProps = {
   cx: number;
@@ -10,12 +14,12 @@ type RenderActiveShapeProps = {
   startAngle: number;
   endAngle: number;
   fill: string;
-  payload: any;
+  payload: PieChartData;
   percent: number;
   value: number;
 };
 
-const renderCustomActiveShape = (props: RenderActiveShapeProps) => {
+const renderActiveShape = (props: RenderActiveShapeProps) => {
   const RADIAN = Math.PI / 180;
   const {
     cx,
@@ -82,28 +86,28 @@ const renderCustomActiveShape = (props: RenderActiveShapeProps) => {
         textAnchor={textAnchor}
         fill="#999"
       >
-        {`(Rate ${(percent * 100).toFixed(2)}%)`}
+        {`Rate ${(percent * 100).toFixed(2)}%`}
       </text>
     </g>
   );
 };
 
-type PieChartComponentProps = {
-  data: any[];
+type CustomPieChartProps = {
+  data: PieChartData[];
   activeIndex: number;
   onPieEnter: (data: any, index: number) => void;
 };
 
-const PieChartComponent = ({
+const CustomPieChart = ({
   data,
   activeIndex,
   onPieEnter,
-}: PieChartComponentProps) => (
+}: CustomPieChartProps) => (
   <ResponsiveContainer width="100%" height={400}>
     <PieChart width={400} height={400}>
       <Pie
         activeIndex={activeIndex}
-        activeShape={renderCustomActiveShape}
+        activeShape={renderActiveShape}
         data={data}
         cx="50%"
         cy="50%"
@@ -117,4 +121,4 @@ const PieChartComponent = ({
   </ResponsiveContainer>
 );
 
-export default PieChartComponent;
+export default CustomPieChart;

@@ -1,11 +1,8 @@
 import { supabase } from "./supabaseClient";
 
-export const fetchMaritalStatusData = async () => {
+export const fetchData = async (table: string, select: string) => {
   try {
-    const { data, error } = await supabase.from("info_personal").select(`
-        estado_civil,
-        estado_civil.count()
-      `);
+    const { data, error } = await supabase.from(table).select(select);
 
     if (error) throw error;
 
