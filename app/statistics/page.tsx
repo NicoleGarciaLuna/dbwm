@@ -27,18 +27,18 @@ const StatisticsPage = () => {
         ) : (
           <Tabs onChange={(key: string) => console.log(key)} type="card">
             {filteredTabs.map((tab) => (
-              <Tabs.TabPane tab={tab.label} key={tab.value}>
-                {tab.value === "personal" && data ? (
+              <Tabs.TabPane tab={tab} key={tab}>
+                {tab === "Información Personal" && data ? (
                   <PieChartComponent
                     data={data.map((item) => ({
-                      name: item.name, // Generic name field
-                      value: item.value, // Generic value field
+                      name: item.name,
+                      value: item.value,
                     }))}
                     activeIndex={activeIndex}
                     onPieEnter={onPieEnter}
                   />
                 ) : (
-                  tab.value
+                  tab
                 )}
               </Tabs.TabPane>
             ))}

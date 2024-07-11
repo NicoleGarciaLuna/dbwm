@@ -6,7 +6,7 @@ type TabContentProps = {
   activeTab: string;
   tabsData: TabData;
   loading: boolean;
-  tabs: Array<{ label: string; value: string }>;
+  tabs: string[];
 };
 
 const formatKey = (key: string): string =>
@@ -85,8 +85,7 @@ const TabContent = ({
   if (!data) return <Empty description="No hay datos disponibles." />;
 
   const activeTabLabel =
-    tabs.find((tab) => tab.value === activeTab)?.label ||
-    `Datos del Tab ${activeTab}`;
+    tabs.find((tab) => tab === activeTab) || `Datos del Tab ${activeTab}`;
 
   return (
     <div className="space-y-4">
