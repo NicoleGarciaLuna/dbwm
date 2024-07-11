@@ -1,34 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/utils/api/supabaseClient";
+import { categoryTabs } from "@/data/tabsConfig";
 
-export type TabType =
-  | "personal"
-  | "gender"
-  | "emprendimiento"
-  | "ideaNegocio"
-  | "innovacion"
-  | "mercado"
-  | "contabilidadFinanzas"
-  | "formalizacion"
-  | "financiamiento"
-  | "capacitacion";
+export type TabData = Record<string, any>;
 
-export type TabData = Record<TabType, any>;
-
-const tabsConfig: Array<{ label: string; value: TabType }> = [
-  { label: "Información personal", value: "personal" },
-  { label: "Variables género", value: "gender" },
-  { label: "Emprendimiento", value: "emprendimiento" },
-  { label: "Idea negocio", value: "ideaNegocio" },
-  { label: "Innovación", value: "innovacion" },
-  { label: "Mercado", value: "mercado" },
-  { label: "Contabilidad y finanzas", value: "contabilidadFinanzas" },
-  { label: "Formalización", value: "formalizacion" },
-  { label: "Financiamiento", value: "financiamiento" },
-  { label: "Capacitación", value: "capacitacion" },
-];
-
-const fetchDataByTab = async (tab: TabType, personaId: number) => {
+const fetchDataByTab = async (tab: string, personaId: number) => {
   switch (tab) {
     case "personal":
       return supabase
@@ -197,14 +173,14 @@ const fetchDataByTab = async (tab: TabType, personaId: number) => {
 };
 
 export const useUserProfileData = (personaId: number) => {
-  const [activeTab, setActiveTab] = useState<TabType>("personal");
+  const [activeTab, setActiveTab] = useState<string>("personal");
   const [tabsData, setTabsData] = useState<TabData>({} as TabData);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [joinedDate, setJoinedDate] = useState("");
 
   const fetchTabData = useCallback(
-    async (tab: TabType) => {
+    async (tab: string) => {
       setLoading(true);
       try {
         const { data, error } = await fetchDataByTab(tab, personaId);
@@ -233,14 +209,14 @@ export const useUserProfileData = (personaId: number) => {
     fetchTabData("personal");
   }, [personaId, fetchTabData]);
 
-  const handleSetActiveTab = (tab: TabType) => {
+  const handleSetActiveTab = (tab: string) => {
     setActiveTab(tab);
     if (!tabsData[tab]) {
       fetchTabData(tab);
     }
   };
 
-  const memoizedTabsConfig = useMemo(() => tabsConfig, []);
+  const memoizedTabsConfig = useMemo(() => categoryTabs, []);
 
   return {
     activeTab,

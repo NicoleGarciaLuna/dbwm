@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
 import { Card, Spin, Empty } from "antd";
-import { TabType, TabData } from "@/hooks/useUserProfileData";
+import { TabData } from "@/utils/api/fetchUserProfileData";
 
 type TabContentProps = {
-  activeTab: TabType;
+  activeTab: string;
   tabsData: TabData;
   loading: boolean;
-  tabs: Array<{ label: string; value: TabType }>;
+  tabs: Array<{ label: string; value: string }>;
 };
 
 const formatKey = (key: string): string =>

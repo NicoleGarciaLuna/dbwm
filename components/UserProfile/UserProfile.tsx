@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, Spin } from "antd";
-import { useUserProfileData, TabType } from "@/hooks/useUserProfileData";
+import { useUserProfileData } from "@/utils/api/fetchUserProfileData";
 import ProfileHeader from "./Header";
 import TabContent from "./Tab";
 import { Suspense } from "react";
@@ -23,7 +23,7 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
   } = useUserProfileData(personaId);
 
   const handleTabChange = (activeKey: string) => {
-    setActiveTab(activeKey as TabType);
+    setActiveTab(activeKey as string);
   };
 
   return (
