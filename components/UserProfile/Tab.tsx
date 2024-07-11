@@ -1,19 +1,6 @@
 import { ReactNode } from "react";
 import { Card, Spin, Empty } from "antd";
-
-export type TabType =
-  | "personal"
-  | "gender"
-  | "emprendimiento"
-  | "ideaNegocio"
-  | "innovacion"
-  | "mercado"
-  | "contabilidadFinanzas"
-  | "formalizacion"
-  | "financiamiento"
-  | "capacitacion";
-
-export type TabData = Record<TabType, any>;
+import { TabType, TabData } from "@/hooks/useUserProfileData";
 
 type TabContentProps = {
   activeTab: TabType;
