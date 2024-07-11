@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Tabs, Spin } from "antd";
-import LayoutComponent from "@/components/Layout/LayoutComponent";
+import LayoutComponent from "@/components/LayoutComponent";
 import PieChartComponent from "@/components/charts/PieChartComponent";
 import useFetchData from "@/hooks/useFetchData";
 import { fetchStatisticsData } from "@/services/fetchMaritalData";
@@ -27,8 +27,8 @@ const StatisticsPage = () => {
         ) : (
           <Tabs onChange={(key: string) => console.log(key)} type="card">
             {filteredTabs.map((tab) => (
-              <Tabs.TabPane tab={tab} key={tab}>
-                {tab === "Información Personal" && data ? (
+              <Tabs.TabPane tab={tab.label} key={tab.value}>
+                {tab.value === "personal" && data ? (
                   <PieChartComponent
                     data={data.map((item) => ({
                       name: item.name,
@@ -38,7 +38,7 @@ const StatisticsPage = () => {
                     onPieEnter={onPieEnter}
                   />
                 ) : (
-                  tab
+                  tab.value
                 )}
               </Tabs.TabPane>
             ))}

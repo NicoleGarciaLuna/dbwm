@@ -42,7 +42,7 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
               activeKey={activeTab}
               onChange={handleTabChange}
               tabBarGutter={16}
-              items={tabs.map((tab) => ({ key: tab, label: tab }))}
+              items={tabs.map((tab) => ({ key: tab.value, label: tab.label }))}
             />
             <div className="mt-6">
               <Suspense fallback={<Spin tip="Cargando contenido..." />}>
