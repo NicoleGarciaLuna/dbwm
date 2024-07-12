@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from "recharts";
+import { Row, Col } from "antd";
 
 type PieChartData = {
 	name: string;
@@ -79,7 +80,7 @@ const renderActiveShape = (props: RenderActiveShapeProps) => {
 				y={ey}
 				textAnchor={textAnchor}
 				fill="#333"
-			>{`${payload.name}: ${value}`}</text>
+			>{`Cantidad ${payload.name}: ${value}`}</text>
 			<text
 				x={ex + (cos >= 0 ? 1 : -1) * 12}
 				y={ey}
@@ -95,9 +96,10 @@ const renderActiveShape = (props: RenderActiveShapeProps) => {
 
 type CustomPieChartProps = {
 	data: PieChartData[];
+	title: string;
 };
 
-const CustomPieChart = ({ data }: CustomPieChartProps) => {
+const CustomPieChart = ({ data, title }: CustomPieChartProps) => {
 	const [activeIndex, setActiveIndex] = useState(0);
 
 	const onPieEnter = (_: any, index: number) => {
@@ -107,25 +109,35 @@ const CustomPieChart = ({ data }: CustomPieChartProps) => {
 	const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#8dd1e1"];
 
 	return (
-		<ResponsiveContainer width="100%" height={400}>
-			<PieChart width={400} height={400}>
-				<Pie
-					activeIndex={activeIndex}
-					activeShape={renderActiveShape}
-					data={data}
-					cx="50%"
-					cy="50%"
-					innerRadius={60}
-					outerRadius={80}
-					dataKey="value"
-					onMouseEnter={onPieEnter}
-				>
-					{data.map((entry, index) => (
-						<Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-					))}
-				</Pie>
-			</PieChart>
-		</ResponsiveContainer>
+		<div>
+			<Row justify="center">
+				<Col>
+					<h2>{title}</h2>
+				</Col>
+			</Row>
+			<ResponsiveContainer width="100%" height={400}>
+				<PieChart width={400} height={400}>
+					<Pie
+						activeIndex={activeIndex}
+						activeShape={renderActiveShape}
+						data={data}
+						cx="50%"
+						cy="50%"
+						innerRadius={60}
+						outerRadius={80}
+						dataKey="value"
+						onMouseEnter={onPieEnter}
+					>
+						{data.map((entry, index) => (
+							<Cell
+								key={`cell-${index}`}
+								fill={colors[index % colors.length]}
+							/>
+						))}
+					</Pie>
+				</PieChart>
+			</ResponsiveContainer>
+		</div>
 	);
 };
 

@@ -3,148 +3,266 @@ import CustomPieChart from "@/components/charts/PieChartComponent";
 import CustomBarChart from "@/components/charts/BarChartComponent";
 
 type DataItem = {
-  name: string;
-  value: number;
+	name: string;
+	value: number;
 };
 
 type Tab = {
-  label: string;
-  value: string;
+	label: string;
+	value: string;
 };
 
 type TabsComponentProps = {
-  loading: boolean;
-  tabs: Tab[];
-  data: { [key: string]: { [key: string]: DataItem[] | null } | undefined };
-  onTabChange: (key: string) => void;
-  activeTab: string;
+	loading: boolean;
+	tabs: Tab[];
+	data: { [key: string]: { [key: string]: DataItem[] | null } | undefined };
+	onTabChange: (key: string) => void;
+	activeTab: string;
 };
 
 const TabsComponent = ({
-  loading,
-  tabs,
-  data,
-  onTabChange,
-  activeTab,
+	loading,
+	tabs,
+	data,
+	onTabChange,
+	activeTab,
 }: TabsComponentProps) => {
-  const renderChart = (
-    dataKey: string,
-    ChartComponent: React.ComponentType<{ data: DataItem[] }>
-  ) => {
-    const chartData = data[activeTab]?.[dataKey];
-    return chartData ? <ChartComponent data={chartData} /> : null;
-  };
+	const renderChart = (
+		dataKey: string,
+		ChartComponent: React.ComponentType<{ data: DataItem[]; title: string }>,
+		title: string
+	) => {
+		const chartData = data[activeTab]?.[dataKey];
+		return chartData ? <ChartComponent data={chartData} title={title} /> : null;
+	};
 
-  const renderTabContent = (tabValue: string) => {
-    if (loading && activeTab === tabValue) {
-      return (
-        <Spin tip="Cargando...">
-          <div style={{ height: "200px" }} />
-        </Spin>
-      );
-    }
+	const renderTabContent = (tabValue: string) => {
+		if (loading && activeTab === tabValue) {
+			return (
+				<Spin tip="Cargando...">
+					<div style={{ height: "200px" }} />
+				</Spin>
+			);
+		}
 
-    switch (tabValue) {
-      case "personal":
-        return (
-          <>
-            {renderChart("maritalStatusData", CustomPieChart)}
-            {renderChart("educationData", CustomBarChart)}
-          </>
-        );
-      case "gender":
-        return (
-          <>
-            {renderChart("householdTasksTimeData", CustomBarChart)}
-            {renderChart("householdUtilityPercentageData", CustomPieChart)}
-            {renderChart("dependentsData", CustomBarChart)}
-            {renderChart("entrepreneurshipAutonomyData", CustomBarChart)}
-          </>
-        );
-      case "emprendimiento":
-        return (
-          <>
-            {renderChart("businessTypeData", CustomBarChart)}
-            {renderChart("operationTimeData", CustomBarChart)}
-            {renderChart("economicSectorData", CustomBarChart)}
-            {renderChart("businessStageData", CustomBarChart)}
-            {renderChart("siecRegistrationData", CustomPieChart)}
-          </>
-        );
-      case "ideaNegocio":
-        return (
-          <>
-            {renderChart("businessIdeaStatusData", CustomBarChart)}
-            {renderChart("developedInstrumentsData", CustomBarChart)}
-          </>
-        );
-      case "innovacion":
-        return (
-          <>
-            {renderChart("ticsUsageData", CustomBarChart)}
-            {renderChart(
-              "intellectualPropertyRegistrationData",
-              CustomPieChart
-            )}
-          </>
-        );
-      case "mercado":
-        return (
-          <>
-            {renderChart("digitalMarketingStrategyData", CustomBarChart)}
-            {renderChart("monthlySalesAverageData", CustomBarChart)}
-            {renderChart("identifiedCompetitorsData", CustomPieChart)}
-            {renderChart("targetMarketData", CustomBarChart)}
-            {renderChart("segmentedMarketData", CustomPieChart)}
-            {renderChart("brandImageData", CustomBarChart)}
-            {renderChart("currentClientsData", CustomBarChart)}
-            {renderChart("salesChannelsData", CustomBarChart)}
-          </>
-        );
-      case "contabilidadFinanzas":
-        return (
-          <>
-            {renderChart("monthlyBaseSalaryData", CustomBarChart)}
-            {renderChart("annualBudgetData", CustomPieChart)}
-            {renderChart("inventoryControlData", CustomPieChart)}
-          </>
-        );
-      case "formalizacion":
-        return (
-          <>
-            {renderChart("formalizationInterestData", CustomPieChart)}
-            {renderChart("formalizationStepsKnowledgeData", CustomBarChart)}
-            {renderChart("formalizationAspectsData", CustomBarChart)}
-          </>
-        );
-      case "financiamiento":
-        return (
-          <>
-            {renderChart("activeCreditData", CustomPieChart)}
-            {renderChart("currentCreditOperationsData", CustomBarChart)}
-            {renderChart("stateProgramFundsData", CustomBarChart)}
-            {renderChart("financingNeedsData", CustomBarChart)}
-            {renderChart("noCreditReasonsData", CustomPieChart)}
-            {renderChart("availableResourcesData", CustomBarChart)}
-            {renderChart("initialInvestmentSourceData", CustomBarChart)}
-          </>
-        );
-      default:
-        return null;
-    }
-  };
+		switch (tabValue) {
+			case "personal":
+				return (
+					<>
+						{renderChart("maritalStatusData", CustomPieChart, "Estado Civil")}
+						{renderChart("educationData", CustomBarChart, "Escolaridad")}
+					</>
+				);
+			case "gender":
+				return (
+					<>
+						{renderChart(
+							"householdTasksTimeData",
+							CustomBarChart,
+							"Tiempo en Tareas del Hogar"
+						)}
+						{renderChart(
+							"householdUtilityPercentageData",
+							CustomPieChart,
+							"Porcentaje de Utilidad del Hogar"
+						)}
+						{renderChart("dependentsData", CustomBarChart, "Dependientes")}
+						{renderChart(
+							"entrepreneurshipAutonomyData",
+							CustomBarChart,
+							"Autonomía en el Emprendimiento"
+						)}
+					</>
+				);
+			case "emprendimiento":
+				return (
+					<>
+						{renderChart(
+							"businessTypeData",
+							CustomBarChart,
+							"Tipo de Emprendimiento"
+						)}
+						{renderChart(
+							"operationTimeData",
+							CustomBarChart,
+							"Tiempo de Operación"
+						)}
+						{renderChart(
+							"economicSectorData",
+							CustomBarChart,
+							"Sector Económico"
+						)}
+						{renderChart(
+							"businessStageData",
+							CustomBarChart,
+							"Etapa del Negocio"
+						)}
+						{renderChart(
+							"siecRegistrationData",
+							CustomPieChart,
+							"Registro SIEC"
+						)}
+					</>
+				);
+			case "ideaNegocio":
+				return (
+					<>
+						{renderChart(
+							"businessIdeaStatusData",
+							CustomBarChart,
+							"Estado de la Idea de Negocio"
+						)}
+						{renderChart(
+							"developedInstrumentsData",
+							CustomBarChart,
+							"Instrumentos Desarrollados"
+						)}
+					</>
+				);
+			case "innovacion":
+				return (
+					<>
+						{renderChart("ticsUsageData", CustomBarChart, "Uso de TICs")}
+						{renderChart(
+							"intellectualPropertyRegistrationData",
+							CustomPieChart,
+							"Registro de Propiedad Intelectual"
+						)}
+					</>
+				);
+			case "mercado":
+				return (
+					<>
+						{renderChart(
+							"digitalMarketingStrategyData",
+							CustomBarChart,
+							"Estrategia de Marketing Digital"
+						)}
+						{renderChart(
+							"monthlySalesAverageData",
+							CustomBarChart,
+							"Promedio Mensual de Ventas"
+						)}
+						{renderChart(
+							"identifiedCompetitorsData",
+							CustomPieChart,
+							"Competidores Identificados"
+						)}
+						{renderChart(
+							"targetMarketData",
+							CustomBarChart,
+							"Mercado Objetivo"
+						)}
+						{renderChart(
+							"segmentedMarketData",
+							CustomPieChart,
+							"Mercado Segmentado"
+						)}
+						{renderChart("brandImageData", CustomBarChart, "Imagen de Marca")}
+						{renderChart(
+							"currentClientsData",
+							CustomBarChart,
+							"Clientes Actuales"
+						)}
+						{renderChart(
+							"salesChannelsData",
+							CustomBarChart,
+							"Canales de Venta"
+						)}
+					</>
+				);
+			case "contabilidadFinanzas":
+				return (
+					<>
+						{renderChart(
+							"monthlyBaseSalaryData",
+							CustomBarChart,
+							"Salario Base Mensual"
+						)}
+						{renderChart(
+							"annualBudgetData",
+							CustomPieChart,
+							"Presupuesto Anual"
+						)}
+						{renderChart(
+							"inventoryControlData",
+							CustomPieChart,
+							"Control de Inventario"
+						)}
+					</>
+				);
+			case "formalizacion":
+				return (
+					<>
+						{renderChart(
+							"formalizationInterestData",
+							CustomPieChart,
+							"Interés en Formalización"
+						)}
+						{renderChart(
+							"formalizationStepsKnowledgeData",
+							CustomBarChart,
+							"Conocimiento de los Pasos de Formalización"
+						)}
+						{renderChart(
+							"formalizationAspectsData",
+							CustomBarChart,
+							"Aspectos de Formalización"
+						)}
+					</>
+				);
+			case "financiamiento":
+				return (
+					<>
+						{renderChart("activeCreditData", CustomPieChart, "Crédito Activo")}
+						{renderChart(
+							"currentCreditOperationsData",
+							CustomBarChart,
+							"Operaciones de Crédito Actuales"
+						)}
+						{renderChart(
+							"stateProgramFundsData",
+							CustomBarChart,
+							"Fondos de Programas Estatales"
+						)}
+						{renderChart(
+							"financingNeedsData",
+							CustomBarChart,
+							"Necesidades de Financiamiento"
+						)}
+						{renderChart(
+							"noCreditReasonsData",
+							CustomPieChart,
+							"Razones para No Tener Crédito"
+						)}
+						{renderChart(
+							"availableResourcesData",
+							CustomBarChart,
+							"Recursos Disponibles"
+						)}
+						{renderChart(
+							"initialInvestmentSourceData",
+							CustomBarChart,
+							"Fuente de Inversión Inicial"
+						)}
+					</>
+				);
+			default:
+				return null;
+		}
+	};
 
-  return (
-    <div>
-      <Tabs activeKey={activeTab} onChange={onTabChange} type="card">
-        {tabs.map((tab) => (
-          <Tabs.TabPane tab={tab.label} key={tab.value}>
-            {renderTabContent(tab.value)}
-          </Tabs.TabPane>
-        ))}
-      </Tabs>
-    </div>
-  );
+	return (
+		<div>
+			<Tabs activeKey={activeTab} onChange={onTabChange} type="card">
+				{tabs.map((tab) => (
+					<Tabs.TabPane tab={tab.label} key={tab.value}>
+						{renderTabContent(tab.value)}
+					</Tabs.TabPane>
+				))}
+			</Tabs>
+		</div>
+	);
 };
 
 export default TabsComponent;
