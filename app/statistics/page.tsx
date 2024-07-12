@@ -32,16 +32,18 @@ const apiFetcher: DataFetcher = {
 
 const Statistics = ({ dataFetcher }: { dataFetcher: DataFetcher }) => {
   const [loading, setLoading] = useState(true);
-  const [personalData, setPersonalData] = useState<DataItem[] | null>(null);
+  const [maritalStatusData, setMaritalStatusData] = useState<DataItem[] | null>(
+    null
+  );
   const [educationData, setEducationData] = useState<DataItem[] | null>(null);
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const personalResult = await dataFetcher.fetchStatistics(
+      const maritalStatusResult = await dataFetcher.fetchStatistics(
         "info_personal",
         "estado_civil, estado_civil.count()"
       );
-      setPersonalData(personalResult);
+      setMaritalStatusData(maritalStatusResult);
 
       const educationResult = await dataFetcher.fetchStatistics(
         "info_personal",
@@ -62,7 +64,7 @@ const Statistics = ({ dataFetcher }: { dataFetcher: DataFetcher }) => {
       <TabsComponent
         loading={loading}
         tabs={filteredTabs}
-        personalData={personalData}
+        maritalStatusData={maritalStatusData}
         educationData={educationData}
       />
     </Layout>

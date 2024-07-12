@@ -15,14 +15,14 @@ type Tab = {
 type TabsComponentProps = {
   loading: boolean;
   tabs: Tab[];
-  personalData: DataItem[] | null;
+  maritalStatusData: DataItem[] | null;
   educationData: DataItem[] | null;
 };
 
 const TabsComponent = ({
   loading,
   tabs,
-  personalData,
+  maritalStatusData,
   educationData,
 }: TabsComponentProps) => {
   const renderTabContent = (tabValue: string) => {
@@ -30,7 +30,7 @@ const TabsComponent = ({
       case "personal":
         return (
           <>
-            {personalData && <CustomPieChart data={personalData} />}
+            {maritalStatusData && <CustomPieChart data={maritalStatusData} />}
             {educationData && <CustomBarChart data={educationData} />}
           </>
         );
