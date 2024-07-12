@@ -22,7 +22,7 @@ const apiFetcher: DataFetcher = {
     const result = await fetchData(table, select);
     if (result) {
       return result.map((item: any) => ({
-        name: item.estado_civil,
+        name: item.escolaridad || item.estado_civil,
         value: item.count,
       }));
     }
@@ -32,15 +32,23 @@ const apiFetcher: DataFetcher = {
 
 const Statistics = ({ dataFetcher }: { dataFetcher: DataFetcher }) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<DataItem[] | null>(null);
+  const [personalData, setPersonalData] = useState<DataItem[] | null>(null);
+  const [educationData, setEducationData] = useState<DataItem[] | null>(null);
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const result = await dataFetcher.fetchStatistics(
+      const personalResult = await dataFetcher.fetchStatistics(
         "info_personal",
         "estado_civil, estado_civil.count()"
       );
-      setData(result);
+      setPersonalData(personalResult);
+
+      const educationResult = await dataFetcher.fetchStatistics(
+        "info_personal",
+        "escolaridad, escolaridad.count()"
+      );
+      setEducationData(educationResult);
+
       setLoading(false);
     };
 
@@ -51,7 +59,12 @@ const Statistics = ({ dataFetcher }: { dataFetcher: DataFetcher }) => {
 
   return (
     <Layout>
-      <TabsComponent loading={loading} tabs={filteredTabs} data={data} />
+      <TabsComponent
+        loading={loading}
+        tabs={filteredTabs}
+        personalData={personalData}
+        educationData={educationData}
+      />
     </Layout>
   );
 };
