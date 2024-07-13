@@ -15,85 +15,85 @@ type DataState = Record<string, DataItem[] | null>;
 const endpoints = {
 	personal: [
 		{
-			key: "maritalStatusData",
+			key: "Estado Civil",
 			table: "info_personal",
 			select: "estado_civil, estado_civil.count()",
 		},
 		{
-			key: "educationData",
+			key: "Escolaridad",
 			table: "info_personal",
 			select: "escolaridad, escolaridad.count()",
 		},
 	],
 	gender: [
 		{
-			key: "householdTasksTimeData",
+			key: "Tiempo en Tareas del Hogar",
 			table: "variable_genero",
 			select: "tiempo_tareas_hogar, tiempo_tareas_hogar.count()",
 		},
 		{
-			key: "householdUtilityPercentageData",
+			key: "Porcentaje de Utilidad del Hogar",
 			table: "variable_genero",
 			select: "porcentaje_utilidad_hogar, porcentaje_utilidad_hogar.count()",
 		},
 		{
-			key: "dependentsData",
+			key: "Dependientes",
 			table: "variable_genero",
 			select: "personas_a_cargo, personas_a_cargo.count()",
 		},
 		{
-			key: "entrepreneurshipAutonomyData",
+			key: "Autonomía en el Emprendimiento",
 			table: "variable_genero",
 			select: "id_autonomia_emprendimiento.count()",
 		},
 	],
 	emprendimiento: [
 		{
-			key: "businessTypeData",
+			key: "Tipo de Emprendimiento",
 			table: "emprendimiento",
 			select: "tipo_emprendimiento, tipo_emprendimiento.count()",
 		},
 		{
-			key: "operationTimeData",
+			key: "Tiempo de Operación",
 			table: "emprendimiento",
 			select: "tiempo_operacion, tiempo_operacion.count()",
 		},
 		{
-			key: "economicSectorData",
+			key: "Sector Económico",
 			table: "emprendimiento",
 			select: "sector_economico, sector_economico.count()",
 		},
 		{
-			key: "businessStageData",
+			key: "Etapa del Negocio",
 			table: "emprendimiento",
 			select: "etapa_evolucion, etapa_evolucion.count()",
 		},
 		{
-			key: "siecRegistrationData",
+			key: "Registro SIEC",
 			table: "emprendimiento",
 			select: "registro_siec, registro_siec.count()",
 		},
 	],
 	ideaNegocio: [
 		{
-			key: "businessIdeaStatusData",
+			key: "Estado de la Idea de Negocio",
 			table: "idea_negocio",
 			select: "estado_idea, estado_idea.count()",
 		},
 		{
-			key: "developedInstrumentsData",
+			key: "Instrumentos Desarrollados",
 			table: "idea_negocio",
 			select: "instrumentos_desarrollados, instrumentos_desarrollados.count()",
 		},
 	],
 	innovacion: [
 		{
-			key: "ticsUsageData",
+			key: "Uso de TICs",
 			table: "innovacion",
 			select: "uso_tics, uso_tics.count()",
 		},
 		{
-			key: "intellectualPropertyRegistrationData",
+			key: "Registro de Propiedad Intelectual",
 			table: "innovacion",
 			select:
 				"registro_propiedad_intelectual, registro_propiedad_intelectual.count()",
@@ -101,115 +101,115 @@ const endpoints = {
 	],
 	mercado: [
 		{
-			key: "digitalMarketingStrategyData",
+			key: "Estrategia de Marketing Digital",
 			table: "mercado",
 			select:
 				"estrategia_mercadeo_digital, estrategia_mercadeo_digital.count()",
 		},
 		{
-			key: "monthlySalesAverageData",
+			key: "Promedio Mensual de Ventas",
 			table: "mercado",
 			select: "promedio_mensual_ventas, promedio_mensual_ventas.count()",
 		},
 		{
-			key: "identifiedCompetitorsData",
+			key: "Competidores Identificados",
 			table: "mercado",
 			select: "competidores_identificados, competidores_identificados.count()",
 		},
 		{
-			key: "targetMarketData",
+			key: "Mercado Objetivo",
 			table: "mercado",
 			select: "mercado_objetivo, mercado_objetivo.count()",
 		},
 		{
-			key: "segmentedMarketData",
+			key: "Mercado Segmentado",
 			table: "mercado",
 			select: "mercado_segmentado, mercado_segmentado.count()",
 		},
 		{
-			key: "brandImageData",
+			key: "Imagen de Marca",
 			table: "mercado",
 			select: "marca_imagen_grafica, marca_imagen_grafica.count()",
 		},
 		{
-			key: "currentClientsData",
+			key: "Clientes Actuales",
 			table: "mercado",
 			select: "id_cliente_actual.count()",
 		},
 		{
-			key: "salesChannelsData",
+			key: "Canales de Venta",
 			table: "mercado",
 			select: "id_medio_venta.count()",
 		},
 	],
 	contabilidadFinanzas: [
 		{
-			key: "monthlyBaseSalaryData",
+			key: "Salario Base Mensual",
 			table: "contabilidad_finanzas",
 			select: "salario_base_mensual, salario_base_mensual.count()",
 		},
 		{
-			key: "annualBudgetData",
+			key: "Presupuesto Anual",
 			table: "contabilidad_finanzas",
 			select: "presupuesto_anual, presupuesto_anual.count()",
 		},
 		{
-			key: "inventoryControlData",
+			key: "Control de Inventario",
 			table: "contabilidad_finanzas",
 			select: "control_inventario, control_inventario.count()",
 		},
 	],
 	formalizacion: [
 		{
-			key: "formalizationInterestData",
+			key: "Interés en Formalización",
 			table: "formalizacion",
 			select: "interes_formalizar, interes_formalizar.count()",
 		},
 		{
-			key: "formalizationStepsKnowledgeData",
+			key: "Conocimiento de los Pasos de Formalización",
 			table: "formalizacion",
 			select: "conocimiento_pasos, conocimiento_pasos.count()",
 		},
 		{
-			key: "formalizationAspectsData",
+			key: "Aspectos de Formalización",
 			table: "formalizacion",
 			select: "id_aspecto_formalizacion.count()",
 		},
 	],
 	financiamiento: [
 		{
-			key: "activeCreditData",
+			key: "Crédito Activo",
 			table: "financiamiento",
 			select: "credito_activo, credito_activo.count()",
 		},
 		{
-			key: "currentCreditOperationsData",
+			key: "Operaciones de Crédito Actuales",
 			table: "financiamiento",
 			select:
 				"operaciones_crediticias_al_dia, operaciones_crediticias_al_dia.count()",
 		},
 		{
-			key: "stateProgramFundsData",
+			key: "Fondos de Programas Estatales",
 			table: "financiamiento",
 			select: "id_fondo_programa_estado.count()",
 		},
 		{
-			key: "financingNeedsData",
+			key: "Necesidades de Financiamiento",
 			table: "financiamiento",
 			select: "id_necesidad_financiamiento.count()",
 		},
 		{
-			key: "noCreditReasonsData",
+			key: "Razones para No Tener Crédito",
 			table: "financiamiento",
 			select: "id_razon_no_credito.count()",
 		},
 		{
-			key: "availableResourcesData",
+			key: "Recursos Disponibles",
 			table: "financiamiento",
 			select: "id_recurso_disponible.count()",
 		},
 		{
-			key: "initialInvestmentSourceData",
+			key: "Fuente de Inversión Inicial",
 			table: "financiamiento",
 			select: "id_origen_inversion_inicial.count()",
 		},
