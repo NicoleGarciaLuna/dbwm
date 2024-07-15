@@ -105,8 +105,8 @@ const MicroentrepreneursList = () => {
 	};
 
 	const paginatedData = filteredData.slice(
-		(currentPage - 1) * 10,
-		currentPage * 10
+		(currentPage - 1) * 8,
+		currentPage * 8
 	);
 
 	const columns = columnConfig.map((column) => ({
