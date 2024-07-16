@@ -179,7 +179,7 @@ const MicroentrepreneursList = () => {
 			</div>
 			<Modal
 				title="Confirm Deletion"
-				visible={isModalVisible}
+				open={isModalVisible} 
 				onOk={confirmDelete}
 				onCancel={() => setIsModalVisible(false)}
 				okText="Delete"
