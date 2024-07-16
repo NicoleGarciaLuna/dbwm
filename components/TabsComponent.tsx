@@ -22,12 +22,13 @@ const TabsComponent = ({
   const renderChart = (
     chartData: DataItem[] | undefined,
     title: string,
-    chartType: ChartType
+    chartType: ChartType,
+    key: string
   ) => {
     if (!chartData || chartData.length === 0) return null;
     const ChartComponent =
       chartType === ChartType.PIE ? CustomPieChart : CustomBarChart;
-    return <ChartComponent data={chartData} title={title} />;
+    return <ChartComponent key={key} data={chartData} title={title} />;
   };
 
   const renderTabContent = (tabValue: string) => {
@@ -47,7 +48,12 @@ const TabsComponent = ({
     const charts = endpointsForTab
       .map((endpoint) => {
         const chartData = data[tabValue][endpoint.key];
-        return renderChart(chartData, endpoint.key, endpoint.chartType);
+        return renderChart(
+          chartData,
+          endpoint.key,
+          endpoint.chartType,
+          endpoint.key
+        );
       })
       .filter(Boolean); // Filtramos los charts nulos
 
