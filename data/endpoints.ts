@@ -3,7 +3,18 @@ export enum ChartType {
   BAR = "bar",
 }
 
-export const ENDPOINTS = {
+export type Endpoint = {
+  key: string;
+  table: string;
+  select: string;
+  chartType: ChartType;
+};
+
+export type EndpointsType = {
+  [key: string]: Endpoint[];
+};
+
+export const ENDPOINTS: EndpointsType = {
   "Información Personal": [
     {
       key: "Estado Civil",
@@ -242,7 +253,7 @@ export const ENDPOINTS = {
       chartType: ChartType.BAR,
     },
   ],
-  Comunismo: []
+  Comunismo: [],
 };
 
 export const CATEGORY_TABS = Object.keys(ENDPOINTS).map((key) => ({

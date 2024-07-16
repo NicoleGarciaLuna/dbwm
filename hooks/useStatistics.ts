@@ -9,7 +9,9 @@ export type DataItem = {
 
 export const useStatistics = (activeTab: string) => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Record<string, DataItem[]>>({});
+  const [data, setData] = useState<Record<string, Record<string, DataItem[]>>>(
+    {}
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,12 +36,16 @@ export const useStatistics = (activeTab: string) => {
         }));
       }
 
-      setData((prevData) => ({ ...prevData, [activeTab]: newData }));
+      setData((prevData) => ({
+        ...prevData,
+        [activeTab]: newData,
+      }));
+
       setLoading(false);
     };
 
     fetchData();
-  }, [activeTab]);
+  }, [activeTab, data]);
 
   return { loading, data };
 };
