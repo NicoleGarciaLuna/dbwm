@@ -34,7 +34,7 @@ const TabsComponent = ({
   const renderTabContent = (tabValue: string) => {
     if (loading) {
       return (
-        <Spin tip="Cargando...">
+        <Spin>
           <div style={{ height: "200px" }} />
         </Spin>
       );
