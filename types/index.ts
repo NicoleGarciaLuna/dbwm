@@ -68,3 +68,22 @@ export type Endpoint = {
 export type EndpointsType = {
   [key: string]: Endpoint[];
 };
+
+export type Persona = {
+  id_persona: number;
+  nombre: string;
+  primer_apellido: string;
+  segundo_apellido: string;
+  diagnostico: {
+    emprendimiento?: {
+      nombre_emprendimiento?: string;
+      tiempo_operacion?: string;
+      sector_economico?: string;
+    };
+    idea_negocio?: {
+      descripcion_breve?: string;
+    };
+  }[];
+};
+
+

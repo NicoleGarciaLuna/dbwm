@@ -1,22 +1,6 @@
 import { supabase } from "@/utils/supabase/supabaseClient";
 import { PostgrestResponse } from "@supabase/supabase-js";
-
-export type Persona = {
-  id_persona: number;
-  nombre: string;
-  primer_apellido: string;
-  segundo_apellido: string;
-  diagnostico: {
-    emprendimiento?: {
-      nombre_emprendimiento?: string;
-      tiempo_operacion?: string;
-      sector_economico?: string;
-    };
-    idea_negocio?: {
-      descripcion_breve?: string;
-    };
-  }[];
-};
+import { Persona } from "@/types";
 
 export const fetchPersonasConDatos = async (): Promise<Persona[] | null> => {
   try {

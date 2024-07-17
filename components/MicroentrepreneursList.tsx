@@ -3,7 +3,8 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { Table, Pagination, Input, Button, Modal, Spin } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import { fetchPersonasConDatos, Persona } from "@/utils/api/fetchTable";
+import { fetchPersonasConDatos } from "@/utils/api/fetchTable";
+import { Persona } from "@/types";
 import {
   usePagination,
   useSearch,
