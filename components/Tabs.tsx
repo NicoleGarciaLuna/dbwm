@@ -1,5 +1,5 @@
 import { Tabs, Spin } from "antd";
-import { ENDPOINTS } from "@/data/endpoints";
+import { ENDPOINTS } from "@/config/endpoints";
 import { DataItem, ChartType } from "@/types";
 import CustomPieChart from "@/components/charts/PieChart";
 import CustomBarChart from "@/components/charts/BarChart";

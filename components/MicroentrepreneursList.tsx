@@ -3,15 +3,11 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { Table, Pagination, Input, Button, Modal, Spin } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import { fetchPersonasConDatos } from "@/utils/api/fetchTable";
-import {
-  usePagination,
-  useSearch,
-  COLUMN_CONFIG,
-  PAGE_SIZE,
-  MODAL_DELETE_TEXT,
-  SEARCH_INPUT_WIDTH,
-} from "@/utils/hooksAndConstants";
+import { fetchPersonasConDatos } from "@/utils/dataFetching/fetchTable";
+import { PAGE_SIZE } from "@/config";
+import { usePagination } from "@/hooks/usePagination";
+import { useSearch } from "@/hooks/useSearch";
+import { COLUMN_CONFIG, MODAL_DELETE_TEXT, SEARCH_INPUT_WIDTH } from "@/config";
 
 export type MicroentrepreneurTableProps = {
   id: number;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabaseClient } from "@/utils/supabase/client";
-import { ENDPOINTS } from "@/data/endpoints";
+import { ENDPOINTS } from "@/config/endpoints";
 import { DataItem } from "@/types";
 
 export const useStatistics = (activeTab: string) => {
