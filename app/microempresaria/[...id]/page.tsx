@@ -6,7 +6,7 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
 
   return (
     <Layout>
-      <UserProfile personaId={personaId} avatarSrc="/logo-black-white.png" />
+      <UserProfile personaId={personaId} avatarSrc="/logo-orange-blue.png" />
     </Layout>
   );
 }

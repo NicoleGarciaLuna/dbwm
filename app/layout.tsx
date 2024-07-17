@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Microempresarias TCU - 781",
   description: "Manage and analyze data for microentrepreneurs efficiently",
   keywords: "microentrepreneurs, database, management, analysis",
-  authors: [{ name: "Your Organization Name" }],
+  authors: [{ name: "UCR Occidente" }],
   openGraph: {
     title: "Microempresarias TCU - 781",
     description: "Manage and analyze data for microentrepreneurs efficiently",
