@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabase/supabaseClient";
+import { supabaseClient } from "@/utils/supabase/client";
 import { ENDPOINTS } from "@/data/endpoints";
 import { DataItem } from "@/types";
 
@@ -17,7 +17,7 @@ export const useStatistics = (activeTab: string) => {
       const newData: Record<string, DataItem[]> = {};
 
       for (const endpoint of ENDPOINTS[activeTab]) {
-        const { data: result, error } = await supabase
+        const { data: result, error } = await supabaseClient
           .from(endpoint.table)
           .select(endpoint.select);
 

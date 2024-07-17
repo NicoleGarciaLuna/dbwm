@@ -4,7 +4,6 @@ import { Table, Pagination, Input, Button, Modal, Spin } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { fetchPersonasConDatos } from "@/utils/api/fetchTable";
-import { Persona } from "@/types";
 import {
   usePagination,
   useSearch,
@@ -13,9 +12,37 @@ import {
   MODAL_DELETE_TEXT,
   SEARCH_INPUT_WIDTH,
 } from "@/utils/hooksAndConstants";
-import { Microentrepreneur } from "@/types";
 
-const formatPersonasData = (personas: Persona[]): Microentrepreneur[] => {
+export type MicroentrepreneurTableProps = {
+  id: number;
+  fullName: string;
+  company: string;
+  sector: string;
+  businessIdea: string;
+  experienceYears: string;
+};
+
+export type PersonaProps = {
+  id_persona: number;
+  nombre: string;
+  primer_apellido: string;
+  segundo_apellido: string;
+  diagnostico: {
+    emprendimiento?: {
+      nombre_emprendimiento?: string;
+      tiempo_operacion?: string;
+      sector_economico?: string;
+    };
+    idea_negocio?: {
+      descripcion_breve?: string;
+    };
+  }[];
+};
+
+
+const formatPersonasData = (
+  personas: PersonaProps[]
+): MicroentrepreneurTableProps[] => {
   return personas.map((persona) => {
     const diagnostico = persona.diagnostico?.[0];
     const emprendimiento = diagnostico?.emprendimiento;
@@ -33,11 +60,11 @@ const formatPersonasData = (personas: Persona[]): Microentrepreneur[] => {
 };
 
 const MicroentrepreneursList = () => {
-  const [data, setData] = useState<Microentrepreneur[]>([]);
+  const [data, setData] = useState<MicroentrepreneurTableProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMicroentrepreneur, setSelectedMicroentrepreneur] =
-    useState<Microentrepreneur | null>(null);
+    useState<MicroentrepreneurTableProps | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -67,10 +94,13 @@ const MicroentrepreneursList = () => {
   const { currentPage, totalPages, handlePageChange, paginatedData } =
     usePagination(filteredData.length);
 
-  const handleDelete = useCallback((microentrepreneur: Microentrepreneur) => {
-    setSelectedMicroentrepreneur(microentrepreneur);
-    setIsModalVisible(true);
-  }, []);
+  const handleDelete = useCallback(
+    (microentrepreneur: MicroentrepreneurTableProps) => {
+      setSelectedMicroentrepreneur(microentrepreneur);
+      setIsModalVisible(true);
+    },
+    []
+  );
 
   const confirmDelete = useCallback(() => {
     setIsModalVisible(false);
@@ -85,7 +115,7 @@ const MicroentrepreneursList = () => {
         title: column.header,
         dataIndex: column.key,
         key: column.key,
-        render: (text: string, record: Microentrepreneur) => {
+        render: (text: string, record: MicroentrepreneurTableProps) => {
           if (column.isAction) {
             return (
               <div className="flex space-x-2">

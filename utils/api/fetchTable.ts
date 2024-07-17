@@ -1,12 +1,13 @@
-import { supabase } from "@/utils/supabase/supabaseClient";
+import { supabaseClient } from "@/utils/supabase/client";
 import { PostgrestResponse } from "@supabase/supabase-js";
-import { Persona } from "@/types";
+import { PersonaProps } from "@/components/MicroentrepreneursList";
 
-export const fetchPersonasConDatos = async (): Promise<Persona[] | null> => {
+export const fetchPersonasConDatos = async (): Promise<
+  PersonaProps[] | null
+> => {
   try {
-    const { data, error }: PostgrestResponse<Persona> = await supabase.from(
-      "persona"
-    ).select(`
+    const { data, error }: PostgrestResponse<PersonaProps> =
+      await supabaseClient.from("persona").select(`
         id_persona,
         nombre,
         primer_apellido,

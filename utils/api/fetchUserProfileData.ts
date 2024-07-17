@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { supabase } from "@/utils/supabase/supabaseClient";
+import { supabaseClient } from "@/utils/supabase/client";
 import { categoryTabs } from "@/data/tabsConfig";
 
 export type TabData = Record<string, any>;
@@ -7,7 +7,7 @@ export type TabData = Record<string, any>;
 const fetchDataByTab = async (tab: string, personaId: number) => {
   switch (tab) {
     case "personal":
-      return supabase
+      return supabaseClient
         .from("persona")
         .select(
           `
@@ -28,7 +28,7 @@ const fetchDataByTab = async (tab: string, personaId: number) => {
         .eq("id_persona", personaId)
         .single();
     case "gender":
-      return supabase
+      return supabaseClient
         .from("variable_genero")
         .select(
           `
@@ -52,17 +52,17 @@ const fetchDataByTab = async (tab: string, personaId: number) => {
         )
         .eq("id_diagnostico", personaId);
     case "emprendimiento":
-      return supabase
+      return supabaseClient
         .from("emprendimiento")
         .select("*")
         .eq("id_diagnostico", personaId);
     case "ideaNegocio":
-      return supabase
+      return supabaseClient
         .from("idea_negocio")
         .select("*")
         .eq("id_diagnostico", personaId);
     case "innovacion":
-      return supabase
+      return supabaseClient
         .from("innovacion")
         .select(
           `
@@ -86,7 +86,7 @@ const fetchDataByTab = async (tab: string, personaId: number) => {
         )
         .eq("id_diagnostico", personaId);
     case "mercado":
-      return supabase
+      return supabaseClient
         .from("mercado")
         .select(
           `
@@ -110,12 +110,12 @@ const fetchDataByTab = async (tab: string, personaId: number) => {
         )
         .eq("id_diagnostico", personaId);
     case "contabilidadFinanzas":
-      return supabase
+      return supabaseClient
         .from("contabilidad_finanzas")
         .select("*")
         .eq("id_diagnostico", personaId);
     case "formalizacion":
-      return supabase
+      return supabaseClient
         .from("formalizacion")
         .select(
           `
@@ -129,7 +129,7 @@ const fetchDataByTab = async (tab: string, personaId: number) => {
         )
         .eq("id_diagnostico", personaId);
     case "financiamiento":
-      return supabase
+      return supabaseClient
         .from("financiamiento")
         .select(
           `
@@ -163,7 +163,7 @@ const fetchDataByTab = async (tab: string, personaId: number) => {
         )
         .eq("id_diagnostico", personaId);
     case "capacitacion":
-      return supabase
+      return supabaseClient
         .from("capacitacion")
         .select("*")
         .eq("id_persona", personaId);

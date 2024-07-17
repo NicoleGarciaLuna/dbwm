@@ -22,7 +22,7 @@ const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // Lógica de envío de formulario
+    // Forms logic
   };
 
   return (
@@ -64,11 +64,11 @@ const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
               </Title>
             </div>
             <Title level={3} style={{ color: "#001529" }}>
-              Sign in to your account
+              Inicia sesión
             </Title>
             <Form layout="vertical" onSubmitCapture={handleSubmit}>
               <Form.Item
-                label="Your email"
+                label="Correo electrónico"
                 name="email"
                 rules={[
                   { required: true, message: "Please enter your email!" },
@@ -83,7 +83,7 @@ const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
                 />
               </Form.Item>
               <Form.Item
-                label="Password"
+                label="Contraseña"
                 name="password"
                 rules={[
                   { required: true, message: "Please enter your password!" },
@@ -106,7 +106,7 @@ const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
                     borderColor: "#001529",
                   }}
                 >
-                  Sign in
+                  Iniciar Sesión
                 </Button>
               </Form.Item>
             </Form>
