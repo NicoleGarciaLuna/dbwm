@@ -1,96 +1,170 @@
 "use client";
-import { Layout, Menu } from "antd";
+
+import { Layout, Menu, Drawer, Button, Grid } from "antd";
 import { MenuProps } from "antd/es/menu";
+import { MenuOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const { Header, Content } = Layout;
+const { useBreakpoint } = Grid;
 
-const styles = {
-  layout: {
-    minHeight: "100vh",
-  } as React.CSSProperties,
+const LOGO_SRC = "/logo-orange-blue.png";
+const LOGO_ALT_TEXT = "Project Logo";
+const LOGO_TEXT = "Microempresarias TCU - 781";
+const LOGO_SIZE = 50;
+const MENU_ITEM_STYLE = {
+  color: "white",
+  fontWeight: "bold",
+} as React.CSSProperties;
+
+const styles: { [key: string]: React.CSSProperties } = {
+  layout: { minHeight: "100vh" },
   header: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-  } as React.CSSProperties,
-  content: {
-    padding: "12px 0",
-    margin: "0 12px",
-    flex: 1,
-  } as React.CSSProperties,
+    backgroundColor: "#001529",
+    height: 64,
+  },
   logoContainer: {
     position: "absolute",
-    left: "16px",
+    left: 16,
     display: "flex",
     alignItems: "center",
-  } as React.CSSProperties,
+    color: "white",
+    fontWeight: "bold",
+  },
+  logoImage: {
+    marginRight: 16,
+  },
   menu: {
     flex: 1,
     display: "flex",
     justifyContent: "center",
-  } as React.CSSProperties,
-  menuItem: {
+  },
+  content: { padding: "12px 0", margin: "0 12px", flex: 1 },
+  menuButton: {
+    display: "none",
+    fontSize: "24px",
+    color: "#fff",
+    background: "none",
+    border: "none",
+    height: "64px",
+    alignItems: "center",
+  },
+  drawerMenu: {
+    backgroundColor: "#001529",
     color: "white",
-    fontWeight: "bold",
-  } as React.CSSProperties,
+  },
+  mobileMenuButton: {
+    display: "block",
+    position: "absolute",
+    right: 16,
+  },
+  drawerHeader: {
+    backgroundColor: "#001529",
+    color: "white",
+  },
 };
-
-interface LayoutComponentProps {
-  children: React.ReactNode;
-}
 
 const menuItems: MenuProps["items"] = [
   {
-    key: "1",
+    key: "/",
     label: (
-      <span style={styles.menuItem}>
+      <span style={MENU_ITEM_STYLE}>
         <Link href="/">Microempresarias</Link>
       </span>
     ),
   },
   {
-    key: "2",
+    key: "/statistics",
     label: (
-      <span style={styles.menuItem}>
+      <span style={MENU_ITEM_STYLE}>
         <Link href="/statistics">Estadísticas</Link>
       </span>
     ),
   },
   {
-    key: "3",
+    key: "/login",
     label: (
-      <span style={styles.menuItem}>
+      <span style={MENU_ITEM_STYLE}>
         <Link href="/login">Cerrar Sesión</Link>
       </span>
     ),
   },
 ];
 
-const LayoutComponent: React.FC<LayoutComponentProps> = ({ children }) => {
+type LayoutComponentProps = {
+  children: React.ReactNode;
+};
+
+const Logo = () => (
+  <div style={styles.logoContainer}>
+    <Image
+      src={LOGO_SRC}
+      alt={LOGO_ALT_TEXT}
+      height={LOGO_SIZE}
+      width={LOGO_SIZE}
+      style={styles.logoImage}
+    />
+    {LOGO_TEXT}
+  </div>
+);
+
+const LayoutComponent = ({ children }: LayoutComponentProps) => {
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const screens = useBreakpoint();
+  const pathname = usePathname();
+  const [current, setCurrent] = useState(pathname);
+
+  useEffect(() => {
+    setCurrent(pathname);
+  }, [pathname]);
+
+  const showDrawer = () => setDrawerVisible(true);
+  const closeDrawer = () => setDrawerVisible(false);
+
   return (
     <Layout style={styles.layout}>
       <Header style={styles.header}>
-        <div style={styles.logoContainer}>
-          <Image
-            src="/logo-black-white.png"
-            alt="Project Logo"
-            style={{ marginRight: "16px" }}
-            height={50}
-            width={50}
+        <Logo />
+        {screens.md ? (
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            items={menuItems}
+            style={styles.menu}
+            selectedKeys={[current]}
           />
-          <div style={{ color: "white", fontWeight: "bold" }}>
-            Microempresarias TCU - 781
-          </div>
-        </div>
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          items={menuItems}
-          style={styles.menu}
-        />
+        ) : (
+          <>
+            <Button
+              type="text"
+              icon={<MenuOutlined />}
+              style={{ ...styles.menuButton, ...styles.mobileMenuButton }}
+              onClick={showDrawer}
+            />
+            <Drawer
+              title="Menu"
+              placement="right"
+              closable
+              onClose={closeDrawer}
+              open={drawerVisible}
+              style={styles.drawerMenu}
+            >
+              <Menu
+                mode="vertical"
+                items={menuItems}
+                theme="dark"
+                selectedKeys={[current]}
+              />
+            </Drawer>
+          </>
+        )}
       </Header>
       <Content style={styles.content}>{children}</Content>
     </Layout>
