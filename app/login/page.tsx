@@ -1,10 +1,10 @@
-import SignInForm from "../../components/Auth/SignInForm";
+import SignInForm from "@/components/SignInForm";
 
 const LoginPage = () => {
   return (
     <SignInForm
-      logoSrc="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-      brandName="DBWM"
+      logoSrc="logo-orange-blue.svg"
+      brandName="TCU - 781"
     />
   );
 };

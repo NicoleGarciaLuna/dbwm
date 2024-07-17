@@ -1,19 +1,21 @@
-export type Microentrepreneur = {
-	fullName: string;
-	company: string;
-	sector: string;
-	businessIdea: string;
-	experienceYears: string;
-	id: number;
+export type DataItem = {
+  name: string;
+  value: number;
 };
 
-export type PaginationProps = {
-	currentPage: number;
-	totalPages: number;
-	onPageChange: (page: number) => void;
+export enum ChartType {
+  PIE = "pie",
+  BAR = "bar",
+}
+
+type Endpoint = {
+  key: string;
+  table: string;
+  select: string;
+  chartType: ChartType;
 };
 
-export type SearchBarProps = {
-	searchQuery: string;
-	onSearch: (query: string) => void;
+export type EndpointsType = {
+  [key: string]: Endpoint[];
 };
+

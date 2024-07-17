@@ -1,35 +1,34 @@
-import { supabase } from "./supabaseClient";
-import { QueryData } from "@supabase/supabase-js";
+import { supabaseClient } from "@/utils/supabase/client";
+import { PostgrestResponse } from "@supabase/supabase-js";
+import { PersonaProps } from "@/components/MicroentrepreneursList";
 
-const personasConDatosQuery = supabase.from("persona").select(`
-  id_persona,
-  nombre,
-  primer_apellido,
-  segundo_apellido,
-  diagnostico (
-    emprendimiento (
-      nombre_emprendimiento,
-      tiempo_operacion,
-      sector_economico
-    ),
-    idea_negocio (
-      descripcion_breve
-    )
-  )
-`);
-
-export type PersonasConDatos = QueryData<typeof personasConDatosQuery>;
-
-export const fetchPersonasConDatos =
-	async (): Promise<PersonasConDatos | null> => {
-		try {
-			const { data, error } = await personasConDatosQuery;
-			if (error) {
-				throw error;
-			}
-			return data;
-		} catch (error) {
-			console.error("Error fetching data:", error);
-			return null;
-		}
-	};
+export const fetchPersonasConDatos = async (): Promise<
+  PersonaProps[] | null
+> => {
+  try {
+    const { data, error }: PostgrestResponse<PersonaProps> =
+      await supabaseClient.from("persona").select(`
+        id_persona,
+        nombre,
+        primer_apellido,
+        segundo_apellido,
+        diagnostico (
+          emprendimiento (
+            nombre_emprendimiento,
+            tiempo_operacion,
+            sector_economico
+          ),
+          idea_negocio (
+            descripcion_breve
+          )
+        )
+      `);
+    if (error) {
+      throw error;
+    }
+    return data || null;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return null;
+  }
+};

@@ -1,25 +1,12 @@
 import { ReactNode } from "react";
 import { Card, Spin, Empty } from "antd";
-
-export type TabType =
-  | "personal"
-  | "gender"
-  | "emprendimiento"
-  | "ideaNegocio"
-  | "innovacion"
-  | "mercado"
-  | "contabilidadFinanzas"
-  | "formalizacion"
-  | "financiamiento"
-  | "capacitacion";
-
-export type TabData = Record<TabType, any>;
+import { TabData } from "@/utils/api/fetchUserProfileData";
 
 type TabContentProps = {
-  activeTab: TabType;
+  activeTab: string;
   tabsData: TabData;
   loading: boolean;
-  tabs: Array<{ label: string; value: TabType }>;
+  tabs: Array<{ label: string; value: string }>;
 };
 
 const formatKey = (key: string): string =>

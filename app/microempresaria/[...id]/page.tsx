@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout/LayoutComponent";
+import Layout from "@/components/LayoutComponent";
 import UserProfile from "@/components/UserProfile/UserProfile";
 
 export default function PersonaPage({ params }: { params: { id: string } }) {
@@ -6,10 +6,7 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
 
   return (
     <Layout>
-      <UserProfile
-        personaId={personaId}
-        avatarSrc="/logo TCU mujer pnjs-13.png"
-      />
+      <UserProfile personaId={personaId} avatarSrc="/logo-black-white.png" />
     </Layout>
   );
 }
