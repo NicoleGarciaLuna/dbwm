@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import Layout from "@/components/LayoutComponent";
-import TabsComponent from "@/components/TabsComponent";
-import { CATEGORY_TABS } from "@/data/endpoints";
+import Layout from "@/components/Layout";
+import TabsComponent from "@/components/Tabs";
+import { CATEGORY_TABS } from "@/config/endpoints";
 import { useStatistics } from "@/hooks/useStatistics";
 
 const Statistics = () => {
