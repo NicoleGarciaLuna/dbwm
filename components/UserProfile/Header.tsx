@@ -15,7 +15,7 @@ const ProfileHeader = ({
     <div className="flex flex-col sm:flex-row items-center gap-4">
       <Avatar
         size={112}
-        src={avatarSrc || "/logo TCU mujer pnjs-10.png"}
+        src={avatarSrc || "/logo-orange-blue.png"}
         alt={avatarSrc ? `${username}'s avatar` : "TCU Mujer Logo"}
       />
       <div className="text-center sm:text-left">

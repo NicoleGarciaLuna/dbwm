@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Layout from "@/components/Layout";
 import TabsComponent from "@/components/Tabs";
 import { CATEGORY_TABS } from "@/config/endpoints";
 import { useStatistics } from "@/hooks/useStatistics";
@@ -14,15 +13,13 @@ const Statistics = () => {
   };
 
   return (
-    <Layout>
-      <TabsComponent
-        loading={loading}
-        tabs={CATEGORY_TABS}
-        data={rawData}
-        onTabChange={handleTabChange}
-        activeTab={activeTab}
-      />
-    </Layout>
+    <TabsComponent
+      loading={loading}
+      tabs={CATEGORY_TABS}
+      data={rawData}
+      onTabChange={handleTabChange}
+      activeTab={activeTab}
+    />
   );
 };
 
