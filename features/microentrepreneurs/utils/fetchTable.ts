@@ -1,6 +1,6 @@
-import { supabaseClient } from "@/utils/supabase/client";
+import { supabaseClient } from "@/shared/utils/supabase/client";
 import { PostgrestResponse } from "@supabase/supabase-js";
-import { PersonaProps } from "@/components/MicroentrepreneursList";
+import { PersonaProps } from "@/features/microentrepreneurs/components/MicroentrepreneursList";
 
 export const fetchPersonasConDatos = async (): Promise<
   PersonaProps[] | null

@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import TabsComponent from "@/components/Tabs";
-import { CATEGORY_TABS } from "@/config/endpoints";
-import { useStatistics } from "@/hooks/useStatistics";
+import TabsComponent from "@/features/statistics/components/Tabs";
+import { CATEGORY_TABS } from "@/shared/config/endpoints";
+import { useStatistics } from "@/features/statistics/hooks/useStatistics";
 
 const Statistics = () => {
   const [activeTab, setActiveTab] = useState(CATEGORY_TABS[0].value);

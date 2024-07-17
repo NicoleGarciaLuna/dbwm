@@ -1,4 +1,4 @@
-import { EndpointsType, ChartType } from "@/types";
+import { EndpointsType, ChartType } from "@/shared/types";
 
 export const ENDPOINTS: EndpointsType = {
   "Información Personal": [

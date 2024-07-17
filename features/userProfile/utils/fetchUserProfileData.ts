@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { supabaseClient } from "@/utils/supabase/client";
-import { CATEGORY_TABS } from "@/config/endpoints";
+import { supabaseClient } from "@/shared/utils/supabase/client";
+import { CATEGORY_TABS } from "@/shared/config/endpoints";
 
 export type TabData = Record<string, any>;
 

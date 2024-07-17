@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Card, Spin, Empty } from "antd";
-import { TabData } from "@/utils/dataFetching/fetchUserProfileData";
+import { TabData } from "@/features/userProfile/utils/fetchUserProfileData";
 
 type TabContentProps = {
   activeTab: string;

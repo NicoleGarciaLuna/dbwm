@@ -1,4 +1,4 @@
-import UserProfile from "@/components/UserProfile/UserProfile";
+import UserProfile from "@/features/userProfile/components/UserProfile";
 
 export default function PersonaPage({ params }: { params: { id: string } }) {
   const personaId = parseInt(params.id[0], 10);
