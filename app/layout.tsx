@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./globals.css";
+import LayoutComponent from "@/components/Layout";
 
 export const metadata: Metadata = {
   title: "Microempresarias TCU - 781",
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AntdRegistry>{children}</AntdRegistry>
+        <AntdRegistry>
+          <LayoutComponent>{children}</LayoutComponent>
+        </AntdRegistry>
       </body>
     </html>
   );
