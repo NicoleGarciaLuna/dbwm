@@ -1,10 +1,10 @@
 export type Microentrepreneur = {
+  id: number;
   fullName: string;
   company: string;
   sector: string;
   businessIdea: string;
   experienceYears: string;
-  id: number;
 };
 
 export type PaginationProps = {
@@ -21,4 +21,50 @@ export type SearchBarProps = {
 export type ChartData = {
   name: string;
   value: number;
+};
+
+export type TabCategory =
+  | "personal"
+  | "gender"
+  | "entrepreneurship"
+  | "businessIdea"
+  | "innovation"
+  | "market"
+  | "accountingFinance"
+  | "formalization"
+  | "financing"
+  | "training";
+
+export type TabData = {
+  personal: any;
+  gender: any;
+  entrepreneurship: any;
+  businessIdea: any;
+  innovation: any;
+  market: any;
+  accountingFinance: any;
+  formalization: any;
+  financing: any;
+  training: any;
+};
+
+export type DataItem = {
+  name: string;
+  value: number;
+};
+
+export enum ChartType {
+  PIE = "pie",
+  BAR = "bar",
+}
+
+export type Endpoint = {
+  key: string;
+  table: string;
+  select: string;
+  chartType: ChartType;
+};
+
+export type EndpointsType = {
+  [key: string]: Endpoint[];
 };

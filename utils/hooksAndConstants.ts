@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 
 export const PAGE_SIZE = 8;
+export const SEARCH_INPUT_WIDTH = 200;
+export const MODAL_DELETE_TEXT = "Are you sure you want to delete";
 
 export const COLUMN_CONFIG = [
   { key: "fullName", header: "Nombre Completo" },

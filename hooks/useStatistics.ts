@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabase/supabaseClient";
 import { ENDPOINTS } from "@/data/endpoints";
-
-export type DataItem = {
-  name: string;
-  value: number;
-};
+import { DataItem } from "@/types";
 
 export const useStatistics = (activeTab: string) => {
   const [loading, setLoading] = useState(false);

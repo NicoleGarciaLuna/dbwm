@@ -3,7 +3,7 @@ import { useState } from "react";
 import Layout from "@/components/LayoutComponent";
 import TabsComponent from "@/components/TabsComponent";
 import { CATEGORY_TABS } from "@/data/endpoints";
-import { useStatistics, DataItem } from "@/hooks/useStatistics";
+import { useStatistics } from "@/hooks/useStatistics";
 
 const Statistics = () => {
   const [activeTab, setActiveTab] = useState(CATEGORY_TABS[0].value);

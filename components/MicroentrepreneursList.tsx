@@ -9,19 +9,10 @@ import {
   useSearch,
   COLUMN_CONFIG,
   PAGE_SIZE,
+  MODAL_DELETE_TEXT,
+  SEARCH_INPUT_WIDTH,
 } from "@/utils/hooksAndConstants";
-
-type Microentrepreneur = {
-  id: number;
-  fullName: string;
-  company: string;
-  sector: string;
-  businessIdea: string;
-  experienceYears: string;
-};
-
-const SEARCH_INPUT_WIDTH = 200;
-const MODAL_DELETE_TEXT = "Seguro que desea eliminar a";
+import { Microentrepreneur } from "@/types";
 
 const formatPersonasData = (personas: Persona[]): Microentrepreneur[] => {
   return personas.map((persona) => {
