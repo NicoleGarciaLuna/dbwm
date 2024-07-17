@@ -1,35 +1,49 @@
-import { supabase } from "../supabase/supabaseClient";
-import { QueryData } from "@supabase/supabase-js";
+import { supabase } from "@/utils/supabase/supabaseClient";
+import { PostgrestResponse } from "@supabase/supabase-js";
 
-const personasConDatosQuery = supabase.from("persona").select(`
-  id_persona,
-  nombre,
-  primer_apellido,
-  segundo_apellido,
-  diagnostico (
-    emprendimiento (
-      nombre_emprendimiento,
-      tiempo_operacion,
-      sector_economico
-    ),
-    idea_negocio (
-      descripcion_breve
-    )
-  )
-`);
+export type Persona = {
+  id_persona: number;
+  nombre: string;
+  primer_apellido: string;
+  segundo_apellido: string;
+  diagnostico: {
+    emprendimiento?: {
+      nombre_emprendimiento?: string;
+      tiempo_operacion?: string;
+      sector_economico?: string;
+    };
+    idea_negocio?: {
+      descripcion_breve?: string;
+    };
+  }[];
+};
 
-export type PersonasConDatos = QueryData<typeof personasConDatosQuery>;
-
-export const fetchPersonasConDatos =
-  async (): Promise<PersonasConDatos | null> => {
-    try {
-      const { data, error } = await personasConDatosQuery;
-      if (error) {
-        throw error;
-      }
-      return data;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      return null;
+export const fetchPersonasConDatos = async (): Promise<Persona[] | null> => {
+  try {
+    const { data, error }: PostgrestResponse<Persona> = await supabase.from(
+      "persona"
+    ).select(`
+        id_persona,
+        nombre,
+        primer_apellido,
+        segundo_apellido,
+        diagnostico (
+          emprendimiento (
+            nombre_emprendimiento,
+            tiempo_operacion,
+            sector_economico
+          ),
+          idea_negocio (
+            descripcion_breve
+          )
+        )
+      `);
+    if (error) {
+      throw error;
     }
-  };
+    return data || null;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return null;
+  }
+};
