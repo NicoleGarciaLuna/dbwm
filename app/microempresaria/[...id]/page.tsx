@@ -1,4 +1,4 @@
-import Layout from "@/components/LayoutComponent";
+import Layout from "@/components/Layout";
 import UserProfile from "@/components/UserProfile/UserProfile";
 
 export default function PersonaPage({ params }: { params: { id: string } }) {

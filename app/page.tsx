@@ -1,4 +1,4 @@
-import Layout from "@/components/LayoutComponent";
+import Layout from "@/components/Layout";
 import MicroentrepreneursList from "@/components/MicroentrepreneursList";
 
 export default function Home() {

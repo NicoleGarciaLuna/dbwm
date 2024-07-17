@@ -1,8 +1,8 @@
 import { Tabs, Spin } from "antd";
 import { ENDPOINTS } from "@/data/endpoints";
 import { DataItem, ChartType } from "@/types";
-import CustomPieChart from "@/components/charts/PieChartComponent";
-import CustomBarChart from "@/components/charts/BarChartComponent";
+import CustomPieChart from "@/components/charts/PieChart";
+import CustomBarChart from "@/components/charts/BarChart";
 
 type TabsComponentProps = {
   loading: boolean;

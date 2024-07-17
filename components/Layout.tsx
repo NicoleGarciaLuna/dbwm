@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { Layout, Menu } from "antd";
 import { MenuProps } from "antd/es/menu";
 import Link from "next/link";

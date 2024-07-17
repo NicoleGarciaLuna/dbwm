@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import Layout from "@/components/LayoutComponent";
-import TabsComponent from "@/components/TabsComponent";
+import Layout from "@/components/Layout";
+import TabsComponent from "@/components/Tabs";
 import { CATEGORY_TABS } from "@/data/endpoints";
 import { useStatistics } from "@/hooks/useStatistics";
 

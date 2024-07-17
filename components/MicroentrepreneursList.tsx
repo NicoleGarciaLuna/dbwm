@@ -39,7 +39,6 @@ export type PersonaProps = {
   }[];
 };
 
-
 const formatPersonasData = (
   personas: PersonaProps[]
 ): MicroentrepreneurTableProps[] => {
