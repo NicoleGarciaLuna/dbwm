@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { supabaseClient } from "@/utils/supabase/client";
-import { ENDPOINTS } from "@/config/endpoints";
-import { DataItem } from "@/types";
+import { supabaseClient } from "@/shared/utils/supabase/client";
+import { ENDPOINTS } from "@/shared/config/endpoints";
+import { DataItem } from "@/shared/types";
 
 export const useStatistics = (activeTab: string) => {
   const [loading, setLoading] = useState(false);

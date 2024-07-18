@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./globals.css";
-import LayoutComponent from "@/components/Layout";
+import LayoutComponent from "@/shared/components/Layout";
 
 export const metadata: Metadata = {
   title: "Microempresarias TCU - 781",

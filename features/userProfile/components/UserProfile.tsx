@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, Spin } from "antd";
-import { useUserProfileData } from "@/utils/dataFetching/fetchUserProfileData";
+import { useUserProfileData } from "@/features/userProfile/utils/fetchUserProfileData";
 import ProfileHeader from "./Header";
 import TabContent from "./Tab";
 import { Suspense } from "react";

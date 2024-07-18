@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PAGE_SIZE } from "@/config";
+import { PAGE_SIZE } from "@/shared/config";
 
 export const usePagination = (totalItems: number) => {
   const [currentPage, setCurrentPage] = useState(1);

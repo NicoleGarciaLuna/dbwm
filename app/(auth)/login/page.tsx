@@ -1,4 +1,4 @@
-import SignInForm from "@/components/SignInForm";
+import SignInForm from "@/features/auth/components/SignInForm";
 
 const LoginPage = () => {
   return <SignInForm logoSrc="logo-orange-blue.svg" brandName="TCU - 781" />;
