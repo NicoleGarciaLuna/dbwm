@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from "recharts";
 import { Row, Col } from "antd";
 
@@ -119,7 +119,7 @@ const CustomPieChart = ({ data, title }: CustomPieChartProps) => {
         <PieChart width={400} height={400}>
           <Pie
             activeIndex={activeIndex}
-            activeShape={renderActiveShape}
+            activeShape={renderActiveShape as (props: any) => JSX.Element}
             data={data}
             cx="50%"
             cy="50%"
