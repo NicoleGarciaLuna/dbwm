@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { Table, Pagination, Input, Button, Modal, Spin } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { fetchPersonasConDatos } from "../utils/fetchTable";
 import { usePagination } from "@/features/microentrepreneurs/hooks/usePagination";
 import { useSearch } from "@/features/microentrepreneurs/hooks/useSearch";
@@ -12,7 +13,6 @@ import {
   SEARCH_INPUT_WIDTH,
   PAGE_SIZE,
 } from "@/shared/config";
-
 import { MicroentrepreneurTableProps } from "@/features/microentrepreneurs/types";
 
 const List = () => {
@@ -85,19 +85,15 @@ const List = () => {
                 }}
                 className="text-red-500 cursor-pointer"
               />
-              <EyeOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push(`/microempresaria/${record.id}`);
-                }}
-                className="text-blue-500 cursor-pointer"
-              />
+              <Link href={`/microempresaria/${record.id}`} prefetch>
+                <EyeOutlined className="text-blue-500 cursor-pointer" />
+              </Link>
             </div>
           ) : (
             text
           ),
       })),
-    [handleDelete, router]
+    [handleDelete]
   );
 
   return (
@@ -113,12 +109,9 @@ const List = () => {
                 enterButton
                 style={{ width: SEARCH_INPUT_WIDTH }}
               />
-              <Button
-                type="primary"
-                onClick={() => router.push("/nueva-microempresaria")}
-              >
-                Nueva Microempresaria
-              </Button>
+              <Link href="/nueva-microempresaria" prefetch>
+                <Button type="primary">Nueva Microempresaria</Button>
+              </Link>
             </div>
           </div>
           <Spin spinning={isLoading} tip="Cargando...">
