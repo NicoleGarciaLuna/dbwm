@@ -1,4 +1,4 @@
-import React, { ReactNode, memo } from "react";
+import { ReactNode, memo } from "react";
 import { Card, Spin, Empty } from "antd";
 import { TabData } from "@/features/userProfile/utils/fetchUserProfileData";
 
@@ -9,15 +9,13 @@ type TabContentProps = {
   tabs: Array<{ label: string; value: string }>;
 };
 
-// Función para convertir camel case o snake case a lenguaje natural
 const formatKeyToNaturalLanguage = (key: string): string => {
   return key
-    .replace(/([A-Z])/g, " $1") // Insertar espacio antes de mayúsculas (camel case)
-    .replace(/_/g, " ") // Reemplazar guiones bajos con espacios (snake case)
-    .replace(/^\w/, (c) => c.toUpperCase()); // Capitalizar la primera letra
+    .replace(/([A-Z])/g, " $1")
+    .replace(/_/g, " ")
+    .replace(/^\w/, (c) => c.toUpperCase());
 };
 
-// Filtrar claves que comienzan con "id_"
 const filterKeys = (key: string): boolean => {
   return !key.startsWith("id_");
 };
