@@ -9,7 +9,19 @@ type TabContentProps = {
   tabs: Array<{ label: string; value: string }>;
 };
 
-// Obtiene la etiqueta del tab activo
+// Función para convertir camel case o snake case a lenguaje natural
+const formatKeyToNaturalLanguage = (key: string): string => {
+  return key
+    .replace(/([A-Z])/g, " $1") // Insertar espacio antes de mayúsculas (camel case)
+    .replace(/_/g, " ") // Reemplazar guiones bajos con espacios (snake case)
+    .replace(/^\w/, (c) => c.toUpperCase()); // Capitalizar la primera letra
+};
+
+// Filtrar claves que comienzan con "id_"
+const filterKeys = (key: string): boolean => {
+  return !key.startsWith("id_");
+};
+
 const getActiveTabLabel = (
   activeTab: string,
   tabs: Array<{ label: string; value: string }>
@@ -20,19 +32,22 @@ const getActiveTabLabel = (
   );
 };
 
-// Función de renderizado del valor
 const renderValue = (value: any): ReactNode => {
   if (typeof value === "boolean") return value ? "Sí" : "No";
   if (value == null) return "Sin dato";
   if (typeof value === "object" && !Array.isArray(value)) {
     return (
       <div className="pl-4">
-        {Object.entries(value).map(([key, subValue]) => (
-          <div key={key} className="mb-2">
-            <span className="font-semibold">{key}:</span>{" "}
-            {renderValue(subValue)}
-          </div>
-        ))}
+        {Object.entries(value)
+          .filter(([key]) => filterKeys(key))
+          .map(([key, subValue]) => (
+            <div key={key} className="mb-2">
+              <span className="font-semibold">
+                {formatKeyToNaturalLanguage(key)}:
+              </span>{" "}
+              {renderValue(subValue)}
+            </div>
+          ))}
       </div>
     );
   }
@@ -48,26 +63,35 @@ const renderValue = (value: any): ReactNode => {
   return String(value);
 };
 
-// Función para crear el contenido de la tarjeta
 const createCardContent = (data: any): ReactNode => {
   if (Array.isArray(data)) {
     return data.map((item, index) => (
       <div key={index} className="mb-2">
-        {Object.entries(item).map(([key, value]) => (
-          <div key={key} className="mb-2">
-            <span className="font-semibold">{key}:</span> {renderValue(value)}
-          </div>
-        ))}
+        {Object.entries(item)
+          .filter(([key]) => filterKeys(key))
+          .map(([key, value]) => (
+            <div key={key} className="mb-2">
+              <span className="font-semibold">
+                {formatKeyToNaturalLanguage(key)}:
+              </span>{" "}
+              {renderValue(value)}
+            </div>
+          ))}
       </div>
     ));
   }
 
   if (typeof data === "object" && data !== null) {
-    return Object.entries(data).map(([key, value]) => (
-      <div key={key} className="mb-2">
-        <span className="font-semibold">{key}:</span> {renderValue(value)}
-      </div>
-    ));
+    return Object.entries(data)
+      .filter(([key]) => filterKeys(key))
+      .map(([key, value]) => (
+        <div key={key} className="mb-2">
+          <span className="font-semibold">
+            {formatKeyToNaturalLanguage(key)}:
+          </span>{" "}
+          {renderValue(value)}
+        </div>
+      ));
   }
 
   return renderValue(data);
