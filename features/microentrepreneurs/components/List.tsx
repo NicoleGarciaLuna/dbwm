@@ -15,7 +15,7 @@ import {
 
 import { MicroentrepreneurTableProps } from "@/features/microentrepreneurs/types";
 
-const MicroentrepreneursList = () => {
+const List = () => {
   const [data, setData] = useState<MicroentrepreneurTableProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalState, setModalState] = useState<{
@@ -160,4 +160,4 @@ const MicroentrepreneursList = () => {
   );
 };
 
-export default MicroentrepreneursList;
+export default List;
