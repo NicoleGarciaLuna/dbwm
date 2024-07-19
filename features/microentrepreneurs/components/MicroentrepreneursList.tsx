@@ -4,13 +4,13 @@ import { Table, Pagination, Input, Button, Modal, Spin } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { fetchPersonasConDatos } from "../utils/fetchTable";
-import { PAGE_SIZE } from "@/shared/config";
 import { usePagination } from "@/features/microentrepreneurs/hooks/usePagination";
 import { useSearch } from "@/features/microentrepreneurs/hooks/useSearch";
 import {
   COLUMN_CONFIG,
   MODAL_DELETE_TEXT,
   SEARCH_INPUT_WIDTH,
+  PAGE_SIZE,
 } from "@/shared/config";
 
 export type MicroentrepreneurTableProps = {
@@ -22,40 +22,30 @@ export type MicroentrepreneurTableProps = {
   experienceYears: string;
 };
 
-export type PersonaProps = {
+export type Persona = {
   id_persona: number;
   nombre: string;
   primer_apellido: string;
   segundo_apellido: string;
-  diagnostico: {
-    emprendimiento?: {
-      nombre_emprendimiento?: string;
-      tiempo_operacion?: string;
-      sector_economico?: string;
-    };
-    idea_negocio?: {
-      descripcion_breve?: string;
-    };
-  }[];
 };
 
-const formatPersonasData = (
-  personas: PersonaProps[]
-): MicroentrepreneurTableProps[] => {
-  return personas.map((persona) => {
-    const diagnostico = persona.diagnostico?.[0];
-    const emprendimiento = diagnostico?.emprendimiento;
-    const ideaNegocio = diagnostico?.idea_negocio;
+export type Emprendimiento = {
+  nombre_emprendimiento?: string;
+  tiempo_operacion?: string;
+  sector_economico?: string;
+};
 
-    return {
-      id: persona.id_persona,
-      fullName: `${persona.nombre} ${persona.primer_apellido} ${persona.segundo_apellido}`,
-      company: emprendimiento?.nombre_emprendimiento ?? "",
-      sector: emprendimiento?.sector_economico ?? "",
-      businessIdea: ideaNegocio?.descripcion_breve ?? "",
-      experienceYears: emprendimiento?.tiempo_operacion ?? "",
-    };
-  });
+export type IdeaNegocio = {
+  descripcion_breve?: string;
+};
+
+export type Diagnostico = {
+  id_diagnostico: number;
+  fecha_diagnostico: string;
+  id_persona: number;
+  emprendimiento?: Emprendimiento;
+  idea_negocio?: IdeaNegocio;
+  persona: Persona;
 };
 
 const MicroentrepreneursList = () => {
@@ -69,9 +59,10 @@ const MicroentrepreneursList = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const personas = await fetchPersonasConDatos();
-        if (personas) {
-          setData(formatPersonasData(personas));
+        const formattedData = await fetchPersonasConDatos();
+        console.log("Datos formateados obtenidos en useEffect:", formattedData);
+        if (formattedData) {
+          setData(formattedData);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
