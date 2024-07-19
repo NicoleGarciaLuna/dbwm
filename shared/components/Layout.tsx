@@ -21,14 +21,24 @@ const MENU_ITEM_STYLE = {
 } as React.CSSProperties;
 
 const styles: { [key: string]: React.CSSProperties } = {
-  layout: { minHeight: "100vh" },
+  layout: { minHeight: "100vh", overflow: "hidden" },
+  headerWrapper: {
+    height: "64px",
+    width: "100%",
+    overflow: "hidden",
+    position: "fixed",
+    top: 0,
+    left: 0,
+  },
   header: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    position: "relative",
     backgroundColor: "#001529",
     height: 64,
+    width: "100%",
+    position: "relative",
+    boxSizing: "border-box",
   },
   logoContainer: {
     position: "absolute",
@@ -46,7 +56,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "center",
   },
-  content: { padding: "12px 0", margin: "0 12px", flex: 1 },
+  contentWrapper: {
+    marginTop: "64px",
+    height: "calc(100vh - 64px)",
+    overflowY: "auto",
+  },
   menuButton: {
     display: "none",
     fontSize: "24px",
@@ -128,43 +142,47 @@ const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Layout style={styles.layout}>
-      <Header style={styles.header}>
-        <Logo />
-        {screens.md ? (
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            items={menuItems}
-            style={styles.menu}
-            selectedKeys={[current]}
-          />
-        ) : (
-          <>
-            <Button
-              type="text"
-              icon={<MenuOutlined />}
-              style={{ ...styles.menuButton, ...styles.mobileMenuButton }}
-              onClick={showDrawer}
+      <div style={styles.headerWrapper}>
+        <Header style={styles.header}>
+          <Logo />
+          {screens.md ? (
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              items={menuItems}
+              style={styles.menu}
+              selectedKeys={[current]}
             />
-            <Drawer
-              title="Menu"
-              placement="right"
-              closable
-              onClose={closeDrawer}
-              open={drawerVisible}
-              style={styles.drawerMenu}
-            >
-              <Menu
-                mode="vertical"
-                items={menuItems}
-                theme="dark"
-                selectedKeys={[current]}
+          ) : (
+            <>
+              <Button
+                type="text"
+                icon={<MenuOutlined />}
+                style={{ ...styles.menuButton, ...styles.mobileMenuButton }}
+                onClick={showDrawer}
               />
-            </Drawer>
-          </>
-        )}
-      </Header>
-      <Content style={styles.content}>{children}</Content>
+              <Drawer
+                title="Menu"
+                placement="right"
+                closable
+                onClose={closeDrawer}
+                open={drawerVisible}
+                style={styles.drawerMenu}
+              >
+                <Menu
+                  mode="vertical"
+                  items={menuItems}
+                  theme="dark"
+                  selectedKeys={[current]}
+                />
+              </Drawer>
+            </>
+          )}
+        </Header>
+      </div>
+      <div style={styles.contentWrapper}>
+        <Content>{children}</Content>
+      </div>
     </Layout>
   );
 };
