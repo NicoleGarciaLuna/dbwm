@@ -1,11 +1,19 @@
 import { Tabs, Spin } from "antd";
+import dynamic from "next/dynamic";
+import React, { useMemo, useCallback } from "react";
 import { DataItem, ChartType } from "@/shared/types";
-import CustomPieChart from "@/features/statistics/components/charts/PieChart";
-import CustomBarChart from "@/features/statistics/components/charts/BarChart";
 import { ENDPOINTS } from "@/shared/config/endpoints";
-import { useMemo, useCallback } from "react";
 
-type TabsComponentProps = {
+const CustomPieChart = dynamic(
+  () => import("@/features/statistics/components/charts/PieChart"),
+  { ssr: false }
+);
+const CustomBarChart = dynamic(
+  () => import("@/features/statistics/components/charts/BarChart"),
+  { ssr: false }
+);
+
+type TabProps = {
   loading: boolean;
   tabs: { label: string; value: string }[];
   data: Record<string, Record<string, DataItem[]>>;
@@ -13,13 +21,7 @@ type TabsComponentProps = {
   activeTab: string;
 };
 
-const TabsComponent = ({
-  loading,
-  tabs,
-  data,
-  onTabChange,
-  activeTab,
-}: TabsComponentProps) => {
+const Tab = ({ loading, tabs, data, onTabChange, activeTab }: TabProps) => {
   const renderChart = useCallback(
     (
       chartData: DataItem[] | undefined,
@@ -91,4 +93,4 @@ const TabsComponent = ({
   );
 };
 
-export default TabsComponent;
+export default Tab;

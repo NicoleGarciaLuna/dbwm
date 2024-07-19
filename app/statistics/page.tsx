@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import TabsComponent from "@/features/statistics/components/Tabs";
+import TabsComponent from "@/features/statistics/components/Tab";
 import { CATEGORY_TABS } from "@/shared/config/endpoints";
 import { useStatistics } from "@/features/statistics/hooks/useStatistics";
 

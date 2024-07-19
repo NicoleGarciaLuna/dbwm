@@ -4,7 +4,7 @@ import { ENDPOINTS } from "@/shared/config/endpoints";
 import { DataItem } from "@/shared/types";
 
 export const useStatistics = (activeTab: string) => {
-  const [loading, setLoading] = useState(true); // Inicialmente en true
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState<Record<string, Record<string, DataItem[]>>>(
     {}
   );
@@ -13,6 +13,7 @@ export const useStatistics = (activeTab: string) => {
     if (data[activeTab]) return;
 
     const newData: Record<string, DataItem[]> = {};
+    setLoading(true);
 
     try {
       const fetchPromises = ENDPOINTS[activeTab].map(async (endpoint) => {
@@ -40,7 +41,7 @@ export const useStatistics = (activeTab: string) => {
     } catch (error) {
       console.error("Unexpected error:", error);
     } finally {
-      setLoading(false); // Establecer en false después de la carga
+      setLoading(false);
     }
   }, [activeTab, data]);
 
