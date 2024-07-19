@@ -13,6 +13,31 @@ const CustomBarChart = dynamic(
   { ssr: false }
 );
 
+const styles = {
+  gridContainer: {
+    display: "grid",
+    gap: "1.5vw",
+    padding: "1vw",
+    gridTemplateColumns: "repeat(12, 1fr)",
+    gridAutoFlow: "dense",
+    maxWidth: "1500px",
+    margin: "0 auto",
+  },
+  gridItem: {
+    border: "2px solid #464545",
+    borderRadius: "5px",
+  },
+  barChart: {
+    gridColumn: "span 8",
+  },
+  pieChart: {
+    gridColumn: "span 4",
+  },
+  loadingContainer: {
+    height: "200px",
+  },
+};
+
 type TabProps = {
   loading: boolean;
   tabs: { label: string; value: string }[];
@@ -32,7 +57,13 @@ const Tab = ({ loading, tabs, data, onTabChange, activeTab }: TabProps) => {
       if (!chartData || chartData.length === 0) return null;
       const ChartComponent =
         chartType === ChartType.PIE ? CustomPieChart : CustomBarChart;
-      return <ChartComponent key={key} data={chartData} title={title} />;
+      const style =
+        chartType === ChartType.PIE ? styles.pieChart : styles.barChart;
+      return (
+        <div style={{ ...styles.gridItem, ...style }} key={key}>
+          <ChartComponent data={chartData} title={title} />
+        </div>
+      );
     },
     []
   );
@@ -42,7 +73,7 @@ const Tab = ({ loading, tabs, data, onTabChange, activeTab }: TabProps) => {
       if (loading) {
         return (
           <Spin>
-            <div style={{ height: "200px" }} />
+            <div style={styles.loadingContainer} />
           </Spin>
         );
       }
@@ -68,7 +99,7 @@ const Tab = ({ loading, tabs, data, onTabChange, activeTab }: TabProps) => {
         return <div>No hay datos disponibles para esta categoría.</div>;
       }
 
-      return charts;
+      return <div style={styles.gridContainer}>{charts}</div>;
     },
     [loading, data, renderChart]
   );
