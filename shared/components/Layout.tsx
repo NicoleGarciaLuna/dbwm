@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import { Layout, Menu, Drawer, Button, Grid } from "antd";
 import { MenuProps } from "antd/es/menu";
 import { MenuOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useCallback, useEffect, memo } from "react";
 import { usePathname } from "next/navigation";
 
 const { Header, Content } = Layout;
@@ -15,10 +15,10 @@ const LOGO_SRC = "/logo-orange-blue.png";
 const LOGO_ALT_TEXT = "Project Logo";
 const LOGO_TEXT = "Microempresarias TCU - 781";
 const LOGO_SIZE = 50;
-const MENU_ITEM_STYLE: React.CSSProperties = {
+const MENU_ITEM_STYLE = {
   color: "white",
   fontWeight: "bold",
-};
+} as React.CSSProperties;
 
 const styles: { [key: string]: React.CSSProperties } = {
   layout: { minHeight: "100vh" },
@@ -76,9 +76,7 @@ const menuItems: MenuProps["items"] = [
     key: "/",
     label: (
       <span style={MENU_ITEM_STYLE}>
-        <Link href="/" prefetch={true}>
-          Microempresarias
-        </Link>
+        <Link href="/">Microempresarias</Link>
       </span>
     ),
   },
@@ -86,9 +84,7 @@ const menuItems: MenuProps["items"] = [
     key: "/statistics",
     label: (
       <span style={MENU_ITEM_STYLE}>
-        <Link href="/statistics" prefetch={true}>
-          Estadísticas
-        </Link>
+        <Link href="/statistics">Estadísticas</Link>
       </span>
     ),
   },
@@ -96,15 +92,13 @@ const menuItems: MenuProps["items"] = [
     key: "/login",
     label: (
       <span style={MENU_ITEM_STYLE}>
-        <Link href="/login" prefetch={true}>
-          Cerrar Sesión
-        </Link>
+        <Link href="/login">Cerrar Sesión</Link>
       </span>
     ),
   },
 ];
 
-const Logo: React.FC = () => (
+const Logo = memo(() => (
   <div style={styles.logoContainer}>
     <Image
       src={LOGO_SRC}
@@ -115,11 +109,11 @@ const Logo: React.FC = () => (
     />
     {LOGO_TEXT}
   </div>
-);
+));
 
-const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+Logo.displayName = "Logo";
+
+const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const screens = useBreakpoint();
   const pathname = usePathname();
