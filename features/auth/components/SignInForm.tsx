@@ -22,7 +22,7 @@ const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // Forms logic
+    // Forms logic goes here
   };
 
   return (
