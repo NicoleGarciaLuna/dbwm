@@ -1,11 +1,11 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import { Layout, Menu, Drawer, Button, Grid } from "antd";
 import { MenuProps } from "antd/es/menu";
 import { MenuOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 const { Header, Content } = Layout;
@@ -15,10 +15,10 @@ const LOGO_SRC = "/logo-orange-blue.png";
 const LOGO_ALT_TEXT = "Project Logo";
 const LOGO_TEXT = "Microempresarias TCU - 781";
 const LOGO_SIZE = 50;
-const MENU_ITEM_STYLE = {
+const MENU_ITEM_STYLE: React.CSSProperties = {
   color: "white",
   fontWeight: "bold",
-} as React.CSSProperties;
+};
 
 const styles: { [key: string]: React.CSSProperties } = {
   layout: { minHeight: "100vh" },
@@ -76,7 +76,9 @@ const menuItems: MenuProps["items"] = [
     key: "/",
     label: (
       <span style={MENU_ITEM_STYLE}>
-        <Link href="/">Microempresarias</Link>
+        <Link href="/" prefetch={true}>
+          Microempresarias
+        </Link>
       </span>
     ),
   },
@@ -84,7 +86,9 @@ const menuItems: MenuProps["items"] = [
     key: "/statistics",
     label: (
       <span style={MENU_ITEM_STYLE}>
-        <Link href="/statistics">Estadísticas</Link>
+        <Link href="/statistics" prefetch={true}>
+          Estadísticas
+        </Link>
       </span>
     ),
   },
@@ -92,17 +96,15 @@ const menuItems: MenuProps["items"] = [
     key: "/login",
     label: (
       <span style={MENU_ITEM_STYLE}>
-        <Link href="/login">Cerrar Sesión</Link>
+        <Link href="/login" prefetch={true}>
+          Cerrar Sesión
+        </Link>
       </span>
     ),
   },
 ];
 
-type LayoutComponentProps = {
-  children: React.ReactNode;
-};
-
-const Logo = () => (
+const Logo: React.FC = () => (
   <div style={styles.logoContainer}>
     <Image
       src={LOGO_SRC}
@@ -115,7 +117,9 @@ const Logo = () => (
   </div>
 );
 
-const LayoutComponent = ({ children }: LayoutComponentProps) => {
+const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const screens = useBreakpoint();
   const pathname = usePathname();
@@ -125,8 +129,8 @@ const LayoutComponent = ({ children }: LayoutComponentProps) => {
     setCurrent(pathname);
   }, [pathname]);
 
-  const showDrawer = () => setDrawerVisible(true);
-  const closeDrawer = () => setDrawerVisible(false);
+  const showDrawer = useCallback(() => setDrawerVisible(true), []);
+  const closeDrawer = useCallback(() => setDrawerVisible(false), []);
 
   return (
     <Layout style={styles.layout}>
