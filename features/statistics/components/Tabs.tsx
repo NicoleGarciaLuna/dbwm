@@ -1,8 +1,9 @@
 import { Tabs, Spin } from "antd";
-import { ENDPOINTS } from "@/shared/config/endpoints";
 import { DataItem, ChartType } from "@/shared/types";
 import CustomPieChart from "@/features/statistics/components/charts/PieChart";
 import CustomBarChart from "@/features/statistics/components/charts/BarChart";
+import { ENDPOINTS } from "@/shared/config/endpoints";
+import { useMemo, useCallback } from "react";
 
 type TabsComponentProps = {
   loading: boolean;
@@ -19,56 +20,66 @@ const TabsComponent = ({
   onTabChange,
   activeTab,
 }: TabsComponentProps) => {
-  const renderChart = (
-    chartData: DataItem[] | undefined,
-    title: string,
-    chartType: ChartType,
-    key: string
-  ) => {
-    if (!chartData || chartData.length === 0) return null;
-    const ChartComponent =
-      chartType === ChartType.PIE ? CustomPieChart : CustomBarChart;
-    return <ChartComponent key={key} data={chartData} title={title} />;
-  };
+  const renderChart = useCallback(
+    (
+      chartData: DataItem[] | undefined,
+      title: string,
+      chartType: ChartType,
+      key: string
+    ) => {
+      if (!chartData || chartData.length === 0) return null;
+      const ChartComponent =
+        chartType === ChartType.PIE ? CustomPieChart : CustomBarChart;
+      return <ChartComponent key={key} data={chartData} title={title} />;
+    },
+    []
+  );
 
-  const renderTabContent = (tabValue: string) => {
-    if (loading) {
-      return (
-        <Spin>
-          <div style={{ height: "200px" }} />
-        </Spin>
-      );
-    }
-
-    if (!data || !data[tabValue]) {
-      return null;
-    }
-
-    const endpointsForTab = ENDPOINTS[tabValue] || [];
-    const charts = endpointsForTab
-      .map((endpoint) => {
-        const chartData = data[tabValue][endpoint.key];
-        return renderChart(
-          chartData,
-          endpoint.key,
-          endpoint.chartType,
-          endpoint.key
+  const renderTabContent = useCallback(
+    (tabValue: string) => {
+      if (loading) {
+        return (
+          <Spin>
+            <div style={{ height: "200px" }} />
+          </Spin>
         );
-      })
-      .filter(Boolean); // Filtramos los charts nulos
+      }
 
-    if (charts.length === 0) {
-      return <div>No hay datos disponibles para esta categoría.</div>;
-    }
+      if (!data[tabValue] || Object.keys(data[tabValue]).length === 0) {
+        return <div>No hay datos disponibles para esta categoría.</div>;
+      }
 
-    return charts;
-  };
+      const endpointsForTab = ENDPOINTS[tabValue] || [];
+      const charts = endpointsForTab
+        .map((endpoint) => {
+          const chartData = data[tabValue][endpoint.key];
+          return renderChart(
+            chartData,
+            endpoint.key,
+            endpoint.chartType,
+            endpoint.key
+          );
+        })
+        .filter(Boolean);
 
-  const items = tabs.map((tab) => ({
-    key: tab.value,
-    label: tab.label,
-    children: renderTabContent(tab.value),
-  }));
+      if (charts.length === 0) {
+        return <div>No hay datos disponibles para esta categoría.</div>;
+      }
+
+      return charts;
+    },
+    [loading, data, renderChart]
+  );
+
+  const items = useMemo(
+    () =>
+      tabs.map((tab) => ({
+        key: tab.value,
+        label: tab.label,
+        children: renderTabContent(tab.value),
+      })),
+    [tabs, renderTabContent]
+  );
 
   return (
     <Tabs
