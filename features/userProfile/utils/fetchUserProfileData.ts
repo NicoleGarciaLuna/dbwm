@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabaseClient } from "@/shared/utils/supabase/client";
-import { CATEGORY_TABS } from "@/shared/config/endpoints";
+import { USER_PROFILE_CATEGORY_TABS } from "@/shared/config";
 
 export type TabData = Record<string, any>;
 
@@ -216,7 +216,7 @@ export const useUserProfileData = (personaId: number) => {
     }
   };
 
-  const memoizedTabsConfig = useMemo(() => CATEGORY_TABS, []);
+  const memoizedTabsConfig = useMemo(() => USER_PROFILE_CATEGORY_TABS, []);
 
   return {
     activeTab,
