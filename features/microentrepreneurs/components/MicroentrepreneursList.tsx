@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Table, Pagination, Input, Button, Modal, Spin } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
@@ -13,57 +13,25 @@ import {
   PAGE_SIZE,
 } from "@/shared/config";
 
-export type MicroentrepreneurTableProps = {
-  id: number;
-  fullName: string;
-  company: string;
-  sector: string;
-  businessIdea: string;
-  experienceYears: string;
-};
-
-export type Persona = {
-  id_persona: number;
-  nombre: string;
-  primer_apellido: string;
-  segundo_apellido: string;
-};
-
-export type Emprendimiento = {
-  nombre_emprendimiento?: string;
-  tiempo_operacion?: string;
-  sector_economico?: string;
-};
-
-export type IdeaNegocio = {
-  descripcion_breve?: string;
-};
-
-export type Diagnostico = {
-  id_diagnostico: number;
-  fecha_diagnostico: string;
-  id_persona: number;
-  emprendimiento?: Emprendimiento;
-  idea_negocio?: IdeaNegocio;
-  persona: Persona;
-};
+import { MicroentrepreneurTableProps } from "@/features/microentrepreneurs/types";
 
 const MicroentrepreneursList = () => {
   const [data, setData] = useState<MicroentrepreneurTableProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedMicroentrepreneur, setSelectedMicroentrepreneur] =
-    useState<MicroentrepreneurTableProps | null>(null);
+  const [modalState, setModalState] = useState<{
+    isVisible: boolean;
+    selectedMicroentrepreneur: MicroentrepreneurTableProps | null;
+  }>({
+    isVisible: false,
+    selectedMicroentrepreneur: null,
+  });
   const router = useRouter();
 
   useEffect(() => {
     const getData = async () => {
       try {
         const formattedData = await fetchPersonasConDatos();
-        console.log("Datos formateados obtenidos en useEffect:", formattedData);
-        if (formattedData) {
-          setData(formattedData);
-        }
+        if (formattedData) setData(formattedData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -86,18 +54,20 @@ const MicroentrepreneursList = () => {
 
   const handleDelete = useCallback(
     (microentrepreneur: MicroentrepreneurTableProps) => {
-      setSelectedMicroentrepreneur(microentrepreneur);
-      setIsModalVisible(true);
+      setModalState({
+        isVisible: true,
+        selectedMicroentrepreneur: microentrepreneur,
+      });
     },
     []
   );
 
   const confirmDelete = useCallback(() => {
-    setIsModalVisible(false);
+    setModalState({ isVisible: false, selectedMicroentrepreneur: null });
     console.log(
-      `Deleting microentrepreneur: ${selectedMicroentrepreneur?.fullName}`
+      `Deleting microentrepreneur: ${modalState.selectedMicroentrepreneur?.fullName}`
     );
-  }, [selectedMicroentrepreneur]);
+  }, [modalState.selectedMicroentrepreneur]);
 
   const columns = useMemo(
     () =>
@@ -105,29 +75,27 @@ const MicroentrepreneursList = () => {
         title: column.header,
         dataIndex: column.key,
         key: column.key,
-        render: (text: string, record: MicroentrepreneurTableProps) => {
-          if (column.isAction) {
-            return (
-              <div className="flex space-x-2">
-                <DeleteOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(record);
-                  }}
-                  className="text-red-500 cursor-pointer"
-                />
-                <EyeOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    router.push(`/microempresaria/${record.id}`);
-                  }}
-                  className="text-blue-500 cursor-pointer"
-                />
-              </div>
-            );
-          }
-          return text;
-        },
+        render: (text: any, record: MicroentrepreneurTableProps) =>
+          column.isAction ? (
+            <div className="flex space-x-2">
+              <DeleteOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(record);
+                }}
+                className="text-red-500 cursor-pointer"
+              />
+              <EyeOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/microempresaria/${record.id}`);
+                }}
+                className="text-blue-500 cursor-pointer"
+              />
+            </div>
+          ) : (
+            text
+          ),
       })),
     [handleDelete, router]
   );
@@ -178,14 +146,14 @@ const MicroentrepreneursList = () => {
       </div>
       <Modal
         title="Confirmación de eliminación de la microempresaria"
-        open={isModalVisible}
+        open={modalState.isVisible}
         onOk={confirmDelete}
-        onCancel={() => setIsModalVisible(false)}
+        onCancel={() => setModalState({ ...modalState, isVisible: false })}
         okText="Delete"
         cancelText="Cancel"
       >
         <p>
-          {MODAL_DELETE_TEXT} {selectedMicroentrepreneur?.fullName}?
+          {MODAL_DELETE_TEXT} {modalState.selectedMicroentrepreneur?.fullName}?
         </p>
       </Modal>
     </section>

@@ -2,7 +2,7 @@ import { supabaseClient } from "@/shared/utils/supabase/client";
 import {
   Diagnostico,
   MicroentrepreneurTableProps,
-} from "@/features/microentrepreneurs/components/MicroentrepreneursList";
+} from "@/features/microentrepreneurs/types";
 
 export const fetchPersonasConDatos = async (): Promise<
   MicroentrepreneurTableProps[] | null
