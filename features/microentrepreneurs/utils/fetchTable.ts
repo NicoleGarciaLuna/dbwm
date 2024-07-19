@@ -36,11 +36,6 @@ export const fetchPersonasConDatos = async (): Promise<
 
     if (diagnosticosError) throw diagnosticosError;
 
-    console.log(
-      "Diagnosticos obtenidos en fetchPersonasConDatos:",
-      diagnosticosData
-    );
-
     const groupedData = diagnosticosData.reduce(
       (acc: { [key: number]: Diagnostico }, diagnostico: any) => {
         const personaId = diagnostico.persona.id_persona;
@@ -49,15 +44,7 @@ export const fetchPersonasConDatos = async (): Promise<
           new Date(diagnostico.fecha_diagnostico) >
             new Date(acc[personaId].fecha_diagnostico)
         ) {
-          acc[personaId] = {
-            ...diagnostico,
-            emprendimiento: diagnostico.emprendimiento
-              ? diagnostico.emprendimiento
-              : undefined,
-            idea_negocio: diagnostico.idea_negocio
-              ? diagnostico.idea_negocio
-              : undefined,
-          };
+          acc[personaId] = { ...diagnostico };
         }
         return acc;
       },
@@ -66,28 +53,15 @@ export const fetchPersonasConDatos = async (): Promise<
 
     const latestDiagnosticos = Object.values(groupedData);
 
-    console.log(
-      "Latest diagnosticos in fetchPersonasConDatos:",
-      latestDiagnosticos
-    );
-
     const formattedData = latestDiagnosticos
       .map((diagnostico) => {
-        console.log(
-          "Procesando diagnostico en fetchPersonasConDatos:",
-          diagnostico
-        );
-
-        if (!diagnostico.persona) {
-          console.warn("Diagnostico sin datos de persona:", diagnostico);
-          return null;
-        }
+        if (!diagnostico.persona) return null;
 
         const persona = diagnostico.persona;
         const emprendimiento = diagnostico.emprendimiento;
         const ideaNegocio = diagnostico.idea_negocio;
 
-        const formattedData: MicroentrepreneurTableProps = {
+        return {
           id: persona.id_persona,
           fullName: `${persona.nombre} ${persona.primer_apellido} ${persona.segundo_apellido}`,
           company: emprendimiento?.nombre_emprendimiento ?? "",
@@ -95,13 +69,6 @@ export const fetchPersonasConDatos = async (): Promise<
           businessIdea: ideaNegocio?.descripcion_breve ?? "",
           experienceYears: emprendimiento?.tiempo_operacion ?? "",
         };
-
-        console.log(
-          "Datos formateados para persona en fetchPersonasConDatos:",
-          formattedData
-        );
-
-        return formattedData;
       })
       .filter((item): item is MicroentrepreneurTableProps => item !== null);
 

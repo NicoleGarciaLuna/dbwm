@@ -1,6 +1,14 @@
 "use client";
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { Table, Pagination, Input, Button, Modal, Spin } from "antd";
+
+import { useState, useEffect, useMemo, useCallback, memo } from "react";
+import {
+  Button,
+  Modal,
+  Spin,
+  Input,
+  Pagination,
+  Table as AntTable,
+} from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,8 +22,11 @@ import {
   PAGE_SIZE,
 } from "@/shared/config";
 import { MicroentrepreneurTableProps } from "@/features/microentrepreneurs/types";
+import { ColumnsType } from "antd/es/table";
 
-const List = () => {
+const Table = memo(AntTable);
+
+function List() {
   const [data, setData] = useState<MicroentrepreneurTableProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalState, setModalState] = useState<{
@@ -48,7 +59,6 @@ const List = () => {
     "sector",
     "businessIdea",
   ]);
-
   const { currentPage, totalPages, handlePageChange, paginatedData } =
     usePagination(filteredData.length);
 
@@ -69,7 +79,7 @@ const List = () => {
     );
   }, [modalState.selectedMicroentrepreneur]);
 
-  const columns = useMemo(
+  const columns: ColumnsType<MicroentrepreneurTableProps> = useMemo(
     () =>
       COLUMN_CONFIG.map((column) => ({
         title: column.header,
@@ -90,11 +100,23 @@ const List = () => {
               </Link>
             </div>
           ) : (
-            text
+            text || "-"
           ),
       })),
     [handleDelete]
   );
+
+  if (isLoading) {
+    return (
+      <div className="p-3 sm:p-5">
+        <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
+          <div className="bg-white relative shadow-md sm:rounded-lg overflow-hidden p-4 flex items-center justify-center">
+            <Spin tip="Cargando..." />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section className="p-3 sm:p-5">
@@ -114,21 +136,20 @@ const List = () => {
               </Link>
             </div>
           </div>
-          <Spin spinning={isLoading} tip="Cargando...">
-            <Table
-              columns={columns}
-              dataSource={paginatedData(filteredData).map((record) => ({
-                ...record,
-                key: record.id,
-              }))}
-              pagination={false}
-              onRow={(record) => ({
-                onClick: () => {
-                  router.push(`/microempresaria/${record.id}`);
-                },
-              })}
-            />
-          </Spin>
+          <Table
+            columns={columns as ColumnsType<Object>}
+            dataSource={paginatedData(filteredData).map((record) => ({
+              ...record,
+              key: record.id,
+            }))}
+            pagination={false}
+            onRow={(record) => ({
+              onClick: () => {
+                router.push(`/microempresaria/${record.id}`);
+              },
+            })}
+          />
+
           <Pagination
             current={currentPage}
             total={totalPages * PAGE_SIZE}
@@ -151,6 +172,6 @@ const List = () => {
       </Modal>
     </section>
   );
-};
+}
 
-export default List;
+export default memo(List);
