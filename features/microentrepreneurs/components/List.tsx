@@ -85,7 +85,7 @@ const List = () => {
                 }}
                 className="text-red-500 cursor-pointer"
               />
-              <Link href={`/microempresaria/${record.id}`} prefetch>
+              <Link href={`/microempresaria/${record.id}`} prefetch={true}>
                 <EyeOutlined className="text-blue-500 cursor-pointer" />
               </Link>
             </div>
@@ -109,7 +109,7 @@ const List = () => {
                 enterButton
                 style={{ width: SEARCH_INPUT_WIDTH }}
               />
-              <Link href="/nueva-microempresaria" prefetch>
+              <Link href="/nueva-microempresaria" prefetch={true}>
                 <Button type="primary">Nueva Microempresaria</Button>
               </Link>
             </div>
