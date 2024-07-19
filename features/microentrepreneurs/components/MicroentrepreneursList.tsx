@@ -128,7 +128,7 @@ const MicroentrepreneursList = () => {
                 <EyeOutlined
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/profile/${record.id}`);
+                    router.push(`/microempresaria/${record.id}`);
                   }}
                   className="text-blue-500 cursor-pointer"
                 />
