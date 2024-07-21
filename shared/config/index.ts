@@ -1,6 +1,16 @@
 export const PAGE_SIZE = 8;
 export const SEARCH_INPUT_WIDTH = 200;
 export const MODAL_DELETE_TEXT = "Estas seguro que deseas eliminar a";
+export const LOGO_SRC = "/logo-orange-blue.png";
+export const LOGO_ALT = "Project Logo";
+export const LOGO_TEXT = "Microempresarias TCU - 781";
+export const LOGO_SIZE = 50;
+
+export const menuItems = [
+  { label: "Microempresarias", href: "/" },
+  { label: "Estadísticas", href: "/statistics" },
+  { label: "Cerrar Sesión", href: "/login" },
+];
 
 export const COLUMN_CONFIG = [
   { key: "fullName", header: "Nombre Completo" },
