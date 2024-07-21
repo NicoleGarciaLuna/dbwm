@@ -210,7 +210,7 @@ const LoadingSpinner = () => (
       height: "100vh",
     }}
   >
-    <Spin tip="Cargando..." />
+    <Spin />
   </div>
 );
 

@@ -97,7 +97,7 @@ const createCardContent = (data: any): ReactNode => {
 
 const TabContent = memo(
   ({ activeTab, tabsData, loading, tabs }: TabContentProps): ReactNode => {
-    if (loading) return <Spin tip="Cargando datos..." />;
+    if (loading) return <Spin />;
 
     const data = tabsData[activeTab];
     if (!data) return <Empty description="No hay datos disponibles." />;

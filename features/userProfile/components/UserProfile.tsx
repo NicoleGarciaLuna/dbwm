@@ -29,7 +29,7 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
   return (
     <main className="flex flex-col items-center p-4">
       {loading && !username ? (
-        <Spin tip="Cargando..." />
+        <Spin />
       ) : (
         <>
           <ProfileHeader
@@ -45,7 +45,7 @@ const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
               items={tabs.map((tab) => ({ key: tab.value, label: tab.label }))}
             />
             <div className="mt-6">
-              <Suspense fallback={<Spin tip="Cargando contenido..." />}>
+              <Suspense fallback={<Spin />}>
                 <TabContent
                   activeTab={activeTab}
                   tabsData={tabsData}
