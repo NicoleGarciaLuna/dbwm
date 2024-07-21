@@ -1,6 +1,6 @@
 export const PAGE_SIZE = 8;
 export const SEARCH_INPUT_WIDTH = 200;
-export const MODAL_DELETE_TEXT = "Are you sure you want to delete";
+export const MODAL_DELETE_TEXT = "Estas seguro que deseas eliminar a";
 
 export const COLUMN_CONFIG = [
   { key: "fullName", header: "Nombre Completo" },
@@ -23,3 +23,5 @@ export const USER_PROFILE_CATEGORY_TABS = [
   { value: "financiamiento", label: "Financiamiento" },
   { value: "capacitacion", label: "Capacitación" },
 ];
+
+export const SEARCH_FIELDS = ["fullName", "company", "sector", "businessIdea"];
