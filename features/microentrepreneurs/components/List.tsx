@@ -1,15 +1,16 @@
 "use client";
-import { memo, useReducer, useMemo, useCallback, ReactNode } from "react";
+import { memo, useCallback, useState, useEffect, ReactNode } from "react";
 import {
   Button,
   Modal,
-  Spin,
   Input,
   Table as AntTable,
   Tooltip,
   Space,
   Row,
   Col,
+  Spin,
+  Typography,
 } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
@@ -17,66 +18,54 @@ import Link from "next/link";
 import { useSearch } from "@/features/microentrepreneurs/hooks/useSearch";
 import { COLUMN_CONFIG, MODAL_DELETE_TEXT, PAGE_SIZE } from "@/shared/config";
 import { MicroentrepreneurTableProps } from "@/features/microentrepreneurs/types";
-import useFetchPersonas from "@/features/microentrepreneurs/hooks/useFetchPersonas";
+import useFetchPersonas from "@/features/microentrepreneurs/utils/fetchData";
 import { ColumnsType } from "antd/es/table";
-import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint"; // Importa el hook useBreakpoint
+import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
+import { useMemo } from "react";
 
-const Table = AntTable;
-
-const SEARCH_FIELDS = ["fullName", "company", "sector", "businessIdea"];
-
-type ModalState = {
-  isVisible: boolean;
-  selectedItem: MicroentrepreneurTableProps | null;
-};
-
-type ModalAction =
-  | { type: "OPEN"; payload: MicroentrepreneurTableProps }
-  | { type: "CLOSE" };
-
-const initialState: ModalState = {
-  isVisible: false,
-  selectedItem: null,
-};
-
-function modalReducer(state: ModalState, action: ModalAction): ModalState {
-  switch (action.type) {
-    case "OPEN":
-      return { isVisible: true, selectedItem: action.payload };
-    case "CLOSE":
-      return initialState;
-    default:
-      return state;
-  }
-}
+const SEARCH_FIELDS = [
+  "fullName",
+  "company",
+  "sector",
+  "businessIdea",
+  "experienceYears",
+];
 
 function List() {
   const { data, isLoading, error } = useFetchPersonas();
+  const [loaded, setLoaded] = useState(false);
   const { searchQuery, handleSearch, filteredData } = useSearch(
     data,
     SEARCH_FIELDS
   );
   const router = useRouter();
-  const [modalState, dispatch] = useReducer(modalReducer, initialState);
-  const screens = useBreakpoint(); // Utiliza el hook useBreakpoint para obtener los tamaños de pantalla
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] =
+    useState<MicroentrepreneurTableProps | null>(null);
+  const screens = useBreakpoint();
 
-  const openModal = useCallback(
-    (item: MicroentrepreneurTableProps) => {
-      dispatch({ type: "OPEN", payload: item });
-    },
-    [dispatch]
-  );
+  useEffect(() => {
+    if (!isLoading && !loaded) {
+      setLoaded(true);
+    }
+  }, [isLoading, loaded]);
+
+  const openModal = useCallback((item: MicroentrepreneurTableProps) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  }, []);
 
   const closeModal = useCallback(() => {
-    dispatch({ type: "CLOSE" });
-  }, [dispatch]);
+    setSelectedItem(null);
+    setIsModalOpen(false);
+  }, []);
 
   const confirmDelete = useCallback(() => {
-    if (modalState.selectedItem) {
-      console.log(`Deleting item: ${modalState.selectedItem.fullName}`);
+    if (selectedItem) {
+      console.log(`Deleting item: ${selectedItem.fullName}`);
     }
     closeModal();
-  }, [modalState, closeModal]);
+  }, [selectedItem, closeModal]);
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,15 +99,13 @@ function List() {
   const renderTitle = useCallback(
     () => (
       <Row
-        style={{
-          padding: "16px 0",
-        }}
-        gutter={[16, 16]} // Añadir espacio entre elementos de la cuadrícula
-        justify="space-between" // Asegurar que los elementos se distribuyan correctamente
-        align="middle" // Alinear elementos verticalmente en el centro
+        gutter={[16, 16]}
+        justify="space-between"
+        align="middle"
+        style={{ padding: "16px 0" }}
       >
-        <Col flex="auto" style={{ textAlign: "left", fontWeight: "bold" }}>
-          Lista de Microempresarias
+        <Col flex="auto">
+          <Typography.Text strong>Lista de Microempresarias</Typography.Text>
         </Col>
         <Col>
           <Space>
@@ -127,7 +114,7 @@ function List() {
               onChange={handleSearchChange}
               placeholder="Buscar"
               enterButton
-              style={{ width: screens.xs ? 150 : 200 }} // Ajustar el ancho dependiendo del tamaño de la pantalla
+              style={{ width: screens.xs ? 150 : 200 }}
             />
             <Link href="/nueva-microempresaria" prefetch={true}>
               <Button type="primary" style={{ whiteSpace: "nowrap" }}>
@@ -153,36 +140,44 @@ function List() {
     [router]
   );
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
   if (error) {
     return <div>Error: {error}</div>;
   }
 
   return (
     <section>
-      <AntTable
-        title={renderTitle}
-        columns={columns}
-        dataSource={dataSource}
-        pagination={{ pageSize: PAGE_SIZE, position: ["bottomCenter"] }}
-        onRow={(record) => ({ onClick: () => handleRowClick(record) })}
-        scroll={{ x: "max-content" }}
-        sticky
-      />
+      {loaded ? (
+        <AntTable
+          title={renderTitle}
+          columns={columns}
+          dataSource={dataSource}
+          pagination={{ pageSize: PAGE_SIZE, position: ["bottomCenter"] }}
+          onRow={(record) => ({ onClick: () => handleRowClick(record) })}
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      ) : (
+        <Spin
+          spinning={isLoading}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        />
+      )}
       <Modal
         title="Confirmación de eliminación de la microempresaria"
-        open={modalState.isVisible}
+        open={isModalOpen}
         onOk={confirmDelete}
         onCancel={closeModal}
         okText="Eliminar"
         cancelText="Cancelar"
       >
-        <p>
-          {MODAL_DELETE_TEXT} {modalState.selectedItem?.fullName}?
-        </p>
+        <Typography.Paragraph>
+          {MODAL_DELETE_TEXT} {selectedItem?.fullName}?
+        </Typography.Paragraph>
       </Modal>
     </section>
   );
@@ -212,18 +207,5 @@ const ActionColumn = memo(({ record, openModal }: ActionColumnProps) => (
   </Space>
 ));
 ActionColumn.displayName = "ActionColumn";
-
-const LoadingSpinner = () => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      height: "100vh",
-    }}
-  >
-    <Spin />
-  </div>
-);
 
 export default memo(List);
