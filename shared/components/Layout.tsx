@@ -1,25 +1,32 @@
 "use client";
 
-import { Layout as AntLayout } from "antd";
+import { Layout as AntLayout, Grid } from "antd";
 import { ReactNode } from "react";
 import Header from "@/shared/components/Header";
 
 const { Content } = AntLayout;
+const { useBreakpoint } = Grid;
 
-const styles: { [key: string]: React.CSSProperties } = {
-  layout: { minHeight: "100vh", overflow: "hidden" },
-  content: {
-    marginTop: 64,
-    height: "calc(100vh - 64px)",
-    overflowY: "auto" as "auto",
-  },
+const Layout = ({ children }: { children: ReactNode }) => {
+  const screens = useBreakpoint();
+
+  return (
+    <AntLayout style={{ minHeight: "100vh", overflow: "hidden" }}>
+      <Header />
+      <Content
+        style={{
+          marginTop: 64,
+          padding: screens.sm ? "24px" : "16px",
+          paddingTop: screens.sm ? "32px" : "24px",
+          paddingBottom: screens.sm ? "32px" : "24px",
+          height: "calc(100vh - 64px)",
+          overflowY: "auto",
+        }}
+      >
+        {children}
+      </Content>
+    </AntLayout>
+  );
 };
-
-const Layout = ({ children }: { children: ReactNode }) => (
-  <AntLayout style={styles.layout}>
-    <Header />
-    <Content style={styles.content}>{children}</Content>
-  </AntLayout>
-);
 
 export default Layout;

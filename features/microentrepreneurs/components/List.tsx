@@ -8,6 +8,8 @@ import {
   Table as AntTable,
   Tooltip,
   Space,
+  Row,
+  Col,
 } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
@@ -17,6 +19,7 @@ import { COLUMN_CONFIG, MODAL_DELETE_TEXT, PAGE_SIZE } from "@/shared/config";
 import { MicroentrepreneurTableProps } from "@/features/microentrepreneurs/types";
 import useFetchPersonas from "@/features/microentrepreneurs/hooks/useFetchPersonas";
 import { ColumnsType } from "antd/es/table";
+import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint"; // Importa el hook useBreakpoint
 
 const Table = AntTable;
 
@@ -55,6 +58,7 @@ function List() {
   );
   const router = useRouter();
   const [modalState, dispatch] = useReducer(modalReducer, initialState);
+  const screens = useBreakpoint(); // Utiliza el hook useBreakpoint para obtener los tamaños de pantalla
 
   const openModal = useCallback(
     (item: MicroentrepreneurTableProps) => {
@@ -105,28 +109,36 @@ function List() {
 
   const renderTitle = useCallback(
     () => (
-      <div
+      <Row
         style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
+          padding: "16px 0",
         }}
+        gutter={[16, 16]} // Añadir espacio entre elementos de la cuadrícula
+        justify="space-between" // Asegurar que los elementos se distribuyan correctamente
+        align="middle" // Alinear elementos verticalmente en el centro
       >
-        <Space>
-          <Input.Search
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="Buscar"
-            enterButton
-            style={{ minWidth: 200 }}
-          />
-          <Link href="/nueva-microempresaria" prefetch={true}>
-            <Button type="primary">Nueva Microempresaria</Button>
-          </Link>
-        </Space>
-      </div>
+        <Col flex="auto" style={{ textAlign: "left", fontWeight: "bold" }}>
+          Lista de Microempresarias
+        </Col>
+        <Col>
+          <Space>
+            <Input.Search
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Buscar"
+              enterButton
+              style={{ width: screens.xs ? 150 : 200 }} // Ajustar el ancho dependiendo del tamaño de la pantalla
+            />
+            <Link href="/nueva-microempresaria" prefetch={true}>
+              <Button type="primary" style={{ whiteSpace: "nowrap" }}>
+                Nueva Microempresaria
+              </Button>
+            </Link>
+          </Space>
+        </Col>
+      </Row>
     ),
-    [searchQuery, handleSearchChange]
+    [searchQuery, handleSearchChange, screens]
   );
 
   const dataSource = useMemo(
@@ -151,7 +163,7 @@ function List() {
 
   return (
     <section>
-      <Table
+      <AntTable
         title={renderTitle}
         columns={columns}
         dataSource={dataSource}
