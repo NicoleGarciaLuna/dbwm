@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchPersonasConDatos } from "../utils/fetchTable";
+import { fetchPersonasConDatos } from "./fetchTable";
 import { MicroentrepreneurTableProps } from "@/features/microentrepreneurs/types";
 
 const useFetchPersonas = () => {

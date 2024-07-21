@@ -190,7 +190,9 @@ export const useUserProfileData = (personaId: number) => {
         }
 
         if (tab === "personal" && data) {
-          setUsername(`${data.nombre} ${data.primer_apellido}`);
+          setUsername(
+            `${data.nombre} ${data.primer_apellido} ${data.segundo_apellido}`
+          );
           setJoinedDate(data.diagnostico?.[0]?.fecha_diagnostico || "");
         }
 
