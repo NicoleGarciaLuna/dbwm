@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout as AntLayout, Menu, Drawer, Button, Grid } from "antd";
+import { Layout as AntLayout, Menu, Drawer, Button, Grid, Space } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,44 +16,33 @@ const LOGO_TEXT = "Microempresarias TCU - 781";
 const LOGO_SIZE = 50;
 
 const styles: { [key: string]: React.CSSProperties } = {
-  layout: { minHeight: "100vh", overflow: "hidden" },
+  layout: { minHeight: "100vh" },
   header: {
     position: "fixed",
     width: "100%",
     zIndex: 1000,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "#001529",
   },
   logo: {
-    position: "absolute",
-    left: 16,
     display: "flex",
     alignItems: "center",
     color: "white",
     fontWeight: "bold",
   },
   logoImage: { marginRight: 16 },
-  menu: {
-    flex: 1,
-    display: "flex",
-    justifyContent: "center",
-    color: "white",
-    fontWeight: "bold",
-  },
   menuButton: {
     fontSize: "24px",
     color: "#fff",
     background: "none",
     border: "none",
-    position: "absolute",
-    right: 16,
   },
   drawerHeader: { backgroundColor: "#001529", color: "white" },
   drawerBody: { backgroundColor: "#001529", color: "white" },
   content: {
     marginTop: 64,
+    padding: "24px",
     height: "calc(100vh - 64px)",
     overflowY: "auto" as "auto",
   },
@@ -93,21 +82,19 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <AntLayout style={styles.layout}>
       <Header style={styles.header}>
-        <Logo />
-        {screens.md ? (
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            selectedKeys={[current]}
-            style={styles.menu}
-          >
-            {menuItems.map((item) => (
-              <Menu.Item key={item.key}>
-                <Link href={item.href}>{item.label}</Link>
-              </Menu.Item>
-            ))}
-          </Menu>
-        ) : (
+        <Space style={{ flex: 1 }}>
+          <Logo />
+          {screens.md && (
+            <Menu theme="dark" mode="horizontal" selectedKeys={[current]}>
+              {menuItems.map((item) => (
+                <Menu.Item key={item.key}>
+                  <Link href={item.href}>{item.label}</Link>
+                </Menu.Item>
+              ))}
+            </Menu>
+          )}
+        </Space>
+        {!screens.md && (
           <>
             <Button
               type="text"
@@ -121,9 +108,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               closable
               onClose={toggleDrawer}
               open={drawerVisible}
-              style={styles.drawerBody}
-              bodyStyle={styles.drawerBody}
-              headerStyle={styles.drawerHeader}
+              styles={{ body: styles.drawerBody, header: styles.drawerHeader }}
             >
               <Menu mode="vertical" selectedKeys={[current]} theme="dark">
                 {menuItems.map((item) => (
