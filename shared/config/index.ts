@@ -34,4 +34,10 @@ export const USER_PROFILE_CATEGORY_TABS = [
   { value: "capacitacion", label: "Capacitación" },
 ];
 
-export const SEARCH_FIELDS = ["fullName", "company", "sector", "businessIdea"];
+export const SEARCH_FIELDS = [
+  "fullName",
+  "company",
+  "sector",
+  "businessIdea",
+  "experienceYears",
+];
