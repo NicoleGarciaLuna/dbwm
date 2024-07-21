@@ -1,17 +1,23 @@
 "use client";
 
-import { Layout as AntLayout, Menu, Drawer, Button, Grid } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { Layout as AntLayout, Menu, Grid } from "antd";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { LOGO_SRC, LOGO_ALT, LOGO_TEXT, LOGO_SIZE, menuItems } from "@/shared/config";
+import {
+  LOGO_SRC,
+  LOGO_ALT,
+  LOGO_TEXT,
+  LOGO_SIZE,
+  menuItems,
+} from "@/shared/config";
+import DrawerMenu from "./DrawerMenu";
 
 const { Header: AntHeader } = AntLayout;
 const { useBreakpoint } = Grid;
 
-const styles: { [key: string]: React.CSSProperties } = {
+const headerStyles: { [key: string]: React.CSSProperties } = {
   header: {
     position: "fixed",
     width: "100%",
@@ -37,35 +43,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "white",
     fontWeight: "bold",
   },
-  menuButton: {
-    fontSize: "24px",
-    color: "#fff",
-    background: "none",
-    border: "none",
-    position: "absolute",
-    right: 16,
-  },
-  drawerHeader: { backgroundColor: "#001529", color: "white" },
-  drawerBody: { backgroundColor: "#001529", color: "white" },
 };
 
-
-
 const Logo = () => (
-  <div style={styles.logo}>
+  <div style={headerStyles.logo}>
     <Image
       src={LOGO_SRC}
       alt={LOGO_ALT}
       height={LOGO_SIZE}
       width={LOGO_SIZE}
-      style={styles.logoImage}
+      style={headerStyles.logoImage}
     />
     {LOGO_TEXT}
   </div>
 );
 
 const Header = () => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const screens = useBreakpoint();
   const pathname = usePathname();
   const [current, setCurrent] = useState(pathname);
@@ -74,17 +67,15 @@ const Header = () => {
     setCurrent(pathname);
   }, [pathname]);
 
-  const toggleDrawer = useCallback(() => setDrawerVisible((prev) => !prev), []);
-
   return (
-    <AntHeader style={styles.header}>
+    <AntHeader style={headerStyles.header}>
       <Logo />
       {screens.md ? (
         <Menu
           theme="dark"
           mode="horizontal"
           selectedKeys={[current]}
-          style={styles.menu}
+          style={headerStyles.menu}
         >
           {menuItems.map((item) => (
             <Menu.Item key={item.href}>
@@ -93,30 +84,7 @@ const Header = () => {
           ))}
         </Menu>
       ) : (
-        <>
-          <Button
-            type="text"
-            icon={<MenuOutlined />}
-            style={styles.menuButton}
-            onClick={toggleDrawer}
-          />
-          <Drawer
-            title="Menu"
-            placement="right"
-            closable
-            onClose={toggleDrawer}
-            open={drawerVisible}
-            styles={{ header: styles.drawerHeader, body: styles.drawerBody }}
-          >
-            <Menu mode="vertical" selectedKeys={[current]} theme="dark">
-              {menuItems.map((item) => (
-                <Menu.Item key={item.href}>
-                  <Link href={item.href}>{item.label}</Link>
-                </Menu.Item>
-              ))}
-            </Menu>
-          </Drawer>
-        </>
+        <DrawerMenu />
       )}
     </AntHeader>
   );
