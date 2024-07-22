@@ -1,7 +1,8 @@
 "use client";
 import { useState, ChangeEvent, FormEvent } from "react";
-import { Input, Button, Form, Typography, Layout, Card } from "antd";
+import { Input, Button, Form, Typography, Layout, Card, message } from "antd";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -14,15 +15,32 @@ type SignInFormProps = {
 const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) =>
     setEmail(e.target.value);
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
     setPassword(e.target.value);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Forms logic goes here
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+
+    const res = await fetch("/app/(auth)/login/actions/login", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (res.redirected) {
+      window.location.href = res.url;
+    } else if (res.status === 400) {
+      message.error("Error al iniciar sesión");
+    } else {
+      message.success("Inicio de sesión exitoso");
+      router.push("/");
+    }
   };
 
   return (
