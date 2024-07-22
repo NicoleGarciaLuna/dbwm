@@ -3,7 +3,7 @@ import { MenuOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { menuItems } from "@/shared/config";
+import { menuItems, MenuItem } from "@/shared/config";
 
 const drawerStyles: { [key: string]: React.CSSProperties } = {
   menuButton: {
@@ -16,7 +16,15 @@ const drawerStyles: { [key: string]: React.CSSProperties } = {
   },
   drawerHeader: { backgroundColor: "#001529", color: "white" },
   drawerBody: { backgroundColor: "#001529", color: "white" },
+  closeIcon: { color: "white" },
 };
+
+const renderMenuItems = (menuItems: MenuItem[]) =>
+  menuItems.map((item: MenuItem) => (
+    <Menu.Item key={item.href}>
+      <Link href={item.href}>{item.label}</Link>
+    </Menu.Item>
+  ));
 
 const DrawerMenu = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -43,15 +51,15 @@ const DrawerMenu = () => {
         closable
         onClose={toggleDrawer}
         open={drawerVisible}
-        headerStyle={drawerStyles.drawerHeader}
-        bodyStyle={drawerStyles.drawerBody}
+        width={240}
+        styles={{
+          header: drawerStyles.drawerHeader,
+          body: drawerStyles.drawerBody,
+        }}
+        closeIcon={<MenuOutlined style={drawerStyles.closeIcon} />}
       >
         <Menu mode="vertical" selectedKeys={[current]} theme="dark">
-          {menuItems.map((item) => (
-            <Menu.Item key={item.href}>
-              <Link href={item.href}>{item.label}</Link>
-            </Menu.Item>
-          ))}
+          {renderMenuItems(menuItems)}
         </Menu>
       </Drawer>
     </>
