@@ -1,12 +1,6 @@
 "use client";
 import { memo, useCallback, useState, ReactNode, useMemo } from "react";
-import {
-  Modal,
-  Table as AntTable,
-  Tooltip,
-  Spin,
-  Typography,
-} from "antd";
+import { Modal, Table as AntTable, Tooltip, Spin, Typography } from "antd";
 import { useRouter } from "next/navigation";
 import { useSearch } from "@/features/microentrepreneurs/hooks/useSearch";
 import {
@@ -14,7 +8,7 @@ import {
   MODAL_DELETE_TEXT,
   PAGE_SIZE,
   SEARCH_FIELDS,
-} from "@/shared/config";
+} from "@/features/microentrepreneurs/types";
 import { MicroentrepreneurTableProps } from "@/features/microentrepreneurs/types";
 import usePersonas from "@/features/microentrepreneurs/utils/fetchData";
 import { ColumnsType } from "antd/es/table";

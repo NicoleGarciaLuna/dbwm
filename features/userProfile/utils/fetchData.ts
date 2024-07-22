@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabaseClient } from "@/shared/utils/supabase/client";
-import { USER_PROFILE_CATEGORY_TABS } from "@/shared/config";
+import { USER_PROFILE_CATEGORY_TABS } from "@/features/userProfile/types";
 
 export type TabData = Record<string, any>;
 
