@@ -1,4 +1,3 @@
-// ActionColumn.tsx
 import { memo } from "react";
 import { Tooltip, Space } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
