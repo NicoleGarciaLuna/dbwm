@@ -2,6 +2,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { Input, Button, Form, Typography, Layout, Card } from "antd";
 import Image from "next/image";
+import { login } from "@/app/(auth)/login/actions";
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -14,15 +15,29 @@ type SignInFormProps = {
 const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) =>
     setEmail(e.target.value);
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
     setPassword(e.target.value);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Forms logic goes here
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+
+    try {
+      await login(formData);
+    } catch (err) {
+      setError("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,6 +81,9 @@ const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
             <Title level={3} style={{ color: "#001529" }}>
               Inicia sesión
             </Title>
+            {error && (
+              <div style={{ color: "red", marginBottom: "16px" }}>{error}</div>
+            )}
             <Form layout="vertical" onSubmitCapture={handleSubmit}>
               <Form.Item
                 label="Correo electrónico"
@@ -105,6 +123,7 @@ const SignInForm = ({ logoSrc, brandName }: SignInFormProps) => {
                     backgroundColor: "#001529",
                     borderColor: "#001529",
                   }}
+                  loading={loading}
                 >
                   Iniciar Sesión
                 </Button>

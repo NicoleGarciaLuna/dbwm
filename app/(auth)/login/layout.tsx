@@ -5,11 +5,7 @@ type LayoutProps = {
 };
 
 const AuthLayout = ({ children }: LayoutProps) => {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  return <div>{children}</div>;
 };
 
 export default AuthLayout;
