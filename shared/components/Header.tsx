@@ -17,9 +17,9 @@ import DrawerMenu from "./DrawerMenu";
 const { Header: AntHeader } = AntLayout;
 const { useBreakpoint } = Grid;
 
-const headerStyles: { [key: string]: React.CSSProperties } = {
+const headerStyles = {
   header: {
-    position: "fixed",
+    position: "fixed" as const,
     width: "100%",
     zIndex: 1000,
     display: "flex",
@@ -28,7 +28,7 @@ const headerStyles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#001529",
   },
   logo: {
-    position: "absolute",
+    position: "absolute" as const,
     left: 16,
     display: "flex",
     alignItems: "center",
@@ -45,17 +45,43 @@ const headerStyles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-const Logo = () => (
+type LogoProps = {
+  src: string;
+  alt: string;
+  size: number;
+  text: string;
+};
+
+const Logo = ({ src, alt, size, text }: LogoProps) => (
   <div style={headerStyles.logo}>
     <Image
-      src={LOGO_SRC}
-      alt={LOGO_ALT}
-      height={LOGO_SIZE}
-      width={LOGO_SIZE}
+      src={src}
+      alt={alt}
+      height={size}
+      width={size}
       style={headerStyles.logoImage}
     />
-    {LOGO_TEXT}
+    {text}
   </div>
+);
+
+type NavigationMenuProps = {
+  current: string;
+};
+
+const NavigationMenu = ({ current }: NavigationMenuProps) => (
+  <Menu
+    theme="dark"
+    mode="horizontal"
+    selectedKeys={[current]}
+    style={headerStyles.menu}
+  >
+    {menuItems.map(({ href, label }) => (
+      <Menu.Item key={href}>
+        <Link href={href}>{label}</Link>
+      </Menu.Item>
+    ))}
+  </Menu>
 );
 
 const Header = () => {
@@ -69,23 +95,8 @@ const Header = () => {
 
   return (
     <AntHeader style={headerStyles.header}>
-      <Logo />
-      {screens.md ? (
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          selectedKeys={[current]}
-          style={headerStyles.menu}
-        >
-          {menuItems.map((item) => (
-            <Menu.Item key={item.href}>
-              <Link href={item.href}>{item.label}</Link>
-            </Menu.Item>
-          ))}
-        </Menu>
-      ) : (
-        <DrawerMenu />
-      )}
+      <Logo src={LOGO_SRC} alt={LOGO_ALT} size={LOGO_SIZE} text={LOGO_TEXT} />
+      {screens.md ? <NavigationMenu current={current} /> : <DrawerMenu />}
     </AntHeader>
   );
 };
