@@ -7,58 +7,58 @@ import TabContent from "./Tab";
 import { Suspense } from "react";
 
 type UserProfileProps = {
-  personaId: number;
-  avatarSrc: string;
+	personaId: number;
+	avatarSrc: string;
 };
 
 const UserProfile = ({ personaId, avatarSrc }: UserProfileProps) => {
-  const {
-    activeTab,
-    setActiveTab,
-    tabsData,
-    loading,
-    username,
-    joinedDate,
-    tabs,
-  } = useUserProfileData(personaId);
+	const {
+		activeTab,
+		setActiveTab,
+		tabsData,
+		loading,
+		username,
+		joinedDate,
+		tabs,
+	} = useUserProfileData(personaId);
 
-  const handleTabChange = (activeKey: string) => {
-    setActiveTab(activeKey as string);
-  };
+	const handleTabChange = (activeKey: string) => {
+		setActiveTab(activeKey as string);
+	};
 
-  return (
-    <main className="flex flex-col items-center p-4">
-      {loading && !username ? (
-        <Spin />
-      ) : (
-        <>
-          <ProfileHeader
-            username={username}
-            joinedDate={joinedDate}
-            avatarSrc={avatarSrc}
-          />
-          <div className="w-full max-w-6xl">
-            <Tabs
-              activeKey={activeTab}
-              onChange={handleTabChange}
-              tabBarGutter={16}
-              items={tabs.map((tab) => ({ key: tab.value, label: tab.label }))}
-            />
-            <div className="mt-6">
-              <Suspense fallback={<Spin />}>
-                <TabContent
-                  activeTab={activeTab}
-                  tabsData={tabsData}
-                  loading={loading}
-                  tabs={tabs}
-                />
-              </Suspense>
-            </div>
-          </div>
-        </>
-      )}
-    </main>
-  );
+	return (
+		<main className="flex flex-col items-center p-4">
+			{loading && !username ? (
+				<Spin />
+			) : (
+				<>
+					<ProfileHeader
+						username={username}
+						joinedDate={joinedDate}
+						avatarSrc={avatarSrc}
+					/>
+					<div className="w-full max-w-6xl">
+						<Tabs
+							activeKey={activeTab}
+							onChange={handleTabChange}
+							tabBarGutter={16}
+							items={tabs.map((tab) => ({ key: tab.value, label: tab.label }))}
+						/>
+						<div className="mt-6">
+							<Suspense fallback={<Spin />}>
+								<TabContent
+									activeTab={activeTab}
+									tabsData={tabsData}
+									loading={loading}
+									tabs={tabs}
+								/>
+							</Suspense>
+						</div>
+					</div>
+				</>
+			)}
+		</main>
+	);
 };
 
 export default UserProfile;
