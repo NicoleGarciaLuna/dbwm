@@ -1,5 +1,5 @@
 import MicroentrepreneursList from "@/features/microentrepreneurs/components/List";
 
-export default function Home() {
+export default async function Home() {
   return <MicroentrepreneursList />;
 }
