@@ -3,7 +3,9 @@ import { MenuOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { menuItems, MenuItem } from "@/shared/config";
+import { MenuItem } from "@/shared/config"; // Asegúrate de importar MenuItem
+import { menuItems } from "@/shared/config"; // Importar menuItems correctamente
+import { signOut } from "@/app/(auth)/login/actions"; // Importar la función de cierre de sesión
 
 const drawerStyles: { [key: string]: React.CSSProperties } = {
   menuButton: {
@@ -19,14 +21,21 @@ const drawerStyles: { [key: string]: React.CSSProperties } = {
   closeIcon: { color: "white" },
 };
 
-const renderMenuItems = (menuItems: MenuItem[]) =>
+const renderMenuItems = (
+  menuItems: MenuItem[],
+  handleMenuClick: (label: string) => void
+) =>
   menuItems.map((item: MenuItem) => (
-    <Menu.Item key={item.href}>
-      <Link href={item.href}>{item.label}</Link>
+    <Menu.Item key={item.label} onClick={() => handleMenuClick(item.label)}>
+      {item.href ? <Link href={item.href}>{item.label}</Link> : item.label}
     </Menu.Item>
   ));
 
-const DrawerMenu = () => {
+type DrawerMenuProps = {
+  menuItems: MenuItem[];
+};
+
+const DrawerMenu = ({ menuItems }: DrawerMenuProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const pathname = usePathname();
   const [current, setCurrent] = useState(pathname);
@@ -36,6 +45,13 @@ const DrawerMenu = () => {
   }, [pathname]);
 
   const toggleDrawer = useCallback(() => setDrawerVisible((prev) => !prev), []);
+
+  const handleMenuClick = (label: string) => {
+    if (label === "Cerrar Sesión") {
+      signOut();
+    }
+    setDrawerVisible(false);
+  };
 
   return (
     <>
@@ -59,7 +75,7 @@ const DrawerMenu = () => {
         closeIcon={<MenuOutlined style={drawerStyles.closeIcon} />}
       >
         <Menu mode="vertical" selectedKeys={[current]} theme="dark">
-          {renderMenuItems(menuItems)}
+          {renderMenuItems(menuItems, handleMenuClick)}
         </Menu>
       </Drawer>
     </>

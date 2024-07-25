@@ -13,6 +13,7 @@ import {
   menuItems,
 } from "@/shared/config";
 import DrawerMenu from "./DrawerMenu";
+import { signOut } from "@/app/(auth)/login/actions"; // Importar la función de cierre de sesión
 
 const { Header: AntHeader } = AntLayout;
 const { useBreakpoint } = Grid;
@@ -69,20 +70,29 @@ type NavigationMenuProps = {
   current: string;
 };
 
-const NavigationMenu = ({ current }: NavigationMenuProps) => (
-  <Menu
-    theme="dark"
-    mode="horizontal"
-    selectedKeys={[current]}
-    style={headerStyles.menu}
-  >
-    {menuItems.map(({ href, label }) => (
-      <Menu.Item key={href}>
-        <Link href={href}>{label}</Link>
-      </Menu.Item>
-    ))}
-  </Menu>
-);
+const NavigationMenu = ({ current }: NavigationMenuProps) => {
+  const handleMenuClick = (label: string) => {
+    if (label === "Cerrar Sesión") {
+      signOut();
+    }
+  };
+
+  return (
+    <Menu
+      theme="dark"
+      mode="horizontal"
+      selectedKeys={[current]}
+      style={headerStyles.menu}
+      onClick={(e) => handleMenuClick(e.key)}
+    >
+      {menuItems.map(({ href, label }) => (
+        <Menu.Item key={label}>
+          {href ? <Link href={href}>{label}</Link> : label}
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+};
 
 const Header = () => {
   const screens = useBreakpoint();
@@ -96,7 +106,11 @@ const Header = () => {
   return (
     <AntHeader style={headerStyles.header}>
       <Logo src={LOGO_SRC} alt={LOGO_ALT} size={LOGO_SIZE} text={LOGO_TEXT} />
-      {screens.md ? <NavigationMenu current={current} /> : <DrawerMenu />}
+      {screens.md ? (
+        <NavigationMenu current={current} />
+      ) : (
+        <DrawerMenu menuItems={menuItems} />
+      )}
     </AntHeader>
   );
 };

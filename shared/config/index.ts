@@ -4,12 +4,12 @@ export const LOGO_TEXT = "Microempresarias TCU - 781";
 export const LOGO_SIZE = 50;
 
 export type MenuItem = {
-  href: string;
+  href?: string;
   label: string;
 };
 
-export const menuItems = [
+export const menuItems: MenuItem[] = [
   { href: "/", label: "Microempresarias" },
   { href: "/statistics", label: "Estadísticas" },
-  { href: "/login", label: "Iniciar Sesión" },
+  { label: "Cerrar Sesión" },
 ];
