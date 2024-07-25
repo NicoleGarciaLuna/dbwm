@@ -3,67 +3,83 @@ import { MenuOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { menuItems, MenuItem } from "@/shared/config";
+import { MenuItem } from "@/shared/config"; // Asegúrate de importar MenuItem
+import { menuItems } from "@/shared/config"; // Importar menuItems correctamente
+import { signOut } from "@/app/login/actions"; // Importar la función de cierre de sesión
 
 const drawerStyles: { [key: string]: React.CSSProperties } = {
-  menuButton: {
-    fontSize: "24px",
-    color: "#fff",
-    background: "none",
-    border: "none",
-    position: "absolute",
-    right: 16,
-  },
-  drawerHeader: { backgroundColor: "#001529", color: "white" },
-  drawerBody: { backgroundColor: "#001529", color: "white" },
-  closeIcon: { color: "white" },
+	menuButton: {
+		fontSize: "24px",
+		color: "#fff",
+		background: "none",
+		border: "none",
+		position: "absolute",
+		right: 16,
+	},
+	drawerHeader: { backgroundColor: "#001529", color: "white" },
+	drawerBody: { backgroundColor: "#001529", color: "white" },
+	closeIcon: { color: "white" },
 };
 
-const renderMenuItems = (menuItems: MenuItem[]) =>
-  menuItems.map((item: MenuItem) => (
-    <Menu.Item key={item.href}>
-      <Link href={item.href}>{item.label}</Link>
-    </Menu.Item>
-  ));
+const renderMenuItems = (
+	menuItems: MenuItem[],
+	handleMenuClick: (label: string) => void
+) =>
+	menuItems.map((item: MenuItem) => (
+		<Menu.Item key={item.label} onClick={() => handleMenuClick(item.label)}>
+			{item.href ? <Link href={item.href}>{item.label}</Link> : item.label}
+		</Menu.Item>
+	));
 
-const DrawerMenu = () => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const pathname = usePathname();
-  const [current, setCurrent] = useState(pathname);
+type DrawerMenuProps = {
+	menuItems: MenuItem[];
+};
 
-  useEffect(() => {
-    setCurrent(pathname);
-  }, [pathname]);
+const DrawerMenu = ({ menuItems }: DrawerMenuProps) => {
+	const [drawerVisible, setDrawerVisible] = useState(false);
+	const pathname = usePathname();
+	const [current, setCurrent] = useState(pathname);
 
-  const toggleDrawer = useCallback(() => setDrawerVisible((prev) => !prev), []);
+	useEffect(() => {
+		setCurrent(pathname);
+	}, [pathname]);
 
-  return (
-    <>
-      <Button
-        type="text"
-        icon={<MenuOutlined />}
-        style={drawerStyles.menuButton}
-        onClick={toggleDrawer}
-      />
-      <Drawer
-        title="Menu"
-        placement="right"
-        closable
-        onClose={toggleDrawer}
-        open={drawerVisible}
-        width={240}
-        styles={{
-          header: drawerStyles.drawerHeader,
-          body: drawerStyles.drawerBody,
-        }}
-        closeIcon={<MenuOutlined style={drawerStyles.closeIcon} />}
-      >
-        <Menu mode="vertical" selectedKeys={[current]} theme="dark">
-          {renderMenuItems(menuItems)}
-        </Menu>
-      </Drawer>
-    </>
-  );
+	const toggleDrawer = useCallback(() => setDrawerVisible((prev) => !prev), []);
+
+	const handleMenuClick = (label: string) => {
+		if (label === "Cerrar Sesión") {
+			signOut();
+		}
+		setDrawerVisible(false);
+	};
+
+	return (
+		<>
+			<Button
+				type="text"
+				icon={<MenuOutlined />}
+				style={drawerStyles.menuButton}
+				onClick={toggleDrawer}
+			/>
+			<Drawer
+				title="Menu"
+				placement="right"
+				closable
+				onClose={toggleDrawer}
+				open={drawerVisible}
+				width={240}
+				styles={{
+					header: drawerStyles.drawerHeader,
+					body: drawerStyles.drawerBody,
+				}}
+				closeIcon={<MenuOutlined style={drawerStyles.closeIcon} />}
+			>
+				<Menu mode="vertical" selectedKeys={[current]} theme="dark">
+					{renderMenuItems(menuItems, handleMenuClick)}
+				</Menu>
+			</Drawer>
+		</>
+	);
 };
 
 export default DrawerMenu;

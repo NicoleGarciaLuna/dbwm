@@ -1,4 +1,3 @@
-// ActionColumn.tsx
 import { memo } from "react";
 import { Tooltip, Space } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
@@ -22,7 +21,7 @@ const ActionColumn = memo(({ record, openModal }: ActionColumnProps) => (
       />
     </Tooltip>
     <Tooltip title="Ver detalles">
-      <Link href={`/microempresaria/${record.id}`} prefetch={true}>
+      <Link href={`/profile/${record.id}`} prefetch={true}>
         <EyeOutlined style={{ color: "blue", cursor: "pointer" }} />
       </Link>
     </Tooltip>
