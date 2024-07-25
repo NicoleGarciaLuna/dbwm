@@ -9,7 +9,7 @@ export type MenuItem = {
 };
 
 export const menuItems: MenuItem[] = [
-  { href: "/", label: "Microempresarias" },
-  { href: "/statistics", label: "Estadísticas" },
-  { label: "Cerrar Sesión" },
+	{ href: "/microentrepreneurs", label: "Microempresarias" },
+	{ href: "/statistics", label: "Estadísticas" },
+	{ label: "Cerrar Sesión" },
 ];
