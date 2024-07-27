@@ -1,12 +1,12 @@
 "use client";
-import DiagnosisSelector from "@/features/questionnaire/components/DiagnosisSelector";
+import Questionnaire from "@/features/questionnaire/components/Questionnaire";
 
-const Questionnaire = () => {
-	return (
+const QuestionnairePage = () => {
+  return (
     <div style={{ padding: "20px" }}>
-      <DiagnosisSelector />
+      <Questionnaire />
     </div>
   );
 };
 
-export default Questionnaire;
+export default QuestionnairePage;
