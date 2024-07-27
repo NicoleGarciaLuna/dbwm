@@ -1,4 +1,4 @@
-type Question = {
+export type Question = {
   id: number;
   question: string;
   type: "fill" | "single" | "multiple" | "date" | "number";

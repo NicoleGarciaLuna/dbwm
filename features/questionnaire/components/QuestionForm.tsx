@@ -1,20 +1,11 @@
 import { Col, Input, Select, Checkbox, DatePicker, Form } from "antd";
 
+import { Question } from "../config";
+
 type QuestionFormProps = {
   questionData: Question;
   diagnosis: number;
 };
-
-type Question = {
-  id: number;
-  question: string;
-  type: "fill" | "single" | "multiple" | "date" | "number";
-  options?: Option[];
-  locked: boolean;
-  required: boolean;
-};
-
-type Option = string | { text: string; value: any };
 
 const QuestionForm = ({ questionData, diagnosis }: QuestionFormProps) => {
   const { question, type, options, locked, required } = questionData;
@@ -27,7 +18,6 @@ const QuestionForm = ({ questionData, diagnosis }: QuestionFormProps) => {
           <Input
             placeholder={`Ingrese su ${question.toLowerCase()}`}
             disabled={isLocked}
-            type="text"
           />
         );
       case "single":
@@ -74,12 +64,7 @@ const QuestionForm = ({ questionData, diagnosis }: QuestionFormProps) => {
       <Form.Item
         label={question}
         name={question}
-        rules={[
-          {
-            required: required,
-            message: `Por favor, complete la pregunta.`,
-          },
-        ]}
+        rules={[{ required, message: `Por favor, complete la pregunta.` }]}
       >
         {renderQuestion()}
       </Form.Item>
