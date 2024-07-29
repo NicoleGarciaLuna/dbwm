@@ -35,7 +35,6 @@ const fetchDiagnosisData = async (
     Object.keys(entry).forEach((key) => {
       if (key !== "id_diagnostico") {
         let value = entry[key];
-        // Convertir a objeto dayjs si es una fecha
         if (key.includes("fecha") && value) {
           value = dayjs(value);
         }
@@ -48,6 +47,22 @@ const fetchDiagnosisData = async (
   return formattedData;
 };
 
+const createDiagnosisIndexMap = (
+  diagnosisIds: number[],
+  minDiagnoses: number
+) => {
+  const map = diagnosisIds.reduce((map, id, index) => {
+    map[id] = index + 1;
+    return map;
+  }, {} as { [key: number]: number });
+
+  for (let i = diagnosisIds.length + 1; i <= minDiagnoses; i++) {
+    map[i] = i;
+  }
+
+  return map;
+};
+
 type QuestionnaireProps = {
   id_persona: number;
 };
@@ -55,37 +70,58 @@ type QuestionnaireProps = {
 const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
   const [selectedDiagnosis, setSelectedDiagnosis] = useState<number>(1);
   const [formData, setFormData] = useState<DiagnosisData>({});
-  const [formRefs] = useState<RefObject<FormInstance>[]>([
-    createRef<FormInstance>(),
-    createRef<FormInstance>(),
-    createRef<FormInstance>(),
-  ]);
+  const [formRefs, setFormRefs] = useState<RefObject<FormInstance>[]>([]);
   const [initValuesKey, setInitValuesKey] = useState<number>(0);
+  const [diagnosisIndexMap, setDiagnosisIndexMap] = useState<{
+    [key: number]: number;
+  }>({});
 
   useEffect(() => {
     const loadData = async () => {
       const data = await fetchDiagnosisData(id_persona);
+      const diagnosisIds = Object.keys(data).map(Number);
+      const indexMap = createDiagnosisIndexMap(diagnosisIds, 3);
+      setDiagnosisIndexMap(indexMap);
       setFormData(data);
+
+      const totalDiagnoses = Math.max(diagnosisIds.length, 3);
+      setFormRefs(
+        new Array(totalDiagnoses)
+          .fill(null)
+          .map(() => createRef<FormInstance>())
+      );
       setInitValuesKey((key) => key + 1);
     };
 
     loadData();
   }, [id_persona]);
 
-  const handleDiagnosisSelection = (index: number) => {
-    setSelectedDiagnosis(index);
+  const handleDiagnosisSelection = (diagnosisIndex: number) => {
+    setSelectedDiagnosis(diagnosisIndex);
     setInitValuesKey((key) => key + 1);
   };
 
-  const handleFinish = (diagnosis: number) => (values: any) => {
-    console.log(`Received values of form for diagnosis ${diagnosis}:`, values);
-    message.success(
-      `Datos del diagnóstico ${diagnosis} guardados exitosamente.`
+  const handleFinish = (diagnosisIndex: number) => (values: any) => {
+    console.log(
+      `Received values of form for diagnosis ${diagnosisIndex}:`,
+      values
     );
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [diagnosis]: { ...prevFormData[diagnosis], ...values },
-    }));
+    message.success(
+      `Datos del diagnóstico ${diagnosisIndex} guardados exitosamente.`
+    );
+
+    const originalDiagnosisId = Object.keys(diagnosisIndexMap).find(
+      (key) => diagnosisIndexMap[Number(key)] === diagnosisIndex
+    );
+    if (originalDiagnosisId) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [Number(originalDiagnosisId)]: {
+          ...prevFormData[Number(originalDiagnosisId)],
+          ...values,
+        },
+      }));
+    }
   };
 
   const handleFinishFailed = (errorInfo: any) => {
@@ -95,33 +131,39 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
   const renderCategoryForm = (
     category: string,
     categoryData: Category,
-    diagnosis: number
-  ) => (
-    <Form
-      layout="vertical"
-      onFinish={handleFinish(diagnosis)}
-      onFinishFailed={handleFinishFailed}
-      className="category-form"
-      ref={formRefs[diagnosis - 1]}
-      initialValues={formData[diagnosis]}
-      key={`${category}-${diagnosis}-${initValuesKey}`}
-    >
-      <Row gutter={[16, 16]}>
-        {categoryData.questions.map((question) => (
-          <QuestionForm
-            key={question.id}
-            questionData={question}
-            diagnosis={diagnosis}
-          />
-        ))}
-      </Row>
-      <Form.Item style={{ textAlign: "center" }}>
-        <Button type="primary" htmlType="submit" className="submit-button">
-          Guardar
-        </Button>
-      </Form.Item>
-    </Form>
-  );
+    diagnosisIndex: number
+  ) => {
+    const originalDiagnosisId = Object.keys(diagnosisIndexMap).find(
+      (key) => diagnosisIndexMap[Number(key)] === diagnosisIndex
+    );
+
+    return (
+      <Form
+        layout="vertical"
+        onFinish={handleFinish(diagnosisIndex)}
+        onFinishFailed={handleFinishFailed}
+        className="category-form"
+        ref={formRefs[diagnosisIndex - 1]}
+        initialValues={formData[Number(originalDiagnosisId)]}
+        key={`${category}-${diagnosisIndex}-${initValuesKey}`}
+      >
+        <Row gutter={[16, 16]}>
+          {categoryData.questions.map((question) => (
+            <QuestionForm
+              key={question.id}
+              questionData={question}
+              diagnosis={diagnosisIndex}
+            />
+          ))}
+        </Row>
+        <Form.Item style={{ textAlign: "center" }}>
+          <Button type="primary" htmlType="submit" className="submit-button">
+            Guardar
+          </Button>
+        </Form.Item>
+      </Form>
+    );
+  };
 
   const items = Object.entries(questionnaireData).map(
     ([category, categoryData]) => ({
@@ -135,17 +177,15 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
     <div>
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <Space>
-          {Object.keys(formData).map((diagnosisId, index) => (
+          {[1, 2, 3].map((diagnosisIndex) => (
             <Button
-              key={index}
+              key={diagnosisIndex}
               type={
-                selectedDiagnosis === Number(diagnosisId)
-                  ? "primary"
-                  : "default"
+                selectedDiagnosis === diagnosisIndex ? "primary" : "default"
               }
-              onClick={() => handleDiagnosisSelection(Number(diagnosisId))}
+              onClick={() => handleDiagnosisSelection(diagnosisIndex)}
             >
-              Diagnóstico {diagnosisId}
+              Diagnóstico {diagnosisIndex}
             </Button>
           ))}
         </Space>
