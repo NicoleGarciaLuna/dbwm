@@ -101,26 +101,53 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
     setInitValuesKey((key) => key + 1);
   };
 
-  const handleFinish = (diagnosisIndex: number) => (values: any) => {
+  const handleFinish = (diagnosisIndex: number) => async (values: any) => {
     console.log(
       `Received values of form for diagnosis ${diagnosisIndex}:`,
       values
-    );
-    message.success(
-      `Datos del diagnóstico ${diagnosisIndex} guardados exitosamente.`
     );
 
     const originalDiagnosisId = Object.keys(diagnosisIndexMap).find(
       (key) => diagnosisIndexMap[Number(key)] === diagnosisIndex
     );
+
     if (originalDiagnosisId) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [Number(originalDiagnosisId)]: {
-          ...prevFormData[Number(originalDiagnosisId)],
-          ...values,
-        },
-      }));
+      try {
+        const category = Object.entries(questionnaireData).find(([_, data]) =>
+          data.questions.some((q) => q.name in values)
+        );
+
+        if (category) {
+          const [, categoryData] = category;
+          const storedProcedure = categoryData["stored-procedure"];
+
+          if (storedProcedure) {
+            const params = { id_persona, ...values };
+            const { data, error } = await supabaseClient.rpc(
+              storedProcedure,
+              params
+            );
+
+            if (error) {
+              throw error;
+            }
+
+            message.success(
+              `Datos del diagnóstico ${diagnosisIndex} guardados exitosamente.`
+            );
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              [Number(originalDiagnosisId)]: {
+                ...prevFormData[Number(originalDiagnosisId)],
+                ...values,
+              },
+            }));
+          }
+        }
+      } catch (error) {
+        console.error("Error al guardar los datos:", error);
+        message.error("Hubo un error al guardar los datos.");
+      }
     }
   };
 
