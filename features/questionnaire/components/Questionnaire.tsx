@@ -134,7 +134,7 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
             const { data, error } = await supabaseClient
               .from("persona")
               .upsert([{ id_persona, ...filteredValues }], {
-                onConflict: ["id_persona"],
+                onConflict: "id_persona",
               });
 
             if (error) {
@@ -166,7 +166,7 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
               await supabaseClient
                 .from(tableName)
                 .upsert([{ id_diagnostico, ...filteredValues }], {
-                  onConflict: ["id_diagnostico"],
+                  onConflict: "id_diagnostico",
                 });
 
             if (personalError) {
