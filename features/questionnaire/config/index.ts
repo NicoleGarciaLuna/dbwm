@@ -104,7 +104,7 @@ export const questionnaireData: QuestionsData = {
   },
   Personal: {
     view: "vista_persona",
-    "stored-procedure": "upsert_persona",
+    "stored-procedure": "upsert_datos_personales",
     questions: [
       {
         id: 9,
@@ -282,7 +282,7 @@ export const questionnaireData: QuestionsData = {
   },
   Género: {
     view: "vista_persona",
-    "stored-procedure": "upsert_persona",
+    "stored-procedure": "upsert_genero",
     questions: [
       {
         id: 22,
@@ -449,7 +449,7 @@ export const questionnaireData: QuestionsData = {
   },
   Emprendimiento: {
     view: "vista_persona",
-    "stored-procedure": "upsert_persona",
+    "stored-procedure": "upsert_emprendimiento",
     questions: [
       {
         id: 33,
@@ -618,7 +618,7 @@ export const questionnaireData: QuestionsData = {
   },
   "Idea de Negocio": {
     view: "vista_persona",
-    "stored-procedure": "upsert_persona",
+    "stored-procedure": "upsert_idea_negocio",
     questions: [
       {
         id: 47,
@@ -702,7 +702,7 @@ export const questionnaireData: QuestionsData = {
   },
   Innovación: {
     view: "vista_persona",
-    "stored-procedure": "upsert_persona",
+    "stored-procedure": "upsert_innovacion",
     questions: [
       {
         id: 52,
@@ -836,7 +836,7 @@ export const questionnaireData: QuestionsData = {
   },
   Mercado: {
     view: "vista_persona",
-    "stored-procedure": "upsert_persona",
+    "stored-procedure": "upsert_mercado",
     questions: [
       {
         id: 59,
@@ -1200,7 +1200,7 @@ export const questionnaireData: QuestionsData = {
   },
   "Contabilidad y Finanzas": {
     view: "vista_persona",
-    "stored-procedure": "upsert_persona",
+    "stored-procedure": "upsert_contabilidad_finanzas",
     questions: [
       {
         id: 79,
@@ -1479,7 +1479,7 @@ export const questionnaireData: QuestionsData = {
   },
   Formalización: {
     view: "vista_persona",
-    "stored-procedure": "upsert_persona",
+    "stored-procedure": "upsert_formalizacion",
     questions: [
       {
         id: 93,
@@ -1542,7 +1542,7 @@ export const questionnaireData: QuestionsData = {
   },
   Financiamiento: {
     view: "vista_persona",
-    "stored-procedure": "upsert_persona",
+    "stored-procedure": "upsert_financiamiento",
     questions: [
       {
         id: 96,
