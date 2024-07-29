@@ -1,7 +1,7 @@
 import { useState, useEffect, createRef, RefObject } from "react";
 import { Tabs, Form, Row, Button, message, Space, FormInstance } from "antd";
 import QuestionForm from "./QuestionForm";
-import { questionnaireData, Category } from "../config";
+import { questionnaireData, Category, Question } from "../config";
 import { supabaseClient } from "@/shared/utils/supabase/client";
 import dayjs from "dayjs";
 
@@ -121,12 +121,21 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
           const [, categoryData] = category;
           const storedProcedure = categoryData["stored-procedure"];
 
-          if (storedProcedure) {
-            const params = { id_persona, ...values };
-            const { data, error } = await supabaseClient.rpc(
-              storedProcedure,
-              params
-            );
+          // Filtrar campos de tipo multiple
+          const filteredValues = Object.keys(values).reduce((acc, key) => {
+            const question = categoryData.questions.find((q) => q.name === key);
+            if (question && question.type !== "multiple") {
+              acc[key] = values[key];
+            }
+            return acc;
+          }, {} as Record<string, any>);
+
+          if (storedProcedure === "upsert_persona") {
+            const { data, error } = await supabaseClient
+              .from("persona")
+              .upsert([{ id_persona, ...filteredValues }], {
+                onConflict: ["id_persona"],
+              });
 
             if (error) {
               throw error;
@@ -135,14 +144,47 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
             message.success(
               `Datos del diagnóstico ${diagnosisIndex} guardados exitosamente.`
             );
-            setFormData((prevFormData) => ({
-              ...prevFormData,
-              [Number(originalDiagnosisId)]: {
-                ...prevFormData[Number(originalDiagnosisId)],
-                ...values,
-              },
-            }));
+          } else {
+            let id_diagnostico = originalDiagnosisId;
+
+            if (!id_diagnostico) {
+              const { data: newDiagnosticoData, error: newDiagnosticoError } =
+                await supabaseClient
+                  .from("diagnostico")
+                  .insert([{ id_persona, fecha_diagnostico: new Date() }])
+                  .select("id_diagnostico");
+
+              if (newDiagnosticoError) {
+                throw newDiagnosticoError;
+              }
+
+              id_diagnostico = newDiagnosticoData[0].id_diagnostico;
+            }
+
+            const tableName = storedProcedure.replace("upsert_", "");
+            const { data: personalData, error: personalError } =
+              await supabaseClient
+                .from(tableName)
+                .upsert([{ id_diagnostico, ...filteredValues }], {
+                  onConflict: ["id_diagnostico"],
+                });
+
+            if (personalError) {
+              throw personalError;
+            }
+
+            message.success(
+              `Datos del diagnóstico ${diagnosisIndex} guardados exitosamente.`
+            );
           }
+
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            [Number(originalDiagnosisId)]: {
+              ...prevFormData[Number(originalDiagnosisId)],
+              ...values,
+            },
+          }));
         }
       } catch (error) {
         console.error("Error al guardar los datos:", error);
