@@ -138,7 +138,7 @@ export const questionnaireData: QuestionsData = {
         options: ["Alajuela"],
         required: true,
         locked: false,
-        name: "id_provincia",
+        name: "provincia",
       },
       {
         id: 12,
@@ -147,7 +147,7 @@ export const questionnaireData: QuestionsData = {
         options: ["San Ramón"],
         required: true,
         locked: false,
-        name: "id_canton",
+        name: "canton",
       },
       {
         id: 13,
@@ -171,7 +171,7 @@ export const questionnaireData: QuestionsData = {
         ],
         required: true,
         locked: false,
-        name: "id_distrito",
+        name: "distrito",
       },
       {
         id: 14,
