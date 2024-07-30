@@ -2,7 +2,7 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Ejecuta una vez al día a la medianoche UTC
+    - cron: '0 0 */6 * *' # Ejecuta una vez cada 6 días a la medianoche UTC
   workflow_dispatch: # Permite ejecutar manualmente el workflow desde la interfaz de GitHub
 
 jobs:
@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Add random delay
+      run: |
+        # Generar un número aleatorio de segundos entre 0 y 86400 (24 horas)
+        RANDOM_DELAY=$(( RANDOM % 86400 ))
+        echo "Esperando $RANDOM_DELAY segundos antes de enviar la solicitud..."
+        sleep $RANDOM_DELAY
     - name: Send request to Supabase API
       run: |
         curl -X GET "https://kcwfwezswjozqsshzger.supabase.co/rest/v1/persona" \
