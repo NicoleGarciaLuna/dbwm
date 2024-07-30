@@ -1,0 +1,16 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Ejecuta una vez al día a la medianoche UTC
+  workflow_dispatch: # Permite ejecutar manualmente el workflow desde la interfaz de GitHub
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send request to Supabase API
+      run: |
+        curl -X GET "https://kcwfwezswjozqsshzger.supabase.co/rest/v1/persona" \
+        -H "apikey: ${{ secrets.SUPABASE_API_KEY }}"
