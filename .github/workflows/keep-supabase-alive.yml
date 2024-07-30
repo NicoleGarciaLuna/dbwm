@@ -12,8 +12,8 @@ jobs:
     steps:
     - name: Add random delay
       run: |
-        # Generar un número aleatorio de segundos entre 0 y 86400 (24 horas)
-        RANDOM_DELAY=$(( RANDOM % 86400 ))
+        # Generar un número aleatorio de segundos entre 0 y 43200 (12 horas)
+        RANDOM_DELAY=$(( RANDOM % 43200 ))
         echo "Esperando $RANDOM_DELAY segundos antes de enviar la solicitud..."
         sleep $RANDOM_DELAY
     - name: Send request to Supabase API
