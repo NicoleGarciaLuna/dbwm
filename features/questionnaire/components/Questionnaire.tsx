@@ -1,7 +1,7 @@
 import { useState, useEffect, createRef, RefObject } from "react";
 import { Tabs, Form, Row, Button, message, Space, FormInstance } from "antd";
 import QuestionForm from "./QuestionForm";
-import { questionnaireData, Category, Question } from "../config";
+import { questionnaireData, Category } from "../config";
 import { supabaseClient } from "@/shared/utils/supabase/client";
 import dayjs from "dayjs";
 
@@ -47,19 +47,11 @@ const fetchDiagnosisData = async (
 	return formattedData;
 };
 
-const createDiagnosisIndexMap = (
-	diagnosisIds: number[],
-	minDiagnoses: number
-) => {
-	const map = diagnosisIds.reduce((map, id, index) => {
+const createDiagnosisIndexMap = (diagnosisIds: number[]) => {
+	const map: { [key: number]: number } = {};
+	diagnosisIds.forEach((id, index) => {
 		map[id] = index + 1;
-		return map;
-	}, {} as { [key: number]: number });
-
-	for (let i = diagnosisIds.length + 1; i <= minDiagnoses; i++) {
-		map[i] = i;
-	}
-
+	});
 	return map;
 };
 
@@ -80,11 +72,11 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 		const loadData = async () => {
 			const data = await fetchDiagnosisData(id_persona);
 			const diagnosisIds = Object.keys(data).map(Number);
-			const indexMap = createDiagnosisIndexMap(diagnosisIds, 3);
+			const indexMap = createDiagnosisIndexMap(diagnosisIds);
 			setDiagnosisIndexMap(indexMap);
 			setFormData(data);
 
-			const totalDiagnoses = Math.max(diagnosisIds.length, 3);
+			const totalDiagnoses = 3;
 			setFormRefs(
 				new Array(totalDiagnoses)
 					.fill(null)
@@ -121,22 +113,12 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 					const [, categoryData] = category;
 					const storedProcedure = categoryData["stored-procedure"];
 
-					// Filtrar campos de tipo multiple
-					const filteredValues = Object.keys(values).reduce((acc, key) => {
-						const question = categoryData.questions.find((q) => q.name === key);
-						if (question && question.type !== "multiple") {
-							acc[key] = values[key];
-						}
-						return acc;
-					}, {} as Record<string, any>);
-					console.log("Datos filtrados: ", filteredValues);
-
-					if (storedProcedure === "upsert_persona") {
-						const { data, error } = await supabaseClient
-							.from("persona")
-							.upsert([{ id_persona, ...filteredValues }], {
-								onConflict: "id_persona",
-							});
+					if (storedProcedure) {
+						const params = { id_persona, ...values };
+						const { data, error } = await supabaseClient.rpc(
+							storedProcedure,
+							params
+						);
 
 						if (error) {
 							throw error;
@@ -145,95 +127,14 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 						message.success(
 							`Datos del diagnóstico ${diagnosisIndex} guardados exitosamente.`
 						);
-					} else {
-						let id_diagnostico = originalDiagnosisId;
-
-						if (!id_diagnostico) {
-							const { data: newDiagnosticoData, error: newDiagnosticoError } =
-								await supabaseClient
-									.from("diagnostico")
-									.insert([{ id_persona, fecha_diagnostico: new Date() }])
-									.select("id_diagnostico");
-
-							if (newDiagnosticoError) {
-								throw newDiagnosticoError;
-							}
-
-							id_diagnostico = newDiagnosticoData[0].id_diagnostico;
-						}
-
-						console.log("Id_diagnostico enviado", id_diagnostico);
-						const tableName = storedProcedure.replace("upsert_", "");
-						const { data: personalData, error: personalError } =
-							await supabaseClient
-								.from(tableName)
-								.upsert([{ id_diagnostico, ...filteredValues }], {
-									onConflict: "id_diagnostico",
-								});
-
-						if (personalError) {
-							throw personalError;
-						}
-
-						// Manejo de preguntas de tipo múltiple
-						for (const [key, value] of Object.entries(values)) {
-							const question = categoryData.questions.find(
-								(q) => q.name === key
-							);
-							if (question && question.type === "multiple") {
-								const intermediateTable = question.intermediate_table;
-								const idTable = `id_${tableName}`;
-
-								// Obtener el id_table del formData
-								const id_table_value =
-									formData[Number(originalDiagnosisId)][idTable];
-
-								// Borrar relaciones existentes
-								const { error: deleteError } = await supabaseClient
-									.from(intermediateTable)
-									.delete()
-									.eq(idTable, id_table_value);
-
-								if (deleteError) {
-									throw deleteError;
-								}
-
-								// Crear nuevo upsertData
-								const upsertData = value.map((id_value: number) => ({
-									[idTable]: id_table_value,
-									[`id_${key}`]: id_value,
-								}));
-
-								// Hacer el upsert en la tabla intermedia
-								const { data: upsertResponse, error: upsertError } =
-									await supabaseClient
-										.from(intermediateTable)
-										.upsert(upsertData, {
-											onConflict: [idTable, `id_${key}`],
-										});
-
-								if (upsertError) {
-									throw upsertError;
-								}
-								console.log("Upsert result:", upsertResponse);
-							}
-						}
-
-						message.success(
-							`Datos del diagnóstico ${diagnosisIndex} guardados exitosamente.`
-						);
+						setFormData((prevFormData) => ({
+							...prevFormData,
+							[Number(originalDiagnosisId)]: {
+								...prevFormData[Number(originalDiagnosisId)],
+								...values,
+							},
+						}));
 					}
-
-					// Refetch data after a successful insert
-					const updatedData = await fetchDiagnosisData(id_persona);
-					setFormData(updatedData);
-					const updatedDiagnosisIds = Object.keys(updatedData).map(Number);
-					const updatedIndexMap = createDiagnosisIndexMap(
-						updatedDiagnosisIds,
-						3
-					);
-					setDiagnosisIndexMap(updatedIndexMap);
-					setInitValuesKey((key) => key + 1);
 				}
 			} catch (error) {
 				console.error("Error al guardar los datos:", error);
