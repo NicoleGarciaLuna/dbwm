@@ -72,15 +72,6 @@ export const questionnaireData: QuestionsData = {
 				name: "numero_identificacion",
 			},
 			{
-				id: 6,
-				question: "Sexo",
-				type: "single",
-				options: ["Hombre", "Mujer", "Otro"],
-				required: true,
-				locked: true,
-				name: "sexo",
-			},
-			{
 				id: 7,
 				question: "Fecha de nacimiento",
 				type: "date",
