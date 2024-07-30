@@ -175,6 +175,50 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 							throw personalError;
 						}
 
+						// Manejo de preguntas de tipo múltiple
+						for (const [key, value] of Object.entries(values)) {
+							const question = categoryData.questions.find(
+								(q) => q.name === key
+							);
+							if (question && question.type === "multiple") {
+								const intermediateTable = question.intermediate_table;
+								const idTable = `id_${tableName}`;
+
+								// Obtener el id_table del formData
+								const id_table_value =
+									formData[Number(originalDiagnosisId)][idTable];
+
+								// Borrar relaciones existentes
+								const { error: deleteError } = await supabaseClient
+									.from(intermediateTable)
+									.delete()
+									.eq(idTable, id_table_value);
+
+								if (deleteError) {
+									throw deleteError;
+								}
+
+								// Crear nuevo upsertData
+								const upsertData = value.map((id_value: number) => ({
+									[idTable]: id_table_value,
+									[`id_${key}`]: id_value,
+								}));
+
+								// Hacer el upsert en la tabla intermedia
+								const { data: upsertResponse, error: upsertError } =
+									await supabaseClient
+										.from(intermediateTable)
+										.upsert(upsertData, {
+											onConflict: [idTable, `id_${key}`],
+										});
+
+								if (upsertError) {
+									throw upsertError;
+								}
+								console.log("Upsert result:", upsertResponse);
+							}
+						}
+
 						message.success(
 							`Datos del diagnóstico ${diagnosisIndex} guardados exitosamente.`
 						);
