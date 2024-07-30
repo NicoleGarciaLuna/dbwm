@@ -129,6 +129,7 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 						}
 						return acc;
 					}, {} as Record<string, any>);
+					console.log("Datos filtrados: ", filteredValues);
 
 					if (storedProcedure === "upsert_persona") {
 						const { data, error } = await supabaseClient
