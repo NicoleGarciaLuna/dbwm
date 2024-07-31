@@ -684,11 +684,7 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Su emprendimiento presenta elementos que lo hacen único y que no posee su competencia?",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
 				required: true,
 				locked: false,
 				name: "elementos_unicos",
@@ -698,11 +694,7 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Utiliza las diferentes tecnologías de la información y la comunicación para el desarrollo de su emprendimiento? (TICs)",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
 				required: true,
 				locked: false,
 				name: "uso_tics",
@@ -849,11 +841,7 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Tiene segmentado el mercado al cual está dirigido su emprendimiento?",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
 				required: true,
 				locked: false,
 				name: "mercado_segmentado",
@@ -993,11 +981,7 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Ha establecido algún tipo de alianza estratégica con proveedores, clientes u otros emprendimientos? (encadenamientos)",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
 				required: true,
 				locked: false,
 				name: "alianzas_estrategicas",
@@ -1037,11 +1021,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Tiene desarrollada una estrategia de promoción y comercialización?",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "estrategia_promocion_comercializacion",
@@ -1057,11 +1038,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Conoce cuál es el margen de utilidad que obtiene por la venta de sus productos? (bienes o servicios)",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "margen_utilidad",
@@ -1071,11 +1049,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Tiene claro el costo unitario de su producto? (bien o servicio)",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "costo_unitario_producto",
@@ -1085,11 +1060,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Tiene desarrollada la estructura de costos de su emprendimiento?",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "estructura_costos",
@@ -1099,11 +1071,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Tiene desarrollada la estructura de precios de su producto (bien o servicio)",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "estructura_precios",
@@ -1143,11 +1112,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Lleva algún tipo de registro contable en relación con las ventas de su emprendimiento?",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "registro_contable",
@@ -1169,11 +1135,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Tiene claro cuánto debe vender para cubrir los costos de operación de su emprendimiento?",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "costo_operacion",
@@ -1183,11 +1146,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Actualmente su emprendimiento alcanza o sobrepasa el punto de equilibrio?",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "punto_equilibrio",
@@ -1197,11 +1157,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Tiene desarrollado un plan de inversión para su emprendimiento?",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "plan_inversion",
@@ -1211,11 +1168,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Ha desarrollado un plan financiero que demuestre la viabilidad del emprendimiento?",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "plan_financiero",
@@ -1225,11 +1179,8 @@ export const questionnaireData: QuestionsData = {
 				question:
 					"¿Ha elaborado proyecciones de ventas para su emprendimiento? (para los próximos 12 meses)",
 				type: "single",
-				options: [
-					{ text: "Sí", value: true },
-					{ text: "No", value: false },
-					"No conozco el concepto",
-				],
+				options: ["Sí", "No", "No conozco el concepto"],
+
 				required: true,
 				locked: false,
 				name: "proyecciones_ventas",
