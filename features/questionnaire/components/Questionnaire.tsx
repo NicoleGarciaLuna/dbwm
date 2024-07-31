@@ -1,7 +1,7 @@
-import { useState, useEffect, createRef, RefObject } from "react";
+import { useState, useEffect, useRef, createRef } from "react";
 import { Tabs, Form, Row, Button, message, Space, FormInstance } from "antd";
 import QuestionForm from "./QuestionForm";
-import { questionnaireData, Category, Question } from "../config";
+import { questionnaireData, Category } from "../config";
 import { supabaseClient } from "@/shared/utils/supabase/client";
 import dayjs from "dayjs";
 
@@ -43,7 +43,6 @@ const fetchDiagnosisData = async (
 		});
 	});
 
-	console.log("Formatted diagnosis data:", formattedData);
 	return formattedData;
 };
 
@@ -70,16 +69,51 @@ type QuestionnaireProps = {
 const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 	const [selectedDiagnosis, setSelectedDiagnosis] = useState<number>(1);
 	const [formData, setFormData] = useState<DiagnosisData>({});
-	const [formRefs, setFormRefs] = useState<RefObject<FormInstance>[]>([]);
+	const [formRefs, setFormRefs] = useState<React.RefObject<FormInstance>[]>([]);
 	const [initValuesKey, setInitValuesKey] = useState<number>(0);
 	const [diagnosisIndexMap, setDiagnosisIndexMap] = useState<{
 		[key: number]: number | null;
 	}>({});
+	const initialized = useRef(false);
 
 	useEffect(() => {
 		const loadData = async () => {
 			const data = await fetchDiagnosisData(id_persona);
-			const diagnosisIds = Object.keys(data).map(Number);
+			let diagnosisIds = Object.keys(data).map(Number);
+
+			const missingDiagnoses = 3 - diagnosisIds.length;
+			if (missingDiagnoses > 0 && !initialized.current) {
+				initialized.current = true;
+				for (let i = 0; i < missingDiagnoses; i++) {
+					const { data: newDiagnosticoData, error: newDiagnosticoError } =
+						await supabaseClient
+							.from("diagnostico")
+							.insert([{ id_persona, fecha_diagnostico: new Date() }])
+							.select("id_diagnostico");
+
+					if (newDiagnosticoError) {
+						console.error("Error creating new diagnosis:", newDiagnosticoError);
+						throw newDiagnosticoError;
+					}
+
+					const newDiagnosisId = newDiagnosticoData[0].id_diagnostico;
+					data[newDiagnosisId] = {};
+					diagnosisIds.push(newDiagnosisId);
+
+					for (const [category, categoryData] of Object.entries(
+						questionnaireData
+					)) {
+						const tableName = categoryData["stored-procedure"].replace(
+							"upsert_",
+							""
+						);
+						await supabaseClient
+							.from(tableName)
+							.insert([{ id_diagnostico: newDiagnosisId }]);
+					}
+				}
+			}
+
 			const indexMap = createDiagnosisIndexMap(diagnosisIds, 3);
 			setDiagnosisIndexMap(indexMap);
 			setFormData(data);
@@ -120,7 +154,6 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 				const [, categoryData] = category;
 				const storedProcedure = categoryData["stored-procedure"];
 
-				// Filtrar campos de tipo multiple
 				const filteredValues = Object.keys(values).reduce((acc, key) => {
 					const question = categoryData.questions.find((q) => q.name === key);
 					if (question && question.type !== "multiple") {
@@ -161,7 +194,6 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 
 						originalDiagnosisId = newDiagnosticoData[0].id_diagnostico;
 
-						// Refetch data and update state
 						const updatedData = await fetchDiagnosisData(id_persona);
 						setFormData(updatedData);
 						const updatedDiagnosisIds = Object.keys(updatedData).map(Number);
@@ -180,7 +212,6 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 					const tableName = storedProcedure.replace("upsert_", "");
 					const idTable = `id_${tableName}`;
 
-					// Check if there is an existing record in the table for the diagnosis
 					let tableRecord = formData[Number(originalDiagnosisId)][idTable];
 					if (!tableRecord) {
 						console.log(
@@ -204,7 +235,6 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 
 						tableRecord = newRecordData[0][idTable];
 
-						// Update formData with the new record id
 						setFormData((prevData) => ({
 							...prevData,
 							[Number(originalDiagnosisId)]: {
@@ -233,13 +263,11 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 						throw personalError;
 					}
 
-					// Manejo de preguntas de tipo múltiple
 					for (const [key, value] of Object.entries(values)) {
 						const question = categoryData.questions.find((q) => q.name === key);
 						if (question && question.type === "multiple") {
 							const intermediateTable = question.intermediate_table;
 
-							// Borrar relaciones existentes
 							console.log(
 								"Deleting existing relationships in table:",
 								intermediateTable
@@ -257,13 +285,11 @@ const Questionnaire = ({ id_persona }: QuestionnaireProps) => {
 								throw deleteError;
 							}
 
-							// Crear nuevo upsertData
 							const upsertData = value.map((id_value: number) => ({
 								[idTable]: tableRecord,
 								[`id_${key}`]: id_value,
 							}));
 
-							// Hacer el upsert en la tabla intermedia
 							console.log(
 								"Upserting data into intermediate table:",
 								intermediateTable,
