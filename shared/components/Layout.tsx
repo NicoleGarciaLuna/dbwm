@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <Header />
       <Content
         style={{
-          marginTop: 64,
+          marginTop: screens.sm ? 64 : 48,
           padding: screens.sm ? "24px" : "16px",
           paddingTop: screens.sm ? "32px" : "24px",
           paddingBottom: screens.sm ? "32px" : "24px",

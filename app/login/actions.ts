@@ -19,8 +19,8 @@ export async function login(formData: FormData) {
 		throw new Error(error.message);
 	}
 
-	revalidatePath("/microentrepreneurs");
-	redirect("/microentrepreneurs");
+	revalidatePath("/");
+	redirect("/");
 }
 
 export async function signOut() {
