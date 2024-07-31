@@ -1,36 +1,36 @@
-export type MicroentrepreneurTableProps = {
-  id: number;
-  fullName: string;
-  company: string;
-  sector: string;
-  businessIdea: string;
-  experienceYears: string;
+type Emprendimiento = {
+  nombre_emprendimiento: string | null;
+  tiempo_operacion: number | null;
+  sector_economico: string | null;
 };
 
-export type Persona = {
+type IdeaNegocio = {
+  descripcion_breve: string | null;
+};
+
+type Persona = {
   id_persona: number;
   nombre: string;
   primer_apellido: string;
   segundo_apellido: string;
 };
 
-export type Emprendimiento = {
-  nombre_emprendimiento?: string;
-  tiempo_operacion?: string;
-  sector_economico?: string;
-};
-
-export type IdeaNegocio = {
-  descripcion_breve?: string;
-};
-
 export type Diagnostico = {
   id_diagnostico: number;
   fecha_diagnostico: string;
   id_persona: number;
-  emprendimiento?: Emprendimiento;
-  idea_negocio?: IdeaNegocio;
+  emprendimiento: Emprendimiento | null;
+  idea_negocio: IdeaNegocio | null;
   persona: Persona;
+};
+
+export type MicroentrepreneurTableProps = {
+  id: number;
+  fullName: string;
+  company: string;
+  sector: string;
+  businessIdea: string;
+  experienceYears: number | string;
 };
 
 export const COLUMN_CONFIG = [
