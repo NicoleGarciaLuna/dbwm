@@ -9,6 +9,19 @@ export const useStatistics = (activeTab: string) => {
     {}
   );
 
+  const fetchDiagnosticoIds = async () => {
+    const { data, error } = await supabaseClient.rpc("get_full_diagnosticos");
+
+    if (error) {
+      console.error("Error fetching full diagnósticos:", error);
+      throw error;
+    }
+
+    return data.map(
+      (diagnostico: { id_diagnostico: number }) => diagnostico.id_diagnostico
+    );
+  };
+
   const fetchData = useCallback(async () => {
     if (data[activeTab]) return;
 
@@ -16,10 +29,14 @@ export const useStatistics = (activeTab: string) => {
     setLoading(true);
 
     try {
+      // Obtener los IDs de los diagnósticos válidos
+      const validDiagnosticos = await fetchDiagnosticoIds();
+
       const fetchPromises = ENDPOINTS[activeTab].map(async (endpoint) => {
         const { data: result, error } = await supabaseClient
           .from(endpoint.table)
-          .select(endpoint.select);
+          .select(endpoint.select)
+          .in("id_diagnostico", validDiagnosticos); // Filtrar por los IDs válidos
 
         if (error) {
           console.error(`Error fetching data for ${endpoint.key}:`, error);
