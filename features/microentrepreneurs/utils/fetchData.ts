@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { supabaseClient } from "@/shared/utils/supabase/client";
-import { MicroentrepreneurTableProps, Diagnostico } from "@/features/microentrepreneurs/types";
+import {
+  MicroentrepreneurTableProps,
+  Diagnostico,
+} from "@/features/microentrepreneurs/types";
 
 const usePersonas = () => {
   const [data, setData] = useState<MicroentrepreneurTableProps[]>([]);
@@ -26,7 +29,7 @@ const usePersonas = () => {
     fetchData();
   }, []);
 
-  return { data, isLoading, error };
+  return { data, setData, isLoading, error }; // Asegúrate de incluir setData aquí
 };
 
 const getPersonas = async (): Promise<MicroentrepreneurTableProps[] | null> => {
@@ -50,15 +53,15 @@ const getPersonas = async (): Promise<MicroentrepreneurTableProps[] | null> => {
           id_persona,
           nombre,
           primer_apellido,
-          segundo_apellido
+          segundo_apellido,
+          esta_eliminado
         )
       `
       )
+      .eq("persona.esta_eliminado", false)
       .order("fecha_diagnostico", { ascending: false });
 
     if (error) throw error;
-
-    console.log("Fetched diagnosticos:", diagnosticos);
 
     const groupedData = diagnosticos.reduce(
       (acc: { [key: number]: Diagnostico[] }, item: any) => {
@@ -114,8 +117,6 @@ const getPersonas = async (): Promise<MicroentrepreneurTableProps[] | null> => {
         };
       }
     );
-
-    console.log("Formatted data:", formattedData);
 
     return formattedData;
   } catch (error) {

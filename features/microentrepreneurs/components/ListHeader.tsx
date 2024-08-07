@@ -32,11 +32,7 @@ const ListHeader = memo(
               enterButton
               style={{ width: screens.xs ? 150 : 200 }}
             />
-            <Link href="/nueva-microempresaria" prefetch={true}>
-              <Button type="primary" style={{ whiteSpace: "nowrap" }}>
-                Nueva Microempresaria
-              </Button>
-            </Link>
+            
           </Space>
         </Col>
       </Row>
