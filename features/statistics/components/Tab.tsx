@@ -1,6 +1,6 @@
-import { Tabs, Spin } from "antd";
+import { Tabs, Spin, Card } from "antd";
 import dynamic from "next/dynamic";
-import React, { useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { DataItem, ChartType } from "@/shared/types";
 import { ENDPOINTS } from "@/shared/config/endpoints";
 
@@ -32,7 +32,14 @@ const Tab = ({ loading, tabs, data, onTabChange, activeTab }: TabProps) => {
       if (!chartData || chartData.length === 0) return null;
       const ChartComponent =
         chartType === ChartType.PIE ? CustomPieChart : CustomBarChart;
-      return <ChartComponent key={key} data={chartData} title={title} />;
+      return (
+        <Card
+          key={key}
+          style={{ marginBottom: "16px" }}
+        >
+          <ChartComponent data={chartData} title={title} />
+        </Card>
+      );
     },
     []
   );
@@ -84,12 +91,15 @@ const Tab = ({ loading, tabs, data, onTabChange, activeTab }: TabProps) => {
   );
 
   return (
-    <Tabs
-      activeKey={activeTab}
-      onChange={onTabChange}
-      type="card"
-      items={items}
-    />
+    <div style={{ textAlign: "center" }}>
+      <Tabs
+        activeKey={activeTab}
+        onChange={onTabChange}
+        type="card"
+        items={items}
+        centered
+      />
+    </div>
   );
 };
 
