@@ -19,7 +19,33 @@ const CustomBarChart = ({ data, title }: CustomBarChartProps) => {
     chart: {
       type: "bar",
       height: 400,
-      toolbar: { show: false },
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
+        },
+        export: {
+          csv: {
+            filename: "bar_chart",
+            columnDelimiter: ",",
+            headerCategory: "Category",
+            headerValue: "Value",
+          },
+          svg: {
+            filename: "bar_chart",
+          },
+          png: {
+            filename: "bar_chart",
+          },
+        },
+      },
+      background: "#fff", // Fondo blanco
     },
     plotOptions: {
       bar: {
@@ -99,7 +125,7 @@ const CustomBarChart = ({ data, title }: CustomBarChartProps) => {
   ];
 
   return (
-    <div className="p-4 bg-gray-100">
+    <div className="p-4" style={{ backgroundColor: "#fff" }}>
       <Chart
         options={chartOptions}
         series={chartSeries}

@@ -12,13 +12,11 @@ type CustomPieChartProps = {
 };
 
 const CustomPieChart = ({ data, title }: CustomPieChartProps) => {
-  // Convertir valores booleanos a "Sí" o "No"
   const transformedData = data.map((entry) => ({
     ...entry,
     name: entry.name === true ? "Sí" : entry.name === false ? "No" : entry.name,
   }));
 
-  // Filtrar datos válidos
   const validData = transformedData.filter(
     (d) => d.name && d.value !== null && d.value !== undefined
   );
@@ -30,14 +28,47 @@ const CustomPieChart = ({ data, title }: CustomPieChartProps) => {
     options: {
       chart: {
         type: "pie",
-        height: 450,
+        height: 500,
         toolbar: {
-          show: false,
+          show: true,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: false,
+          },
+          export: {
+            csv: {
+              filename: "pie_chart",
+              columnDelimiter: ",",
+              headerCategory: "Category",
+              headerValue: "Value",
+            },
+            svg: {
+              filename: "pie_chart",
+            },
+            png: {
+              filename: "pie_chart",
+            },
+          },
         },
         animations: {
           enabled: true,
           easing: "easeinout",
           speed: 800,
+        },
+      },
+      title: {
+        text: title,
+        align: "center",
+        style: {
+          fontSize: "24px",
+          fontWeight: "bold",
+          fontFamily: "Arial, sans-serif",
+          color: "#263238",
         },
       },
       labels: validData.map((entry) => entry.name),
@@ -116,15 +147,12 @@ const CustomPieChart = ({ data, title }: CustomPieChartProps) => {
 
   return (
     <div className="max-w-full overflow-hidden p-4">
-      <div className="text-center text-xl font-bold text-gray-800 mb-4 break-words">
-        {title}
-      </div>
       <ReactApexChart
         options={chartData.options}
         series={chartData.series}
         type="pie"
         width="100%"
-        height={450}
+        height={500}
       />
     </div>
   );
