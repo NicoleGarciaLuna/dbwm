@@ -29,7 +29,7 @@ const usePersonas = () => {
     fetchData();
   }, []);
 
-  return { data, setData, isLoading, error };
+  return { data, setData, isLoading, error }; // Asegúrate de incluir setData aquí
 };
 
 const getPersonas = async (): Promise<MicroentrepreneurTableProps[] | null> => {
@@ -64,7 +64,7 @@ const getPersonas = async (): Promise<MicroentrepreneurTableProps[] | null> => {
     if (error) throw error;
 
     const groupedData = diagnosticos.reduce(
-      (acc: { [key: number]: Diagnostico[] }, item: Diagnostico) => {
+      (acc: { [key: number]: Diagnostico[] }, item: any) => {
         if (!item.persona || !item.persona.id_persona) {
           console.warn("Invalid persona data:", item.persona);
           return acc;
@@ -80,42 +80,43 @@ const getPersonas = async (): Promise<MicroentrepreneurTableProps[] | null> => {
       {}
     );
 
-    const formattedData = Object.values(groupedData).map((diagnosticos) => {
-      const diags = diagnosticos as Diagnostico[]; // Type assertion here
-      const latestDiagnostico = diags[0];
-      const persona = latestDiagnostico.persona;
+    const formattedData = Object.values(groupedData).map(
+      (diagnosticos: Diagnostico[]) => {
+        const latestDiagnostico = diagnosticos[0];
+        const persona = latestDiagnostico.persona;
 
-      const fullName = `${persona.nombre} ${persona.primer_apellido} ${persona.segundo_apellido}`;
+        const fullName = `${persona.nombre} ${persona.primer_apellido} ${persona.segundo_apellido}`;
 
-      let company = "";
-      let sector = "";
-      let businessIdea = "";
-      let experienceYears: number | string = "";
+        let company = "";
+        let sector = "";
+        let businessIdea = "";
+        let experienceYears: number | string = "";
 
-      for (const diag of diags) {
-        if (diag.emprendimiento?.nombre_emprendimiento) {
-          company = diag.emprendimiento.nombre_emprendimiento;
+        for (const diag of diagnosticos) {
+          if (diag.emprendimiento?.nombre_emprendimiento) {
+            company = diag.emprendimiento.nombre_emprendimiento;
+          }
+          if (diag.emprendimiento?.sector_economico) {
+            sector = diag.emprendimiento.sector_economico;
+          }
+          if (diag.idea_negocio?.descripcion_breve) {
+            businessIdea = diag.idea_negocio.descripcion_breve;
+          }
+          if (diag.emprendimiento?.tiempo_operacion) {
+            experienceYears = diag.emprendimiento.tiempo_operacion;
+          }
         }
-        if (diag.emprendimiento?.sector_economico) {
-          sector = diag.emprendimiento.sector_economico;
-        }
-        if (diag.idea_negocio?.descripcion_breve) {
-          businessIdea = diag.idea_negocio.descripcion_breve;
-        }
-        if (diag.emprendimiento?.tiempo_operacion) {
-          experienceYears = diag.emprendimiento.tiempo_operacion;
-        }
+
+        return {
+          id: persona.id_persona,
+          fullName,
+          company,
+          sector,
+          businessIdea,
+          experienceYears,
+        };
       }
-
-      return {
-        id: persona.id_persona,
-        fullName,
-        company,
-        sector,
-        businessIdea,
-        experienceYears,
-      };
-    });
+    );
 
     return formattedData;
   } catch (error) {
